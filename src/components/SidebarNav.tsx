@@ -31,6 +31,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     { id: 'analytics', label: 'Fee Revenue Analytics', icon: BarChart3 },
     { id: 'receipts', label: 'Receipt Generator', icon: Receipt },
     { id: 'structures', label: 'Fee Structures', icon: BookOpen },
+    { id: 'audit', label: 'Audit & Transaction Log', icon: ShieldAlert },
   ];
 
   return (
@@ -90,11 +91,11 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             Quick Program Switch
           </p>
           <div className="space-y-1">
-            {['JBT', 'B.Ed', 'D.El.Ed'].map((c) => (
+            {['JBT', 'B.Ed'].map((c) => (
               <button
                 key={c}
                 onClick={onOpenCourseSelect}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors cursor-pointer"
               >
                 <span>{c} Course Portal</span>
                 <span className="w-2 h-2 rounded-full bg-emerald-500/60" />

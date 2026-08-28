@@ -47,10 +47,8 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 <span
                   className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
                     student.course === 'JBT'
-                      ? 'bg-emerald-500/20 text-emerald-300'
-                      : student.course === 'B.Ed'
-                      ? 'bg-blue-500/20 text-blue-300'
-                      : 'bg-purple-500/20 text-purple-300'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                      : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                   }`}
                 >
                   {student.course} Program

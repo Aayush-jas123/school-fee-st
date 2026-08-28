@@ -138,7 +138,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
             </span>
           </div>
           <p className="text-xs text-slate-400 mb-4">
-            Comparison of monthly fee collections across JBT, B.Ed, and D.El.Ed programs.
+            Comparison of monthly fee collections across JBT and B.Ed programs.
           </p>
 
           <div className="h-64 w-full">
@@ -154,9 +154,8 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
                   height={30}
                   formatter={(value) => <span className="text-xs font-semibold text-slate-300">{value}</span>}
                 />
-                <Bar dataKey="JBT" fill="#10b981" radius={[4, 4, 0, 0]} name="JBT" />
-                <Bar dataKey="BEd" fill="#6366f1" radius={[4, 4, 0, 0]} name="B.Ed" />
-                <Bar dataKey="DElEd" fill="#a855f7" radius={[4, 4, 0, 0]} name="D.El.Ed" />
+                <Bar dataKey="JBT" fill="#10b981" radius={[4, 4, 0, 0]} name="JBT Program" />
+                <Bar dataKey="BEd" fill="#6366f1" radius={[4, 4, 0, 0]} name="B.Ed Program" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -166,7 +165,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
         <div className="flex items-center justify-between pt-3 border-t border-slate-800 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-emerald-400" />
-            <span>Peak Collection Month: <strong className="text-slate-200">July (₹5.8 Lakhs)</strong></span>
+            <span>Peak Collection Month: <strong className="text-slate-200">July (₹5.6 Lakhs)</strong></span>
           </div>
           <span className="text-[11px] text-slate-500 font-medium">Updated as of today</span>
         </div>

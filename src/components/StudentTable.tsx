@@ -20,6 +20,8 @@ interface StudentTableProps {
   students: Student[];
   onViewStudent: (student: Student) => void;
   onEditStudent: (student: Student) => void;
+  onRecordPayment?: (student: Student) => void;
+  onSendReminder?: (student: Student) => void;
   selectedCourseFilter: CourseType | 'ALL';
   onCourseFilterChange: (course: CourseType | 'ALL') => void;
   selectedStatusFilter: FeeStatusType | 'ALL';
@@ -35,6 +37,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   students,
   onViewStudent,
   onEditStudent,
+  onRecordPayment,
+  onSendReminder,
   selectedCourseFilter,
   onCourseFilterChange,
   selectedStatusFilter,
@@ -209,11 +213,11 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           {/* Course Filter */}
           <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700 text-xs">
             <span className="text-slate-400 px-2 font-medium">Course:</span>
-            {(['ALL', 'JBT', 'B.Ed', 'D.El.Ed'] as const).map((c) => (
+            {(['ALL', 'JBT', 'B.Ed'] as const).map((c) => (
               <button
                 key={c}
                 onClick={() => onCourseFilterChange(c)}
-                className={`px-3 py-1 rounded-lg font-semibold transition-all ${
+                className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
                   selectedCourseFilter === c
                     ? 'bg-indigo-600 text-white shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
@@ -405,6 +409,24 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                   {/* Action Column */}
                   <td className="py-3.5 px-4 text-center whitespace-nowrap">
                     <div className="flex items-center justify-center gap-1.5">
+                      {onRecordPayment && student.remainingFees > 0 && (
+                        <button
+                          onClick={() => onRecordPayment(student)}
+                          title="Collect Fee Payment"
+                          className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
+                        >
+                          Pay
+                        </button>
+                      )}
+                      {onSendReminder && student.remainingFees > 0 && (
+                        <button
+                          onClick={() => onSendReminder(student)}
+                          title="Send Fee Reminder / Notice"
+                          className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-600 text-amber-400 hover:text-white border border-amber-500/30 transition-all cursor-pointer"
+                        >
+                          Notice
+                        </button>
+                      )}
                       <button
                         onClick={() => onViewStudent(student)}
                         title="View Full Profile & Fee Details"
@@ -415,7 +437,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                       <button
                         onClick={() => onEditStudent(student)}
                         title="Edit Fee Record"
-                        className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-600 text-amber-400 hover:text-white border border-amber-500/30 transition-all cursor-pointer"
+                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>

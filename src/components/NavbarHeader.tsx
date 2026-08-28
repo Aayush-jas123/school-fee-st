@@ -47,10 +47,9 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
               onChange={(e) => onCourseChange(e.target.value as CourseType | 'ALL')}
               className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-3 py-2 pr-8 focus:outline-none focus:border-indigo-500 cursor-pointer appearance-none shadow-sm"
             >
-              <option value="ALL">All Courses (Overview)</option>
+              <option value="ALL">All Courses (JBT & B.Ed)</option>
               <option value="JBT">JBT (Junior Basic Training)</option>
               <option value="B.Ed">B.Ed (Bachelor of Education)</option>
-              <option value="D.El.Ed">D.El.Ed (Diploma in Elem. Edu.)</option>
             </select>
             <ChevronDown className="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>

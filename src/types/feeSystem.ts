@@ -1,6 +1,8 @@
-export type CourseType = 'JBT' | 'B.Ed' | 'D.El.Ed';
+export type CourseType = 'JBT' | 'B.Ed';
 
 export type FeeStatusType = 'Paid' | 'Partly Paid' | 'Unpaid' | 'Overdue';
+
+export type PaymentMode = 'UPI' | 'NEFT' | 'Cash' | 'Demand Draft' | 'Cheque';
 
 export interface FeeBreakdown {
   tuitionFee: number;
@@ -15,9 +17,11 @@ export interface PaymentRecord {
   id: string;
   amount: number;
   date: string;
-  mode: 'UPI' | 'NEFT' | 'Cash' | 'Demand Draft' | 'Cheque';
+  mode: PaymentMode;
   transactionRef: string;
   remark: string;
+  discountApplied?: number;
+  staffName?: string;
 }
 
 export interface Student {
@@ -40,6 +44,10 @@ export interface Student {
   category: 'General' | 'OBC' | 'SC' | 'ST';
   feeBreakdown: FeeBreakdown;
   paymentHistory: PaymentRecord[];
+  discountAmount?: number;
+  scholarshipApplied?: string;
+  lastReminderSent?: string;
+  notes?: string;
 }
 
 export interface CourseStat {
@@ -55,3 +63,30 @@ export interface CourseStat {
   iconName: string;
   colorTheme: string;
 }
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  action: string;
+  details: string;
+  staffName: string;
+  type: 'PAYMENT' | 'STUDENT_ADD' | 'STUDENT_EDIT' | 'REMINDER' | 'SETTINGS';
+}
+
+export interface CourseFeeRule {
+  course: CourseType;
+  tuitionFee: number;
+  admissionFee: number;
+  examFee: number;
+  libraryFee: number;
+  developmentFee: number;
+  labFee: number;
+  lateFeePerDay: number;
+  scholarshipDiscounts: {
+    SC: number;
+    ST: number;
+    OBC: number;
+    General: number;
+  };
+}
+

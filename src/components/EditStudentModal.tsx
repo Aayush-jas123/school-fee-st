@@ -131,11 +131,10 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               <select
                 value={formData.course}
                 onChange={(e) => handleChange('course', e.target.value as CourseType)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:border-indigo-500 focus:outline-none"
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:border-indigo-500 focus:outline-none cursor-pointer"
               >
                 <option value="JBT">JBT (Junior Basic Training)</option>
                 <option value="B.Ed">B.Ed (Bachelor of Education)</option>
-                <option value="D.El.Ed">D.El.Ed (Diploma in Elem. Edu.)</option>
               </select>
             </div>
 

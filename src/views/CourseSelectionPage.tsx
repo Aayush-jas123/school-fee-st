@@ -1,6 +1,6 @@
 import React from 'react';
 import type { CourseStat, CourseType } from '../types/feeSystem';
-import { GraduationCap, BookOpen, Award, Users, AlertCircle, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { GraduationCap, BookOpen, Users, AlertCircle, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 
 interface CourseSelectionPageProps {
   courses: CourseStat[];
@@ -27,8 +27,6 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
         return <GraduationCap className="w-8 h-8 text-emerald-400" />;
       case 'B.Ed':
         return <BookOpen className="w-8 h-8 text-blue-400" />;
-      case 'D.El.Ed':
-        return <Award className="w-8 h-8 text-purple-400" />;
       default:
         return <GraduationCap className="w-8 h-8 text-emerald-400" />;
     }
@@ -40,8 +38,6 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
         return 'from-emerald-900/40 via-teal-900/20 to-slate-900 hover:border-emerald-500/50 shadow-emerald-950/30';
       case 'B.Ed':
         return 'from-indigo-900/40 via-blue-900/20 to-slate-900 hover:border-indigo-500/50 shadow-indigo-950/30';
-      case 'D.El.Ed':
-        return 'from-purple-900/40 via-pink-900/20 to-slate-900 hover:border-purple-500/50 shadow-purple-950/30';
       default:
         return 'from-slate-900 to-slate-800';
     }
@@ -53,8 +49,6 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
         return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
       case 'B.Ed':
         return 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30';
-      case 'D.El.Ed':
-        return 'bg-purple-500/10 text-purple-400 border-purple-500/30';
       default:
         return 'bg-slate-500/10 text-slate-400';
     }
@@ -81,15 +75,15 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
           </p>
         </div>
 
-        {/* 3 Featured Course Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* 2 Featured Course Cards (JBT & B.Ed) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 max-w-4xl mx-auto">
           {courses.map((course) => {
             const collectionRate = Math.round((course.totalCollected / course.totalExpected) * 100) || 0;
             return (
               <div
                 key={course.code}
                 onClick={() => onSelectCourse(course.code)}
-                className={`group relative bg-slate-900/90 border border-slate-800 rounded-3xl p-6 md:p-7 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer bg-gradient-to-b ${getThemeGradient(
+                className={`group relative bg-slate-900/90 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer bg-gradient-to-b ${getThemeGradient(
                   course.code
                 )}`}
               >

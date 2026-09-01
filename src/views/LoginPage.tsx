@@ -6,7 +6,7 @@ interface LoginPageProps {
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
-  const [loginId, setLoginId] = useState('staff@apex.edu.in');
+  const [loginId, setLoginId] = useState('staff@shanticollege.edu.in');
   const [password, setPassword] = useState('admin123');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -29,7 +29,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   };
 
   const handleQuickDemoLogin = () => {
-    setLoginId('staff@apex.edu.in');
+    setLoginId('staff@shanticollege.edu.in');
     setPassword('admin123');
     setIsLoading(true);
     setTimeout(() => {
@@ -57,7 +57,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             </div>
 
             <h1 className="text-2xl font-bold tracking-tight text-white">
-              Apex Institute of Higher Education
+              Shanti College of Education
             </h1>
             <p className="text-sm text-slate-400 mt-1 flex items-center justify-center gap-1.5 font-medium">
               <ShieldCheck className="w-4 h-4 text-emerald-400" /> Staff Fee Management Portal
@@ -86,7 +86,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   type="text"
                   value={loginId}
                   onChange={(e) => setLoginId(e.target.value)}
-                  placeholder="e.g. staff@apex.edu.in"
+                  placeholder="e.g. staff@shanticollege.edu.in"
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                 />
               </div>

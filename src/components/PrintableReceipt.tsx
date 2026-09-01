@@ -41,7 +41,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
           <div className="flex justify-between items-start border-b-2 border-indigo-900 pb-4">
             <div>
               <h1 className="text-2xl font-black text-indigo-950 uppercase tracking-wide">
-                STATE COLLEGE OF EDUCATION
+                SHANTI COLLEGE OF EDUCATION
               </h1>
               <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
                 Recognized by Govt & Affiliated for JBT & B.Ed Programs
@@ -145,7 +145,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
             <div className="text-center">
               <div className="h-10 border-b border-slate-400 w-36 mb-1"></div>
               <p className="font-bold text-slate-900">Authorized Cashier / Accountant</p>
-              <p className="text-slate-500 text-[10px]">State College of Education</p>
+              <p className="text-slate-500 text-[10px]">Shanti College of Education</p>
             </div>
           </div>
         </div>

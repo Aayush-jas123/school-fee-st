@@ -185,7 +185,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
               {/* College Letterhead */}
               <div className="text-center border-b-2 border-indigo-900 pb-4">
                 <h1 className="text-2xl font-black text-indigo-950 uppercase tracking-wide">
-                  STATE COLLEGE OF EDUCATION
+                  SHANTI COLLEGE OF EDUCATION
                 </h1>
                 <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
                   Approved by NCTE & Affiliated to State University
@@ -268,7 +268,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                 <div className="text-center">
                   <div className="h-10 border-b border-slate-400 w-36 mb-1"></div>
                   <p className="font-bold text-slate-900">Finance Officer / Registrar</p>
-                  <p className="text-slate-500 text-[10px]">State College of Education</p>
+                  <p className="text-slate-500 text-[10px]">Shanti College of Education</p>
                 </div>
               </div>
 

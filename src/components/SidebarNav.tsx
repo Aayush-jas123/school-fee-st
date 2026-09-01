@@ -118,7 +118,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         </div>
 
         <button
-          onClick={() => alert('Apex Fee Portal v2.4 (Prototype Mode)')}
+          onClick={() => alert('Shanti College Fee Portal v2.4')}
           className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors"
         >
           <HelpCircle className="w-4 h-4 text-slate-400" />

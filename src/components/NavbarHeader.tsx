@@ -33,7 +33,7 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
               <Building2 className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white leading-tight">Apex Institute</h2>
+              <h2 className="text-base font-bold text-white leading-tight">Shanti College of Education</h2>
               <p className="text-[11px] text-slate-400 font-medium">Fee Management Portal</p>
             </div>
           </div>

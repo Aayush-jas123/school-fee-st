@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Lock, User, ShieldCheck, Sparkles, Building2, ArrowRight, HelpCircle } from 'lucide-react';
+import { Eye, EyeOff, Lock, User, ShieldCheck, Building2, ArrowRight, HelpCircle } from 'lucide-react';
 
 interface LoginPageProps {
   onLoginSuccess: (staffName: string) => void;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
-  const [loginId, setLoginId] = useState('staff@shanticollege.edu.in');
-  const [password, setPassword] = useState('admin123');
+  const [loginId, setLoginId] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
@@ -26,16 +26,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       setIsLoading(false);
       onLoginSuccess('Dr. Rajesh Sharma (Accounts Officer)');
     }, 600);
-  };
-
-  const handleQuickDemoLogin = () => {
-    setLoginId('staff@shanticollege.edu.in');
-    setPassword('admin123');
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      onLoginSuccess('Dr. Rajesh Sharma (Accounts Officer)');
-    }, 500);
   };
 
   return (
@@ -156,26 +146,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               )}
             </button>
           </form>
-
-          {/* Quick Demo Helper */}
-          <div className="mt-6 pt-5 border-t border-slate-700/60 text-center">
-            <button
-              type="button"
-              onClick={handleQuickDemoLogin}
-              className="w-full py-2.5 px-3 rounded-xl bg-slate-700/50 hover:bg-slate-700 border border-slate-600 text-slate-300 hover:text-white text-xs font-medium transition-all flex items-center justify-center gap-2"
-            >
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              One-Click Quick Demo Login
-            </button>
-            <p className="text-[11px] text-slate-400 mt-2">
-              Staff ID: <code className="text-slate-300">staff@apex.edu.in</code> | Pass: <code className="text-slate-300">admin123</code>
-            </p>
-          </div>
         </div>
 
         {/* Footer info */}
         <p className="text-center text-xs text-slate-400 mt-6">
-          © 2026 Apex Institute of Higher Education • Approved by NCTE & State Council
+          © 2026 Shanti College of Education • Approved by NCTE & State Council
         </p>
       </div>
 
@@ -191,7 +166,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               For security compliance, staff passwords must be reset by the IT Administrator.
             </p>
             <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700 text-xs space-y-1 mb-5">
-              <p><strong className="text-indigo-300">IT Helpdesk Email:</strong> admin@apex.edu.in</p>
+              <p><strong className="text-indigo-300">IT Helpdesk Email:</strong> admin@shanticollege.edu.in</p>
               <p><strong className="text-indigo-300">Internal Helpline:</strong> Ext. 104 / +91 172 298104</p>
             </div>
             <button

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { Student, PaymentMode, PaymentRecord, SemesterName, SemesterFeeSlot } from '../types/feeSystem';
-import { X, QrCode, CheckCircle2, DollarSign, Layers } from 'lucide-react';
+import { X, QrCode, CheckCircle2, DollarSign, Layers, Receipt, Clock } from 'lucide-react';
 import { formatCurrencyINR } from '../utils/exportUtils';
 
 interface RecordPaymentModalProps {
@@ -48,6 +48,18 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
     setAmount(semRemaining > 0 ? semRemaining : 0);
     setRemark(`${sem} Fee Payment`);
   };
+
+  // Compute EMI history for selected semester
+  const semesterEmiHistory = useMemo(() => {
+    const targetSlot = (student.semesterFees || []).find(s => s.semester === selectedSemester);
+    if (targetSlot?.installments && targetSlot.installments.length > 0) {
+      return targetSlot.installments;
+    }
+    return student.paymentHistory.filter(p => p.targetSemester === selectedSemester).reverse();
+  }, [student, selectedSemester]);
+
+  const emiCount = semesterEmiHistory.length;
+  const emiTotalPaid = semesterEmiHistory.reduce((sum, e) => sum + e.amount, 0);
 
   const calculatedSemRemainingAfterPayment = Math.max(0, currentSemSlot.remainingAmount - amount - discount);
   const calculatedTotalRemainingAfterPayment = Math.max(0, student.remainingFees - amount - discount);
@@ -240,6 +252,32 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           </div>
         </div>
 
+        {/* EMI History for Selected Semester */}
+        {emiCount > 0 && (
+          <div className="mb-5 bg-slate-950/60 p-3 rounded-xl border border-slate-800 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
+              <Receipt className="w-4 h-4 text-amber-400" />
+              Previous EMI Installments for {selectedSemester} ({emiCount} paid):
+            </div>
+            <div className="space-y-1.5">
+              {semesterEmiHistory.map((inst, idx) => (
+                <div key={inst.id || idx} className="flex items-center justify-between bg-slate-900 p-2 rounded-lg border border-slate-800 text-[11px]">
+                  <div className="flex items-center gap-2">
+                    <span className="px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold text-[10px]">EMI #{inst.installmentNo || idx + 1}</span>
+                    <span className="text-slate-400 font-mono">{inst.date}</span>
+                    <span className="text-slate-500">{inst.mode}</span>
+                  </div>
+                  <span className="font-bold text-emerald-400">{formatCurrencyINR(inst.amount)}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center justify-between pt-1.5 border-t border-slate-800 text-[11px]">
+              <span className="text-slate-400">Total Paid via EMIs so far:</span>
+              <span className="font-bold text-emerald-400">{formatCurrencyINR(emiTotalPaid)} of {formatCurrencyINR(currentSemSlot.totalFee)}</span>
+            </div>
+          </div>
+        )}
+
         {/* Payment Form */}
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {/* Quick Option: Full Sem vs Custom Installment */}
@@ -361,6 +399,17 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               </button>
             </div>
           )}
+
+          {/* Next EMI Number Preview */}
+          <div className="bg-indigo-950/30 p-2.5 rounded-xl border border-indigo-800/40 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-indigo-400" />
+              <span className="text-slate-300">This will be recorded as <strong className="text-indigo-300">EMI #{emiCount + 1}</strong> for {selectedSemester}</span>
+            </div>
+            <span className="text-slate-400">
+              After payment: <strong className={calculatedSemRemainingAfterPayment === 0 ? 'text-emerald-400' : 'text-amber-400'}>{formatCurrencyINR(calculatedSemRemainingAfterPayment)} pending</strong>
+            </span>
+          </div>
 
           {/* Post-Payment Calculated Preview */}
           <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between text-xs">

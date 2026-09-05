@@ -430,28 +430,57 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {student.paymentHistory.map((rec) => (
-                    <div key={rec.id} className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-indigo-400">{rec.id}</span>
-                          {rec.targetSemester && (
-                            <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30 text-[10px]">
-                              {rec.targetSemester}
-                            </span>
-                          )}
-                          <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold text-[10px]">{rec.mode}</span>
-                        </div>
-                        <p className="text-slate-300 font-medium">{rec.remark}</p>
-                        <p className="text-[10px] text-slate-500 font-mono">Ref: {rec.transactionRef} | Staff: {rec.staffName || 'Admin'}</p>
-                      </div>
-
-                      <div className="text-right">
-                        <span className="text-sm font-extrabold text-emerald-400 block">{formatINR(rec.amount)}</span>
-                        <span className="text-[10px] text-slate-400">{rec.date}</span>
-                      </div>
+                  {/* Summary Header */}
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="bg-emerald-950/30 p-2 rounded-xl border border-emerald-800/30">
+                      <span className="text-[10px] text-slate-400 block">Total Payments</span>
+                      <span className="text-sm font-bold text-emerald-400">{student.paymentHistory.length}</span>
                     </div>
-                  ))}
+                    <div className="bg-indigo-950/30 p-2 rounded-xl border border-indigo-800/30">
+                      <span className="text-[10px] text-slate-400 block">Total Collected</span>
+                      <span className="text-sm font-bold text-indigo-400">{formatINR(student.paidTillNow)}</span>
+                    </div>
+                    <div className="bg-amber-950/30 p-2 rounded-xl border border-amber-800/30">
+                      <span className="text-[10px] text-slate-400 block">Still Pending</span>
+                      <span className="text-sm font-bold text-amber-400">{formatINR(student.remainingFees)}</span>
+                    </div>
+                  </div>
+
+                  {/* Payment Records with Running Balance */}
+                  {[...student.paymentHistory].reverse().map((rec, idx, arr) => {
+                    // Calculate running balance: totalFees minus sum of payments up to this point
+                    const paymentsUpToThis = arr.slice(0, idx + 1).reduce((sum, r) => sum + r.amount, 0);
+                    const runningBalance = Math.max(0, student.totalFees - paymentsUpToThis);
+
+                    return (
+                      <div key={rec.id} className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-mono font-bold text-indigo-400">{rec.id}</span>
+                            {rec.targetSemester && (
+                              <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30 text-[10px]">
+                                {rec.targetSemester}
+                              </span>
+                            )}
+                            {rec.installmentNo && (
+                              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 text-[10px]">
+                                EMI #{rec.installmentNo}
+                              </span>
+                            )}
+                            <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold text-[10px]">{rec.mode}</span>
+                          </div>
+                          <p className="text-slate-300 font-medium">{rec.remark}</p>
+                          <p className="text-[10px] text-slate-500 font-mono">Ref: {rec.transactionRef} | Staff: {rec.staffName || 'Admin'}</p>
+                        </div>
+
+                        <div className="text-right space-y-1">
+                          <span className="text-sm font-extrabold text-emerald-400 block">{formatINR(rec.amount)}</span>
+                          <span className="text-[10px] text-slate-400 block">{rec.date}</span>
+                          <span className="text-[10px] text-amber-400 font-semibold block">Balance: {formatINR(runningBalance)}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

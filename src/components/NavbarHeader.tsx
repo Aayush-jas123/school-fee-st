@@ -1,6 +1,6 @@
 import React from 'react';
 import type { CourseType } from '../types/feeSystem';
-import { Building2, Search, Bell, LogOut, ChevronDown, UserCheck, Calendar, Database, Zap } from 'lucide-react';
+import { Building2, Search, Bell, LogOut, ChevronDown, UserCheck, Calendar, Database, Zap, X } from 'lucide-react';
 import { isSupabaseConfigured } from '../lib/supabase';
 
 interface NavbarHeaderProps {
@@ -79,8 +79,17 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search Reg No, Name, Phone..."
-              className="w-full pl-9 pr-4 py-1.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
+              className="w-full pl-9 pr-8 py-1.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all font-medium"
             />
+            {searchTerm && (
+              <button
+                onClick={() => onSearchChange('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-0.5 rounded-full"
+                title="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
 
           {/* Academic Session Filter Pill */}

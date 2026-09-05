@@ -1,7 +1,7 @@
 import type { Student, AuditLogEntry, CourseFeeRule } from '../types/feeSystem';
 import { INITIAL_STUDENTS } from '../data/mockStudents';
 
-const STUDENTS_STORAGE_KEY = 'school_fee_system_students_v2';
+const STUDENTS_STORAGE_KEY = 'school_fee_system_students_v3';
 const AUDIT_LOG_STORAGE_KEY = 'school_fee_system_audit_v2';
 const FEE_RULES_STORAGE_KEY = 'school_fee_system_rules_v2';
 

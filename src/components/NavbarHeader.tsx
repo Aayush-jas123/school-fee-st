@@ -12,6 +12,7 @@ interface NavbarHeaderProps {
   onLogout: () => void;
   searchTerm: string;
   onSearchChange: (term: string) => void;
+  availableSessions?: string[];
 }
 
 export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
@@ -23,6 +24,7 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
   onLogout,
   searchTerm,
   onSearchChange,
+  availableSessions = [],
 }) => {
   const isSupabaseActive = isSupabaseConfigured();
 
@@ -102,9 +104,9 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
                 className="bg-transparent border-none text-zinc-200 text-xs font-semibold focus:outline-none cursor-pointer pr-1"
               >
                 <option value="ALL" className="bg-zinc-900">All Sessions</option>
-                <option value="2026-2027" className="bg-zinc-900">Session 2026-2027</option>
-                <option value="2024-2026" className="bg-zinc-900">Session 2024-2026</option>
-                <option value="2023-2025" className="bg-zinc-900">Session 2023-2025</option>
+                {availableSessions.map((sess) => (
+                  <option key={sess} value={sess} className="bg-zinc-900">Session {sess}</option>
+                ))}
               </select>
             </div>
           </div>

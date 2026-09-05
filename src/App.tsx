@@ -151,6 +151,12 @@ export function App() {
     });
   }, [students, selectedCourse, selectedSession]);
 
+  // Compute available sessions from student data (sorted descending)
+  const availableSessions = useMemo(() => {
+    const sessions = new Set(students.map((s) => s.session).filter(Boolean));
+    return Array.from(sessions).sort((a, b) => b.localeCompare(a));
+  }, [students]);
+
   // Handle saving edited student record
   const handleSaveStudent = async (updatedStudent: Student) => {
     setStudents((prev) => prev.map((s) => (s.id === updatedStudent.id ? updatedStudent : s)));
@@ -341,6 +347,7 @@ export function App() {
         onLogout={handleLogout}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
+        availableSessions={availableSessions}
       />
 
       {/* Toast Notification Popup */}

@@ -125,7 +125,7 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
     .map((it: any) => it.str)
     .join(' ');
   const sessionMatch = firstPageText.match(/(\d{4})\s*[-–]\s*(\d{4})/);
-  const detectedSession = sessionMatch ? `${sessionMatch[1]}-${sessionMatch[2].slice(2)}` : '';
+  const detectedSession = sessionMatch ? `${sessionMatch[1]}-${sessionMatch[2]}` : '';
 
   const allStudents: Student[] = [];
   let globalIdx = 0;

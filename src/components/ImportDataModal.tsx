@@ -18,7 +18,7 @@ interface ImportDataModalProps {
 type ImportStep = 'upload' | 'configure' | 'preview' | 'importing';
 
 const SESSION_OPTIONS = [
-  '2024-25', '2025-26', '2026-27', '2027-28', '2028-29',
+  '2024-2025', '2025-2026', '2026-2027', '2027-2028', '2028-2029',
 ];
 
 const COURSE_OPTIONS: { value: CourseType; label: string; icon: typeof BookOpen }[] = [
@@ -31,7 +31,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
   const [file, setFile] = useState<File | null>(null);
   const [fileType, setFileType] = useState<'pdf' | 'excel' | null>(null);
   const [course, setCourse] = useState<CourseType>('B.Ed');
-  const [session, setSession] = useState<string>('2024-25');
+  const [session, setSession] = useState<string>('2024-2025');
   const [parsedStudents, setParsedStudents] = useState<Student[]>([]);
   const [summary, setSummary] = useState<ImportSummary | null>(null);
   const [error, setError] = useState<string | null>(null);

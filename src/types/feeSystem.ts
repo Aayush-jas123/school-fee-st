@@ -30,8 +30,10 @@ export interface Student {
   name: string;
   fatherName: string;
   phone: string;
+  whatsappNo?: string;
   email: string;
   course: CourseType;
+  stream?: string;
   semester: string;
   rollNo: string;
   session: string;

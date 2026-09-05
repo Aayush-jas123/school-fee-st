@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS public.students (
     name TEXT NOT NULL,
     father_name TEXT NOT NULL,
     phone TEXT NOT NULL,
+    whatsapp_no TEXT,
+    stream TEXT,
     email TEXT,
     course TEXT NOT NULL CHECK (course IN ('JBT', 'B.Ed')),
     semester TEXT NOT NULL,
@@ -31,6 +33,10 @@ CREATE TABLE IF NOT EXISTS public.students (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Ensure columns exist if table was previously created
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS whatsapp_no TEXT;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS stream TEXT;
 
 -- 2. Create 'audit_logs' Table
 CREATE TABLE IF NOT EXISTS public.audit_logs (

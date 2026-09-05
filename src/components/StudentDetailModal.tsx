@@ -7,6 +7,7 @@ import {
   Clock,
   Edit,
   Building,
+  MessageSquare,
 } from 'lucide-react';
 
 interface StudentDetailModalProps {
@@ -33,6 +34,9 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
     window.print();
   };
 
+  const cleanWhatsapp = (student.whatsappNo || student.phone || '').replace(/\D/g, '');
+  const waLink = cleanWhatsapp ? `https://wa.me/91${cleanWhatsapp.slice(-10)}` : null;
+
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 md:p-6 overflow-y-auto">
       <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-3xl shadow-2xl text-slate-100 overflow-hidden my-auto animate-in fade-in zoom-in duration-200">
@@ -54,9 +58,14 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 >
                   {student.course} Program
                 </span>
+                {student.stream && (
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    {student.stream}
+                  </span>
+                )}
               </div>
               <p className="text-xs text-slate-400 font-mono">
-                Reg No: <strong className="text-indigo-300">{student.registrationNo}</strong> | Roll No: <strong className="text-slate-300">{student.rollNo}</strong>
+                Reg No: <strong className="text-indigo-300">{student.registrationNo}</strong> | Roll No: <strong className="text-slate-300">{student.rollNo || 'Pending'}</strong>
               </p>
             </div>
           </div>
@@ -155,6 +164,22 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                       <span className="text-slate-400">Phone Number:</span>
                       <span className="font-mono text-slate-200">{student.phone}</span>
                     </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">WhatsApp No.:</span>
+                      {waLink ? (
+                        <a
+                          href={waLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-emerald-400 font-mono hover:underline font-bold"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5" />
+                          {student.whatsappNo || student.phone}
+                        </a>
+                      ) : (
+                        <span className="font-mono text-slate-400">{student.whatsappNo || student.phone || 'N/A'}</span>
+                      )}
+                    </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Email Address:</span>
                       <span className="font-mono text-indigo-300">{student.email}</span>
@@ -177,12 +202,16 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                       <span className="font-bold text-white">{student.course}</span>
                     </div>
                     <div className="flex justify-between">
+                      <span className="text-slate-400">Stream:</span>
+                      <span className="font-bold text-amber-300">{student.stream || 'Arts'}</span>
+                    </div>
+                    <div className="flex justify-between">
                       <span className="text-slate-400">Current Semester/Year:</span>
                       <span className="font-semibold text-slate-200">{student.semester}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Class Roll Number:</span>
-                      <span className="font-mono text-slate-200">{student.rollNo}</span>
+                      <span className="font-mono text-slate-200 font-bold">{student.rollNo || 'Pending'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Academic Session:</span>

@@ -114,6 +114,17 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               />
             </div>
 
+            {/* WhatsApp Number */}
+            <div>
+              <label className="block text-slate-400 font-semibold mb-1">WhatsApp Number</label>
+              <input
+                type="text"
+                value={formData.whatsappNo || formData.phone}
+                onChange={(e) => handleChange('whatsappNo', e.target.value)}
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-emerald-300 font-mono focus:border-indigo-500 focus:outline-none"
+              />
+            </div>
+
             {/* Email */}
             <div>
               <label className="block text-slate-400 font-semibold mb-1">Email Address</label>
@@ -122,6 +133,18 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
                 className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono focus:border-indigo-500 focus:outline-none"
+              />
+            </div>
+
+            {/* Roll Number (Editable Live) */}
+            <div>
+              <label className="block text-slate-400 font-semibold mb-1">Class Roll Number (Editable)</label>
+              <input
+                type="text"
+                value={formData.rollNo}
+                onChange={(e) => handleChange('rollNo', e.target.value)}
+                placeholder="e.g. 11643"
+                className="w-full bg-slate-950 border border-indigo-500/50 rounded-xl px-3 py-2 text-indigo-300 font-mono font-bold focus:border-indigo-500 focus:outline-none"
               />
             </div>
 
@@ -135,6 +158,21 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               >
                 <option value="JBT">JBT (Junior Basic Training)</option>
                 <option value="B.Ed">B.Ed (Bachelor of Education)</option>
+              </select>
+            </div>
+
+            {/* Academic Stream */}
+            <div>
+              <label className="block text-slate-400 font-semibold mb-1">Academic Stream</label>
+              <select
+                value={formData.stream || 'Arts'}
+                onChange={(e) => handleChange('stream', e.target.value)}
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:border-indigo-500 focus:outline-none cursor-pointer"
+              >
+                <option value="Arts">Arts</option>
+                <option value="Non-Medical">Non-Medical</option>
+                <option value="Medical">Medical</option>
+                <option value="Commerce">Commerce</option>
               </select>
             </div>
 

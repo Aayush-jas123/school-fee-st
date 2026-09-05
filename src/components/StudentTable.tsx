@@ -10,10 +10,11 @@ import {
   AlertTriangle,
   XCircle,
   Phone,
-  Calendar,
   ChevronLeft,
   ChevronRight,
   Download,
+  MessageSquare,
+  Check,
 } from 'lucide-react';
 
 interface StudentTableProps {
@@ -52,6 +53,10 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  // Inline Roll Number Edit State
+  const [editingRollId, setEditingRollId] = useState<string | null>(null);
+  const [tempRollVal, setTempRollVal] = useState<string>('');
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -59,6 +64,11 @@ export const StudentTable: React.FC<StudentTableProps> = ({
       setSortField(field);
       setSortOrder('asc');
     }
+  };
+
+  const handleSaveRollNumber = (student: Student) => {
+    onEditStudent({ ...student, rollNo: tempRollVal });
+    setEditingRollId(null);
   };
 
   // Filter students based on search, course, and status
@@ -84,7 +94,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
         const matchesRoll = s.rollNo.toLowerCase().includes(query);
         const matchesPhone = s.phone.toLowerCase().includes(query);
         const matchesFather = s.fatherName.toLowerCase().includes(query);
-        return matchesName || matchesReg || matchesRoll || matchesPhone || matchesFather;
+        const matchesStream = (s.stream || '').toLowerCase().includes(query);
+        return matchesName || matchesReg || matchesRoll || matchesPhone || matchesFather || matchesStream;
       }
 
       return true;
@@ -153,14 +164,15 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   };
 
   const exportCSV = () => {
-    const headers = ['Registration No', 'Student Name', 'Father Name', 'Phone', 'Course', 'Semester', 'Roll No', 'Session', 'Total Fees', 'Paid', 'Remaining', 'Status', 'Next Due Date'];
+    const headers = ['Registration No', 'Student Name', 'Father Name', 'Phone', 'WhatsApp', 'Course', 'Stream', 'Roll No', 'Session', 'Total Fees', 'Paid', 'Remaining', 'Status', 'Next Due Date'];
     const rows = sortedStudents.map((s) => [
       s.registrationNo,
       s.name,
       s.fatherName,
       s.phone,
+      s.whatsappNo || s.phone,
       s.course,
-      s.semester,
+      s.stream || 'Arts',
       s.rollNo,
       s.session,
       s.totalFees,
@@ -273,10 +285,13 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 </div>
               </th>
               <th className="py-3.5 px-4">Father / Guardian</th>
-              <th className="py-3.5 px-4">Phone Number</th>
-              <th className="py-3.5 px-4">Course</th>
-              <th className="py-3.5 px-4">Sem / Roll</th>
-              <th className="py-3.5 px-4">Session</th>
+              <th className="py-3.5 px-4">Phone & WhatsApp</th>
+              <th className="py-3.5 px-4">Course & Stream</th>
+              <th className="py-3.5 px-4 cursor-pointer hover:text-white" onClick={() => handleSort('rollNo')}>
+                <div className="flex items-center gap-1">
+                  Roll No (Editable) <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                </div>
+              </th>
               <th className="py-3.5 px-4 text-right cursor-pointer hover:text-white" onClick={() => handleSort('totalFees')}>
                 <div className="flex items-center justify-end gap-1">
                   Total Fees <ArrowUpDown className="w-3 h-3 text-slate-500" />
@@ -297,11 +312,6 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                   Fee Status <ArrowUpDown className="w-3 h-3 text-slate-500" />
                 </div>
               </th>
-              <th className="py-3.5 px-4 cursor-pointer hover:text-white" onClick={() => handleSort('nextDueDate')}>
-                <div className="flex items-center gap-1">
-                  Next Due Date <ArrowUpDown className="w-3 h-3 text-slate-500" />
-                </div>
-              </th>
               <th className="py-3.5 px-4 text-center">Actions</th>
             </tr>
           </thead>
@@ -310,7 +320,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           <tbody className="divide-y divide-slate-800/60 font-medium">
             {paginatedStudents.length === 0 ? (
               <tr>
-                <td colSpan={13} className="py-12 text-center text-slate-500">
+                <td colSpan={11} className="py-12 text-center text-slate-500">
                   <div className="max-w-xs mx-auto space-y-2">
                     <Search className="w-8 h-8 text-slate-600 mx-auto mb-2" />
                     <p className="text-sm font-semibold text-slate-400">No matching student records found</p>
@@ -319,137 +329,178 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 </td>
               </tr>
             ) : (
-              paginatedStudents.map((student) => (
-                <tr
-                  key={student.id}
-                  className="hover:bg-slate-800/50 transition-colors group"
-                >
-                  {/* Registration No */}
-                  <td className="py-3.5 px-4 font-mono font-bold text-indigo-300">
-                    {student.registrationNo}
-                  </td>
+              paginatedStudents.map((student) => {
+                const whatsapp = student.whatsappNo || student.phone;
+                const cleanPhone = whatsapp.replace(/[^0-9]/g, '');
+                const waLink = `https://wa.me/91${cleanPhone.slice(-10)}?text=${encodeURIComponent(
+                  `Dear ${student.name}, this is an official fee update from Shanti College of Education.`
+                )}`;
 
-                  {/* Student Name */}
-                  <td className="py-3.5 px-4 text-white font-bold whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-slate-800 text-indigo-400 border border-slate-700 flex items-center justify-center font-bold text-xs shrink-0">
-                        {student.name.charAt(0)}
+                return (
+                  <tr key={student.id} className="hover:bg-slate-800/50 transition-colors group">
+                    {/* Registration No */}
+                    <td className="py-3.5 px-4 font-mono font-bold text-indigo-300">
+                      {student.registrationNo}
+                    </td>
+
+                    {/* Student Name */}
+                    <td className="py-3.5 px-4 text-white font-bold whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-slate-800 text-indigo-400 border border-slate-700 flex items-center justify-center font-bold text-xs shrink-0">
+                          {student.name.charAt(0)}
+                        </div>
+                        <div>
+                          <span>{student.name}</span>
+                          <span className="block text-[10px] text-slate-400 font-normal">{student.category} Category</span>
+                        </div>
                       </div>
-                      <span>{student.name}</span>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Father / Guardian */}
-                  <td className="py-3.5 px-4 text-slate-300 whitespace-nowrap">
-                    {student.fatherName}
-                  </td>
+                    {/* Father / Guardian */}
+                    <td className="py-3.5 px-4 text-slate-300 whitespace-nowrap">
+                      {student.fatherName}
+                    </td>
 
-                  {/* Phone */}
-                  <td className="py-3.5 px-4 text-slate-400 font-mono whitespace-nowrap">
-                    <span className="flex items-center gap-1">
-                      <Phone className="w-3 h-3 text-slate-500" />
-                      {student.phone}
-                    </span>
-                  </td>
-
-                  {/* Course */}
-                  <td className="py-3.5 px-4">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[11px] font-bold ${
-                        student.course === 'JBT'
-                          ? 'bg-emerald-500/20 text-emerald-300'
-                          : student.course === 'B.Ed'
-                          ? 'bg-blue-500/20 text-blue-300'
-                          : 'bg-purple-500/20 text-purple-300'
-                      }`}
-                    >
-                      {student.course}
-                    </span>
-                  </td>
-
-                  {/* Sem / Roll */}
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <span className="text-slate-200 font-semibold block">{student.semester}</span>
-                    <span className="text-[10px] text-slate-400 font-mono">{student.rollNo}</span>
-                  </td>
-
-                  {/* Academic Session */}
-                  <td className="py-3.5 px-4 text-slate-400 whitespace-nowrap">
-                    {student.session}
-                  </td>
-
-                  {/* Total Fees */}
-                  <td className="py-3.5 px-4 text-right font-bold text-slate-200 whitespace-nowrap">
-                    {formatINR(student.totalFees)}
-                  </td>
-
-                  {/* Paid Till Now */}
-                  <td className="py-3.5 px-4 text-right font-bold text-emerald-400 whitespace-nowrap">
-                    {formatINR(student.paidTillNow)}
-                  </td>
-
-                  {/* Remaining Fees */}
-                  <td className="py-3.5 px-4 text-right font-bold whitespace-nowrap">
-                    <span className={student.remainingFees > 0 ? 'text-rose-400' : 'text-slate-400'}>
-                      {formatINR(student.remainingFees)}
-                    </span>
-                  </td>
-
-                  {/* Status */}
-                  <td className="py-3.5 px-4 text-center whitespace-nowrap">
-                    {getStatusBadge(student.feeStatus)}
-                  </td>
-
-                  {/* Next Due Date */}
-                  <td className="py-3.5 px-4 text-slate-300 font-mono text-[11px] whitespace-nowrap">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-slate-500" />
-                      {student.nextDueDate}
-                    </span>
-                  </td>
-
-                  {/* Action Column */}
-                  <td className="py-3.5 px-4 text-center whitespace-nowrap">
-                    <div className="flex items-center justify-center gap-1.5">
-                      {!isReadOnly && onRecordPayment && student.remainingFees > 0 && (
-                        <button
-                          onClick={() => onRecordPayment(student)}
-                          title="Collect Fee Payment"
-                          className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
+                    {/* Phone & WhatsApp Direct Chat */}
+                    <td className="py-3.5 px-4 text-slate-300 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-[11px] flex items-center gap-1 text-slate-300">
+                          <Phone className="w-3 h-3 text-slate-500" />
+                          {student.phone}
+                        </span>
+                        <a
+                          href={waLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={`Chat on WhatsApp with ${student.name}`}
+                          className="px-2 py-0.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 flex items-center gap-1 text-[10px] font-bold transition-all"
                         >
-                          Pay
-                        </button>
-                      )}
-                      {!isReadOnly && onSendReminder && student.remainingFees > 0 && (
-                        <button
-                          onClick={() => onSendReminder(student)}
-                          title="Send Fee Reminder / Notice"
-                          className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-600 text-amber-400 hover:text-white border border-amber-500/30 transition-all cursor-pointer"
+                          <MessageSquare className="w-3 h-3" />
+                          <span>WhatsApp</span>
+                        </a>
+                      </div>
+                    </td>
+
+                    {/* Course & Stream */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <div className="flex items-center gap-1.5">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                          {student.course}
+                        </span>
+                        {student.stream && (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                            {student.stream}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Editable Roll No */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      {editingRollId === student.id ? (
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="text"
+                            value={tempRollVal}
+                            onChange={(e) => setTempRollVal(e.target.value)}
+                            placeholder="Enter Roll No"
+                            className="w-24 bg-slate-950 border border-indigo-500 rounded px-2 py-0.5 text-xs text-white font-mono"
+                            autoFocus
+                          />
+                          <button
+                            onClick={() => handleSaveRollNumber(student)}
+                            title="Save Roll No"
+                            className="p-1 rounded bg-emerald-600 text-white hover:bg-emerald-500"
+                          >
+                            <Check className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => {
+                            if (!isReadOnly) {
+                              setEditingRollId(student.id);
+                              setTempRollVal(student.rollNo || '');
+                            }
+                          }}
+                          title={isReadOnly ? 'Roll Number' : 'Click to Edit Roll Number'}
+                          className={`inline-flex items-center gap-1.5 font-mono text-[11px] px-2 py-1 rounded-lg border transition-all ${
+                            student.rollNo
+                              ? 'bg-slate-800 border-slate-700 text-white hover:border-indigo-500 cursor-pointer'
+                              : 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20 cursor-pointer'
+                          }`}
                         >
-                          Notice
-                        </button>
+                          <span>{student.rollNo || '+ Set Roll No'}</span>
+                          {!isReadOnly && <Edit2 className="w-3 h-3 text-slate-400 group-hover:text-indigo-300" />}
+                        </div>
                       )}
-                      <button
-                        onClick={() => onViewStudent(student)}
-                        title="View Full Profile & Fee Details"
-                        className="px-2.5 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-600 text-indigo-400 hover:text-white border border-indigo-500/30 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>View</span>
-                      </button>
-                      {!isReadOnly && (
+                    </td>
+
+                    {/* Total Fees */}
+                    <td className="py-3.5 px-4 text-right font-bold text-slate-200 whitespace-nowrap">
+                      {formatINR(student.totalFees)}
+                    </td>
+
+                    {/* Paid Till Now */}
+                    <td className="py-3.5 px-4 text-right font-bold text-emerald-400 whitespace-nowrap">
+                      {formatINR(student.paidTillNow)}
+                    </td>
+
+                    {/* Remaining Fees */}
+                    <td className="py-3.5 px-4 text-right font-bold whitespace-nowrap">
+                      <span className={student.remainingFees > 0 ? 'text-rose-400' : 'text-slate-400'}>
+                        {formatINR(student.remainingFees)}
+                      </span>
+                    </td>
+
+                    {/* Fee Status */}
+                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                      {getStatusBadge(student.feeStatus)}
+                    </td>
+
+                    {/* Action Column */}
+                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                      <div className="flex items-center justify-center gap-1.5">
+                        {!isReadOnly && onRecordPayment && student.remainingFees > 0 && (
+                          <button
+                            onClick={() => onRecordPayment(student)}
+                            title="Collect Fee Payment"
+                            className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
+                          >
+                            Pay
+                          </button>
+                        )}
+                        {!isReadOnly && onSendReminder && student.remainingFees > 0 && (
+                          <button
+                            onClick={() => onSendReminder(student)}
+                            title="Send Fee Reminder / Notice"
+                            className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-600 text-amber-400 hover:text-white border border-amber-500/30 transition-all cursor-pointer"
+                          >
+                            Notice
+                          </button>
+                        )}
                         <button
-                          onClick={() => onEditStudent(student)}
-                          title="Edit Fee Record"
-                          className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer"
+                          onClick={() => onViewStudent(student)}
+                          title="View Full Profile & Fee Details"
+                          className="px-2.5 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-600 text-indigo-400 hover:text-white border border-indigo-500/30 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
                         >
-                          <Edit2 className="w-3.5 h-3.5" />
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>View</span>
                         </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))
+                        {!isReadOnly && (
+                          <button
+                            onClick={() => onEditStudent(student)}
+                            title="Edit Full Profile Record"
+                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

@@ -20,6 +20,10 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
   const [address, setAddress] = useState('');
   const [initialPayment, setInitialPayment] = useState<number>(0);
 
+  const [whatsappNo, setWhatsappNo] = useState('');
+  const [stream, setStream] = useState<string>('Arts');
+  const [rollNoInput, setRollNoInput] = useState('');
+
   // Derive total fee based on selected course
   const currentFeeRule = DEFAULT_FEE_RULES.find((r) => r.course === course) || DEFAULT_FEE_RULES[0];
   const defaultTotalFee = course === 'JBT' ? 65000 : 78000;
@@ -33,7 +37,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
 
     const randNum = Math.floor(100 + Math.random() * 900);
     const regNo = `REG-2024-${course === 'JBT' ? 'JBT' : 'BED'}-${randNum}`;
-    const rollNo = `${course === 'JBT' ? 'JBT' : 'BED'}-24${randNum.toString().slice(-2)}`;
+    const rollNo = rollNoInput.trim() || `${course === 'JBT' ? 'JBT' : 'BED'}-24${randNum.toString().slice(-2)}`;
 
     const initialPaid = Math.min(initialPayment, defaultTotalFee);
     const remaining = Math.max(0, defaultTotalFee - initialPaid);
@@ -45,6 +49,8 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
       name,
       fatherName,
       phone,
+      whatsappNo: whatsappNo || phone,
+      stream,
       email: email || `${name.toLowerCase().replace(/\s+/g, '.')}@gmail.com`,
       course,
       semester,
@@ -175,7 +181,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
           </div>
 
           {/* Contact Details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-slate-300 font-medium mb-1">Contact Phone Number *</label>
               <input
@@ -185,6 +191,17 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 required
                 placeholder="+91 98765 43210"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-slate-300 font-medium mb-1">WhatsApp No.</label>
+              <input
+                type="text"
+                value={whatsappNo}
+                onChange={(e) => setWhatsappNo(e.target.value)}
+                placeholder="e.g. 9876543210"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
               />
             </div>
 
@@ -200,8 +217,22 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
             </div>
           </div>
 
-          {/* Academic & Category */}
-          <div className="grid grid-cols-3 gap-4">
+          {/* Academic, Stream & Category */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div>
+              <label className="block text-slate-300 font-medium mb-1">Stream</label>
+              <select
+                value={stream}
+                onChange={(e) => setStream(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              >
+                <option value="Arts">Arts</option>
+                <option value="Medical">Medical</option>
+                <option value="Non-Medical">Non-Medical</option>
+                <option value="Commerce">Commerce</option>
+              </select>
+            </div>
+
             <div>
               <label className="block text-slate-300 font-medium mb-1">Category</label>
               <select
@@ -229,7 +260,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-1">Academic Session</label>
+              <label className="block text-slate-300 font-medium mb-1">Session</label>
               <select
                 value={session}
                 onChange={(e) => setSession(e.target.value)}
@@ -238,6 +269,17 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 <option value="2024-2026">2024-2026</option>
                 <option value="2023-2025">2023-2025</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-slate-300 font-medium mb-1">Class Roll No.</label>
+              <input
+                type="text"
+                value={rollNoInput}
+                onChange={(e) => setRollNoInput(e.target.value)}
+                placeholder="Auto or Manual"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500 font-mono text-xs"
+              />
             </div>
           </div>
 

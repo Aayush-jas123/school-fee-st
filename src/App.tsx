@@ -20,13 +20,18 @@ import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircl
 
 import {
   getStoredStudents,
-  saveStoredStudents,
   getStoredAuditLogs,
-  addAuditLog,
   getStoredFeeRules,
-  saveFeeRules,
   resetToDemoData,
 } from './utils/storage';
+import {
+  fetchStudentsFromDB,
+  saveStudentToDB,
+  fetchAuditLogsFromDB,
+  addAuditLogToDB,
+  fetchFeeRulesFromDB,
+  saveFeeRulesToDB,
+} from './services/supabaseService';
 import { exportStudentsToCSV, formatCurrencyINR } from './utils/exportUtils';
 
 export function App() {
@@ -42,7 +47,7 @@ export function App() {
   const [selectedStatus, setSelectedStatus] = useState<FeeStatusType | 'ALL'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Data State with LocalStorage Persistence
+  // Data State with Supabase / LocalStorage Persistence
   const [students, setStudents] = useState<Student[]>(() => getStoredStudents());
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(() => getStoredAuditLogs());
   const [feeRules, setFeeRules] = useState<CourseFeeRule[]>(() => getStoredFeeRules());
@@ -64,14 +69,28 @@ export function App() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Sync students to localStorage whenever updated
+  // Asynchronous Initial Data Fetching from Supabase Cloud / Local Database
   useEffect(() => {
-    saveStoredStudents(students);
-  }, [students]);
+    async function loadCloudData() {
+      try {
+        const [fetchedStudents, fetchedLogs, fetchedRules] = await Promise.all([
+          fetchStudentsFromDB(),
+          fetchAuditLogsFromDB(),
+          fetchFeeRulesFromDB(),
+        ]);
+        setStudents(fetchedStudents);
+        setAuditLogs(fetchedLogs);
+        setFeeRules(fetchedRules);
+      } catch (err) {
+        console.error('Error initializing database data:', err);
+      }
+    }
+    loadCloudData();
+  }, []);
 
-  // Sync audit logs
-  const refreshAuditLogs = () => {
-    setAuditLogs(getStoredAuditLogs());
+  const refreshAuditLogs = async () => {
+    const logs = await fetchAuditLogsFromDB();
+    setAuditLogs(logs);
   };
 
   // Login handler
@@ -125,9 +144,10 @@ export function App() {
   }, [students, selectedCourse, selectedSession]);
 
   // Handle saving edited student record
-  const handleSaveStudent = (updatedStudent: Student) => {
+  const handleSaveStudent = async (updatedStudent: Student) => {
     setStudents((prev) => prev.map((s) => (s.id === updatedStudent.id ? updatedStudent : s)));
-    addAuditLog({
+    await saveStudentToDB(updatedStudent);
+    await addAuditLogToDB({
       action: 'Student Profile Edited',
       details: `Updated fee record for ${updatedStudent.name} (${updatedStudent.registrationNo})`,
       staffName,
@@ -138,9 +158,10 @@ export function App() {
   };
 
   // Handle adding new student
-  const handleAddStudentSuccess = (newStudent: Student) => {
+  const handleAddStudentSuccess = async (newStudent: Student) => {
     setStudents((prev) => [newStudent, ...prev]);
-    addAuditLog({
+    await saveStudentToDB(newStudent);
+    await addAuditLogToDB({
       action: 'New Admission Registered',
       details: `Enrolled ${newStudent.name} into ${newStudent.course} program (${newStudent.registrationNo})`,
       staffName,
@@ -151,9 +172,10 @@ export function App() {
   };
 
   // Handle payment record success
-  const handlePaymentSuccess = (updatedStudent: Student, paymentRecord: PaymentRecord) => {
+  const handlePaymentSuccess = async (updatedStudent: Student, paymentRecord: PaymentRecord) => {
     setStudents((prev) => prev.map((s) => (s.id === updatedStudent.id ? updatedStudent : s)));
-    addAuditLog({
+    await saveStudentToDB(updatedStudent);
+    await addAuditLogToDB({
       action: 'Fee Payment Recorded',
       details: `Collected ${formatCurrencyINR(paymentRecord.amount)} via ${paymentRecord.mode} for ${updatedStudent.name}`,
       staffName,
@@ -165,9 +187,10 @@ export function App() {
   };
 
   // Handle reminder sent success
-  const handleReminderSentSuccess = (updatedStudent: Student, channel: string) => {
+  const handleReminderSentSuccess = async (updatedStudent: Student, channel: string) => {
     setStudents((prev) => prev.map((s) => (s.id === updatedStudent.id ? updatedStudent : s)));
-    addAuditLog({
+    await saveStudentToDB(updatedStudent);
+    await addAuditLogToDB({
       action: 'Fee Reminder Dispatched',
       details: `Dispatched ${channel} overdue reminder notice to ${updatedStudent.name}`,
       staffName,
@@ -178,10 +201,10 @@ export function App() {
   };
 
   // Handle updating fee rules
-  const handleSaveFeeRules = (updatedRules: CourseFeeRule[]) => {
+  const handleSaveFeeRules = async (updatedRules: CourseFeeRule[]) => {
     setFeeRules(updatedRules);
-    saveFeeRules(updatedRules);
-    addAuditLog({
+    await saveFeeRulesToDB(updatedRules);
+    await addAuditLogToDB({
       action: 'Fee Structure Rules Updated',
       details: 'Modified prescribed program fee components & category scholarship rules',
       staffName,
@@ -192,7 +215,7 @@ export function App() {
   };
 
   // Reset to default demo data
-  const handleResetData = () => {
+  const handleResetData = async () => {
     if (confirm('Reset all student fee records and logs back to default institutional demo data?')) {
       resetToDemoData();
       setStudents(getStoredStudents());

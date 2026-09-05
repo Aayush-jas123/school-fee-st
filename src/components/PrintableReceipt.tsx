@@ -83,7 +83,11 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
             <tbody>
               <tr>
                 <td className="border border-slate-300 p-2.5">
-                  <p className="font-bold text-slate-900">{payment.remark || 'Semester Fee Payment'} {payment.targetSemester ? `(${payment.targetSemester})` : ''}</p>
+                  <p className="font-bold text-slate-900">
+                    {payment.remark || 'Semester Fee Payment'}{' '}
+                    {payment.targetSemester ? `(${payment.targetSemester})` : ''}
+                    {payment.installmentNo ? ` - Installment #${payment.installmentNo}` : ''}
+                  </p>
                   <p className="text-[10px] text-slate-500">Ref: {payment.transactionRef}</p>
                 </td>
                 <td className="border border-slate-300 p-2 text-center font-bold">{payment.mode}</td>
@@ -101,12 +105,18 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
                 </tr>
               ) : null}
               <tr className="bg-slate-50">
-                <td colSpan={2} className="border border-slate-300 p-2 text-right font-bold text-slate-700">Prescribed Semester Fee (₹19,500/Sem):</td>
-                <td className="border border-slate-300 p-2 text-right font-bold">{formatCurrencyINR(19500)}</td>
+                <td colSpan={2} className="border border-slate-300 p-2 text-right font-bold text-slate-700">
+                  Prescribed Semester Fee:
+                </td>
+                <td className="border border-slate-300 p-2 text-right font-bold">
+                  {student.totalFees > 0 ? formatCurrencyINR(Math.round(student.totalFees / 4)) : 'NIL (TBD)'}
+                </td>
               </tr>
               <tr className="bg-slate-50">
                 <td colSpan={2} className="border border-slate-300 p-2 text-right font-bold text-slate-700">Total 2-Year Program Fee:</td>
-                <td className="border border-slate-300 p-2 text-right font-bold">{formatCurrencyINR(student.totalFees)}</td>
+                <td className="border border-slate-300 p-2 text-right font-bold">
+                  {student.totalFees > 0 ? formatCurrencyINR(student.totalFees) : 'NIL (TBD)'}
+                </td>
               </tr>
               <tr className="bg-emerald-50 text-emerald-950 font-extrabold text-sm">
                 <td colSpan={2} className="border border-slate-300 p-2 text-right">Total Fee Paid Till Date:</td>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Student } from '../types/feeSystem';
+import type { Student, PaymentRecord } from '../types/feeSystem';
 import {
   X,
   User,
@@ -14,10 +14,11 @@ interface StudentDetailModalProps {
   student: Student | null;
   onClose: () => void;
   onEdit: (student: Student) => void;
+  onViewReceipt?: (student: Student, payment: PaymentRecord) => void;
   isReadOnly?: boolean;
 }
 
-export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, onClose, onEdit, isReadOnly = false }) => {
+export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, onClose, onEdit, onViewReceipt, isReadOnly = false }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'semesters' | 'breakdown' | 'history'>('overview');
 
   if (!student) return null;
@@ -254,6 +255,11 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                   const isPartly = slot.status === 'Partly Paid';
                   const is1stYear = slot.year === '1st Year';
 
+                  // Itemized installment records for this specific semester slot
+                  const semInstallments = slot.installments && slot.installments.length > 0
+                    ? slot.installments
+                    : student.paymentHistory.filter(p => p.targetSemester === slot.semester);
+
                   return (
                     <div
                       key={slot.semester}
@@ -310,10 +316,51 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                             className={`h-full rounded-full transition-all duration-300 ${
                               isPaid ? 'bg-emerald-500' : isPartly ? 'bg-amber-500' : 'bg-slate-700'
                             }`}
-                            style={{ width: `${Math.min(100, (slot.paidAmount / slot.totalFee) * 100)}%` }}
+                            style={{ width: `${slot.totalFee > 0 ? Math.min(100, (slot.paidAmount / slot.totalFee) * 100) : 0}%` }}
                           />
                         </div>
                       </div>
+
+                      {/* Installment Logs under Semester Card */}
+                      {semInstallments.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-slate-800 space-y-2 text-[11px]">
+                          <span className="text-slate-400 font-bold uppercase text-[10px] tracking-wider block">
+                            Installment Logs ({semInstallments.length}):
+                          </span>
+                          <div className="space-y-1.5">
+                            {semInstallments.map((inst, idx) => (
+                              <div
+                                key={inst.id || idx}
+                                className="bg-slate-900/90 p-2 rounded-xl border border-slate-800 flex items-center justify-between gap-2"
+                              >
+                                <div>
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="font-bold text-indigo-300">
+                                      Installment #{inst.installmentNo || idx + 1}
+                                    </span>
+                                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-mono">
+                                      {inst.mode}
+                                    </span>
+                                  </div>
+                                  <span className="text-[10px] text-slate-500 font-mono">{inst.date} • {inst.id}</span>
+                                </div>
+                                <div className="text-right flex items-center gap-2">
+                                  <span className="font-extrabold text-emerald-400">{formatINR(inst.amount)}</span>
+                                  {onViewReceipt && (
+                                    <button
+                                      onClick={() => onViewReceipt(student, inst)}
+                                      className="p-1 rounded bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white transition-colors cursor-pointer"
+                                      title="Print Receipt"
+                                    >
+                                      <Printer className="w-3 h-3" />
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}

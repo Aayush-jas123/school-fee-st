@@ -10,6 +10,7 @@ import {
   HelpCircle,
   ChevronRight,
   ShieldAlert,
+  FileSpreadsheet,
 } from 'lucide-react';
 
 interface SidebarNavProps {
@@ -28,6 +29,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   const navItems = [
     { id: 'dashboard', label: 'Main Dashboard', icon: LayoutDashboard },
     { id: 'students', label: 'Student Directory', icon: Users },
+    { id: 'daily_report', label: 'Daily Collection Report', icon: FileSpreadsheet },
     { id: 'analytics', label: 'Fee Revenue Analytics', icon: BarChart3 },
     { id: 'receipts', label: 'Receipt Generator', icon: Receipt },
     { id: 'structures', label: 'Fee Structures', icon: BookOpen },

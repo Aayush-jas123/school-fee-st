@@ -23,6 +23,7 @@ export interface SemesterFeeSlot {
   remainingAmount: number;
   status: FeeStatusType;
   dueDate: string;
+  installments?: PaymentRecord[];
 }
 
 export interface PaymentRecord {
@@ -35,6 +36,7 @@ export interface PaymentRecord {
   targetSemester?: SemesterName;
   discountApplied?: number;
   staffName?: string;
+  installmentNo?: number;
 }
 
 export interface Student {

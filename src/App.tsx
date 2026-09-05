@@ -14,6 +14,7 @@ import { RecordPaymentModal } from './components/RecordPaymentModal';
 import { AddStudentModal } from './components/AddStudentModal';
 import { FeeReminderModal } from './components/FeeReminderModal';
 import { FeeStructureManager } from './components/FeeStructureManager';
+import { DailyCollectionReport } from './components/DailyCollectionReport';
 import { AuditLogModal } from './components/AuditLogModal';
 import { PrintableReceipt } from './components/PrintableReceipt';
 import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircle2 } from 'lucide-react';
@@ -373,7 +374,16 @@ export function App() {
             />
           )}
 
-          {/* TAB 3: REVENUE ANALYTICS */}
+          {/* TAB 3: DAILY FINANCIAL COLLECTION & AUDIT REPORT */}
+          {currentTab === 'daily_report' && (
+            <DailyCollectionReport
+              students={students}
+              staffName={staffName}
+              onViewReceipt={(st, pm) => setPrintableReceiptData({ student: st, payment: pm })}
+            />
+          )}
+
+          {/* TAB 4: REVENUE ANALYTICS */}
           {currentTab === 'analytics' && (
             <div className="space-y-6">
               <AnalyticsCharts students={dashboardStudents} />
@@ -381,7 +391,7 @@ export function App() {
             </div>
           )}
 
-          {/* TAB 4: RECEIPT GENERATOR */}
+          {/* TAB 5: RECEIPT GENERATOR */}
           {currentTab === 'receipts' && (
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
               <div className="flex items-center justify-between">
@@ -426,7 +436,7 @@ export function App() {
             </div>
           )}
 
-          {/* TAB 5: FEE STRUCTURES */}
+          {/* TAB 6: FEE STRUCTURES */}
           {currentTab === 'structures' && (
             <FeeStructureManager rules={feeRules} onSaveRules={handleSaveFeeRules} isReadOnly={isReadOnlyMode} />
           )}
@@ -465,6 +475,7 @@ export function App() {
         student={viewingStudent}
         onClose={() => setViewingStudent(null)}
         onEdit={(s) => setEditingStudent(s)}
+        onViewReceipt={(s, p) => setPrintableReceiptData({ student: s, payment: p })}
         isReadOnly={isReadOnlyMode}
       />
 

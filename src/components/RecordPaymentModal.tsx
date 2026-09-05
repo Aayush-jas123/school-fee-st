@@ -71,6 +71,10 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
     setIsSubmitting(true);
 
+    const targetSlot = (student.semesterFees || []).find(s => s.semester === selectedSemester);
+    const existingSlotInstallments = targetSlot?.installments || student.paymentHistory.filter(p => p.targetSemester === selectedSemester);
+    const installmentNo = existingSlotInstallments.length + 1;
+
     const newPaymentRecord: PaymentRecord = {
       id: `RCP-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
       amount: amount,
@@ -81,6 +85,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       discountApplied: discount > 0 ? discount : undefined,
       staffName: staffName,
       targetSemester: selectedSemester,
+      installmentNo: installmentNo,
     };
 
     const updatedSemesterFees = (student.semesterFees || []).map((slot) => {
@@ -91,11 +96,14 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         if (newRem <= 0) newSemStatus = 'Paid';
         else if (newPaid === 0) newSemStatus = 'Unpaid';
 
+        const prevInstallments = slot.installments || student.paymentHistory.filter(p => p.targetSemester === selectedSemester);
+
         return {
           ...slot,
           paidAmount: newPaid,
           remainingAmount: newRem,
           status: newSemStatus,
+          installments: [...prevInstallments, newPaymentRecord],
         };
       }
       return slot;

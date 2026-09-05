@@ -19,7 +19,8 @@ import { DailyCollectionReport } from './components/DailyCollectionReport';
 import { AuditLogModal } from './components/AuditLogModal';
 import { PrintableReceipt } from './components/PrintableReceipt';
 import { StudentReceiptModal } from './components/StudentReceiptModal';
-import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { ImportDataModal } from './components/ImportDataModal';
+import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircle2, Upload } from 'lucide-react';
 
 import {
   getStoredStudents,
@@ -66,6 +67,7 @@ export function App() {
   const [showAuditModal, setShowAuditModal] = useState<boolean>(false);
   const [receiptStudent, setReceiptStudent] = useState<Student | null>(null);
   const [printableReceiptData, setPrintableReceiptData] = useState<{ student: Student; payment: PaymentRecord } | null>(null);
+  const [showImportModal, setShowImportModal] = useState<boolean>(false);
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -268,6 +270,33 @@ export function App() {
     showToast(`Applied new fee structure to ${updatedStudents.length} students`);
   };
 
+  // Handle bulk import from PDF/Excel
+  const handleImportStudents = async (importedStudents: Student[]) => {
+    const existingRegNos = new Set(students.map(s => s.registrationNo));
+    const newStudents = importedStudents.filter(s => !existingRegNos.has(s.registrationNo));
+    const duplicates = importedStudents.filter(s => existingRegNos.has(s.registrationNo));
+
+    // Add all imported students (including duplicates with new IDs)
+    const updatedStudents = [...importedStudents, ...students];
+    setStudents(updatedStudents);
+    saveStoredStudents(updatedStudents);
+
+    // Sync each new student to DB
+    for (const s of importedStudents) {
+      await saveStudentToDB(s);
+    }
+
+    await addAuditLogToDB({
+      action: 'Bulk Student Import',
+      details: `Imported ${importedStudents.length} students from file (${newStudents.length} new, ${duplicates.length} duplicates)`,
+      staffName,
+      type: 'STUDENT_ADD',
+    });
+    refreshAuditLogs();
+    setShowImportModal(false);
+    showToast(`Successfully imported ${importedStudents.length} student records!`);
+  };
+
   // Reset to default demo data
   const handleResetData = async () => {
     if (confirm('Reset all student fee records and sync full Excel dataset (49 B.Ed students) to database?')) {
@@ -381,6 +410,13 @@ export function App() {
             <div className="flex flex-wrap items-center gap-2.5 relative z-10">
               {!isReadOnlyMode && (
                 <>
+                  <button
+                    onClick={() => setShowImportModal(true)}
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-bold shadow-lg shadow-amber-600/20 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:shadow-amber-600/30 hover:-translate-y-0.5"
+                  >
+                    <Upload className="w-4 h-4" /> Import Data
+                  </button>
+
                   <button
                     onClick={() => setShowAddStudent(true)}
                     className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-violet-600/20 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:shadow-violet-600/30 hover:-translate-y-0.5"
@@ -569,6 +605,15 @@ export function App() {
             setReceiptStudent(null);
             setPrintableReceiptData({ student: st, payment: pm });
           }}
+        />
+      )}
+
+      {/* Import Data Modal */}
+      {showImportModal && !isReadOnlyMode && (
+        <ImportDataModal
+          onClose={() => setShowImportModal(false)}
+          onImport={handleImportStudents}
+          existingStudentIds={new Set(students.map(s => s.registrationNo))}
         />
       )}
 

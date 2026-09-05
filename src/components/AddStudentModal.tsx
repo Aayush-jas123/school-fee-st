@@ -16,7 +16,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
   const [email, setEmail] = useState('');
   const [category, setCategory] = useState<'General' | 'OBC' | 'SC' | 'ST'>('General');
   const [semester, setSemester] = useState('1st Year');
-  const [session, setSession] = useState('2024-2026');
+  const [session, setSession] = useState('2026-2027');
   const [address, setAddress] = useState('');
   const [initialPayment, setInitialPayment] = useState<number>(0);
 
@@ -266,6 +266,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 onChange={(e) => setSession(e.target.value)}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
               >
+                <option value="2026-2027">2026-2027</option>
                 <option value="2024-2026">2024-2026</option>
                 <option value="2023-2025">2023-2025</option>
               </select>

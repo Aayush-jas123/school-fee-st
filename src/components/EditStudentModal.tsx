@@ -248,6 +248,20 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               />
             </div>
 
+            {/* Session */}
+            <div>
+              <label className="block text-slate-400 font-semibold mb-1">Academic Session</label>
+              <select
+                value={formData.session}
+                onChange={(e) => handleChange('session', e.target.value)}
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:border-indigo-500 focus:outline-none"
+              >
+                <option value="2026-2027">2026-2027</option>
+                <option value="2024-2026">2024-2026</option>
+                <option value="2023-2025">2023-2025</option>
+              </select>
+            </div>
+
             {/* Category */}
             <div>
               <label className="block text-slate-400 font-semibold mb-1">Student Category</label>

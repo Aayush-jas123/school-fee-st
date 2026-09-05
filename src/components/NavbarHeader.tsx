@@ -93,6 +93,7 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
                 className="bg-transparent border-none text-slate-200 text-xs font-semibold focus:outline-none cursor-pointer pr-1"
               >
                 <option value="ALL" className="bg-slate-900">All Sessions</option>
+                <option value="2026-2027" className="bg-slate-900">Session 2026-2027</option>
                 <option value="2024-2026" className="bg-slate-900">Session 2024-2026</option>
                 <option value="2023-2025" className="bg-slate-900">Session 2023-2025</option>
               </select>

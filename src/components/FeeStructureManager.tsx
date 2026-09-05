@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import type { CourseFeeRule, CourseType } from '../types/feeSystem';
-import { Settings2, Save, GraduationCap, BookOpen, CheckCircle2, Award, DollarSign } from 'lucide-react';
+import { Settings2, Save, GraduationCap, BookOpen, CheckCircle2, Award, DollarSign, Users } from 'lucide-react';
 import { formatCurrencyINR } from '../utils/exportUtils';
 
 interface FeeStructureManagerProps {
   rules: CourseFeeRule[];
   onSaveRules: (updatedRules: CourseFeeRule[]) => void;
+  onApplyToAllStudents?: (rules: CourseFeeRule[]) => void;
   isReadOnly?: boolean;
 }
 
-export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules, onSaveRules, isReadOnly = false }) => {
+export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules, onSaveRules, onApplyToAllStudents, isReadOnly = false }) => {
   const [localRules, setLocalRules] = useState<CourseFeeRule[]>(rules);
   const [activeCourse, setActiveCourse] = useState<CourseType>('JBT');
   const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
+  const [appliedSuccess, setAppliedSuccess] = useState<boolean>(false);
 
   const currentRule = localRules.find((r) => r.course === activeCourse) || localRules[0];
 
@@ -41,6 +43,13 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
     setTimeout(() => setSavedSuccess(false), 3000);
   };
 
+  const handleApplyToAll = () => {
+    if (isReadOnly || !onApplyToAllStudents) return;
+    onApplyToAllStudents(localRules);
+    setAppliedSuccess(true);
+    setTimeout(() => setAppliedSuccess(false), 3000);
+  };
+
   const calculateTotalAnnualFee = (r: CourseFeeRule) => {
     return r.tuitionFee + r.admissionFee + r.examFee + r.libraryFee + r.developmentFee + r.labFee;
   };
@@ -64,14 +73,29 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
             Read-Only Portal (Editing Locked)
           </span>
         ) : (
-          <button
-            onClick={handleSave}
-            className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/30 cursor-pointer"
-          >
-            <Save className="w-4 h-4" /> Save Fee Rules
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleApplyToAll}
+              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/30 cursor-pointer"
+            >
+              <Users className="w-4 h-4" /> Apply to All Students
+            </button>
+            <button
+              onClick={handleSave}
+              className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/30 cursor-pointer"
+            >
+              <Save className="w-4 h-4" /> Save Fee Rules
+            </button>
+          </div>
         )}
       </div>
+
+      {appliedSuccess && (
+        <div className="bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span>Fee structure applied to all students successfully! All balances have been recalculated.</span>
+        </div>
+      )}
 
       {savedSuccess && (
         <div className="bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">

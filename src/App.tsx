@@ -22,6 +22,7 @@ import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircl
 
 import {
   getStoredStudents,
+  saveStoredStudents,
   getStoredAuditLogs,
   getStoredFeeRules,
   resetToDemoData,
@@ -216,6 +217,54 @@ export function App() {
     });
     refreshAuditLogs();
     showToast('Updated program fee rules across institution');
+  };
+
+  // Apply fee rules to all students
+  const handleApplyFeeRulesToAllStudents = async (rules: CourseFeeRule[]) => {
+    const updatedStudents = students.map((student) => {
+      const rule = rules.find((r) => r.course === student.course);
+      if (!rule) return student;
+
+      const totalAnnualFee = rule.tuitionFee + rule.admissionFee + rule.examFee + rule.libraryFee + rule.developmentFee + rule.labFee;
+      const discount = rule.scholarshipDiscounts[student.category] || 0;
+      const discountedFee = totalAnnualFee - discount;
+
+      let feeStatus: FeeStatusType = 'Unpaid';
+      if (student.paidTillNow >= discountedFee) {
+        feeStatus = 'Paid';
+      } else if (student.paidTillNow > 0) {
+        feeStatus = 'Partly Paid';
+      }
+
+      return {
+        ...student,
+        totalFees: discountedFee,
+        feeBreakdown: {
+          tuitionFee: rule.tuitionFee,
+          admissionFee: rule.admissionFee,
+          examFee: rule.examFee,
+          libraryFee: rule.libraryFee,
+          developmentFee: rule.developmentFee,
+          labFee: rule.labFee,
+        },
+        discountAmount: discount,
+        scholarshipApplied: student.category !== 'General' ? `${student.category} Category` : undefined,
+        remainingFees: Math.max(0, discountedFee - student.paidTillNow),
+        feeStatus,
+      };
+    });
+
+    setStudents(updatedStudents);
+    saveStoredStudents(updatedStudents);
+    await syncAllStudentsToDB();
+    await addAuditLogToDB({
+      action: 'Fee Structure Applied to All Students',
+      details: `Recalculated fees for ${updatedStudents.length} students based on updated fee rules`,
+      staffName,
+      type: 'SETTINGS',
+    });
+    refreshAuditLogs();
+    showToast(`Applied new fee structure to ${updatedStudents.length} students`);
   };
 
   // Reset to default demo data
@@ -441,7 +490,7 @@ export function App() {
 
           {/* TAB 6: FEE STRUCTURES */}
           {currentTab === 'structures' && (
-            <FeeStructureManager rules={feeRules} onSaveRules={handleSaveFeeRules} isReadOnly={isReadOnlyMode} />
+            <FeeStructureManager rules={feeRules} onSaveRules={handleSaveFeeRules} onApplyToAllStudents={handleApplyFeeRulesToAllStudents} isReadOnly={isReadOnlyMode} />
           )}
         </main>
       </div>

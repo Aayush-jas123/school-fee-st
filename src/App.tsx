@@ -19,7 +19,7 @@ import { DailyCollectionReport } from './components/DailyCollectionReport';
 import { AuditLogModal } from './components/AuditLogModal';
 import { PrintableReceipt } from './components/PrintableReceipt';
 import { StudentReceiptModal } from './components/StudentReceiptModal';
-import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircle2, Sparkles } from 'lucide-react';
+import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 import {
   getStoredStudents,

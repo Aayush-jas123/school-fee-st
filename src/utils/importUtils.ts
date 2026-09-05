@@ -110,6 +110,71 @@ function rawRecordToStudent(raw: RawRecord, course: CourseType, session: string,
 
 // ─── PDF PARSING ─────────────────────────────────────────────────────────────
 
+interface TextItem {
+  str: string;
+  x: number;
+  y: number;
+  w: number;
+}
+
+/**
+ * Detect column boundaries from header row text items.
+ * Returns array of { label, xMin, xMax } for each detected column.
+ */
+function detectColumnsFromHeader(headerItems: TextItem[]): Array<{ label: string; xMin: number; xMax: number }> {
+  const columns: Array<{ label: string; xMin: number; xMax: number }> = [];
+  
+  // Sort by x position
+  const sorted = [...headerItems].sort((a, b) => a.x - b.x);
+  
+  for (const item of sorted) {
+    const trimmed = item.str.trim();
+    if (!trimmed) continue;
+    
+    // Check if this item overlaps with an existing column
+    let placed = false;
+    for (const col of columns) {
+      const gap = Math.abs(item.x - col.xMax);
+      if (gap < 30) {
+        // Same column — extend range
+        col.xMax = Math.max(col.xMax, item.x + item.w);
+        col.label += ' ' + trimmed;
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      columns.push({
+        label: trimmed,
+        xMin: item.x,
+        xMax: item.x + item.w,
+      });
+    }
+  }
+  
+  return columns;
+}
+
+/**
+ * Assign a data-row text item to a column based on x-coordinate.
+ * Uses midpoint of each column's x-range for matching.
+ */
+function assignToColumn(itemX: number, columns: Array<{ label: string; xMin: number; xMax: number }>): number {
+  let bestIdx = -1;
+  let bestDist = Infinity;
+  
+  for (let i = 0; i < columns.length; i++) {
+    const mid = (columns[i].xMin + columns[i].xMax) / 2;
+    const dist = Math.abs(itemX - mid);
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestIdx = i;
+    }
+  }
+  
+  return bestIdx;
+}
+
 export async function parseAdmissionPDF(file: File): Promise<{ students: Student[]; detectedSession: string }> {
   const pdfjsLib = await import('pdfjs-dist');
 
@@ -135,17 +200,16 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
     const textContent = await page.getTextContent();
 
     // Extract items with positions, filtering out noise
-    const items = textContent.items
+    const rawItems: TextItem[] = textContent.items
       .filter((it: any) => it.str && it.str.trim().length > 0)
       .map((it: any) => ({
-        str: it.str,
+        str: it.str.trim(),
         x: Math.round(it.transform[4]),
         y: Math.round(it.transform[5]),
         w: it.width || 0,
       }))
-      .filter((it: any) => {
+      .filter((it) => {
         const s = it.str;
-        // Skip headers, footers, page numbers, college name
         if (/^Page\s*\d+\s*of\s*\d+$/i.test(s)) return false;
         if (/\d{2}\/\d{2}\/\d{4}$/.test(s)) return false;
         if (/HIMACHAL\s*PRADESH/i.test(s)) return false;
@@ -161,13 +225,13 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
       });
 
     // Group items into rows by y-position proximity
-    items.sort((a: any, b: any) => b.y - a.y || a.x - b.x);
+    rawItems.sort((a, b) => b.y - a.y || a.x - b.x);
 
-    const rows: any[][] = [];
-    let currentRow: any[] = [];
+    const rows: TextItem[][] = [];
+    let currentRow: TextItem[] = [];
     let lastY = -9999;
 
-    for (const item of items) {
+    for (const item of rawItems) {
       if (Math.abs(item.y - lastY) > 4) {
         if (currentRow.length > 0) rows.push([...currentRow]);
         currentRow = [item];
@@ -178,85 +242,118 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
     }
     if (currentRow.length > 0) rows.push(currentRow);
 
-    // Sort each row by x position and merge text
+    // Find header row and detect column boundaries
+    let columns: Array<{ label: string; xMin: number; xMax: number }> = [];
+    let headerFound = false;
+
     for (const row of rows) {
-      row.sort((a: any, b: any) => a.x - b.x);
-      (row as any).mergedText = row.map((it: any) => it.str).join(' ').replace(/\s+/g, ' ').trim();
-      (row as any).avgY = row.reduce((s: number, it: any) => s + it.y, 0) / row.length;
+      const mergedText = row.map(it => it.str).join(' ').replace(/\s+/g, ' ').trim();
+      if (/S\s*No.*Roll.*Registration/i.test(mergedText) || /S\s*No.*Name.*Father/i.test(mergedText)) {
+        columns = detectColumnsFromHeader(row);
+        headerFound = true;
+        break;
+      }
     }
 
-    // Sort rows top to bottom
-    rows.sort((a: any, b: any) => b.avgY - a.avgY);
+    if (!headerFound || columns.length < 5) {
+      // Fallback: skip this page if we can't detect columns
+      continue;
+    }
 
-    // Parse each row to extract student data
+    // Merge multi-line rows: when text wraps, continuation rows lack a reg number.
+    // Merge them with the previous data row so all column content is together.
+    const mergedRows: TextItem[][] = [];
     for (const row of rows) {
-      const text = (row as any).mergedText as string;
-      if (!text || text.length < 5) continue;
+      const mergedText = row.map(it => it.str).join(' ').replace(/\s+/g, ' ').trim();
+      if (/S\s*No.*Roll.*Registration/i.test(mergedText)) continue;
+      if (/S\s*No.*Name.*Father/i.test(mergedText)) continue;
+      if (/^Total\s*[\d,.]+$/i.test(mergedText)) continue;
 
-      // Skip header rows
-      if (/S\s*No.*Roll.*Registration/i.test(text)) continue;
-      if (/S\s*No.*Name.*Father/i.test(text)) continue;
-      if (/^Total\s*[\d,.]+$/i.test(text)) continue;
+      const hasRegNo = /[A-Z]\d{2}[A-Z]\d{5,8}/i.test(mergedText.replace(/\s+/g, ''));
+      if (hasRegNo) {
+        mergedRows.push([...row]);
+      } else if (mergedRows.length > 0) {
+        // Continuation row — merge items into the previous row
+        mergedRows[mergedRows.length - 1].push(...row);
+      }
+    }
 
-      // Try to find registration number pattern
-      const regMatch = text.match(/[A-Z]\s*\d{2}\s*[A-Z]\s*\d{5,8}/i);
-      if (!regMatch) continue;
+    // Parse data rows using column positions
+    for (const row of mergedRows) {
+      const mergedText = row.map(it => it.str).join(' ').replace(/\s+/g, ' ').trim();
+      if (!mergedText || mergedText.length < 5) continue;
 
-      const regNo = regMatch[0].replace(/\s+/g, '');
+      // Must contain a registration number
+      if (!/[A-Z]\d{2}[A-Z]\d{5,8}/i.test(mergedText.replace(/\s+/g, ''))) continue;
 
-      // Extract roll number (number before registration number)
-      const beforeReg = text.substring(0, regMatch.index!);
-      const rollMatch = beforeReg.match(/(\d{4,7})\s*$/);
-      const rollNo = rollMatch ? rollMatch[1] : '';
-
-      // Extract name and father's name (consecutive ALL-CAPS words after roll/reg)
-      const afterReg = text.substring(regMatch.index! + regMatch[0].length);
-
-      // Find name: first sequence of ALL-CAPS words (2+ letters each)
-      const nameMatch = afterReg.match(/\s*([A-Z][A-Z]+(?:\s+[A-Z][A-Z]+)+)/);
-      let name = '';
-      let fatherName = '';
-      let restAfterNames = afterReg;
-
-      if (nameMatch) {
-        const allCapsWords = nameMatch[1].trim().split(/\s+/);
-        // Split: first few words = name, remaining = father's name
-        // Heuristic: name is typically 1-3 words, father's name is 2-3 words
-        const splitPoint = Math.min(Math.ceil(allCapsWords.length / 2), 3);
-        name = allCapsWords.slice(0, splitPoint).join(' ');
-        fatherName = allCapsWords.slice(splitPoint).join(' ');
-        restAfterNames = afterReg.substring(nameMatch.index! + nameMatch[0].length);
+      // Build column content map: columnIndex -> concatenated text
+      const colContent: Record<number, string[]> = {};
+      for (const item of row) {
+        const colIdx = assignToColumn(item.x, columns);
+        if (colIdx >= 0) {
+          if (!colContent[colIdx]) colContent[colIdx] = [];
+          colContent[colIdx].push(item.str);
+        }
       }
 
-      // Extract marks (number, possibly with decimal) — used for validation
-      const marksMatch = restAfterNames.match(/(\d{2,3}(?:\.\d+)?)\s*/);
-      void marksMatch; // marks available for future use
+      // Extract fields from column content
+      const getColText = (idx: number): string => (colContent[idx] || []).join(' ').trim();
 
-      // Extract stream
-      let stream = 'Arts';
-      const streamMatch = restAfterNames.match(/(Non-Medical|Non-Medical|Medical|Arts|Commerce|Commer\s*ce)/i);
-      if (streamMatch) {
-        stream = streamMatch[1];
-      }
+      // Column mapping (based on HP University admission report format):
+      // Col 0: S.No
+      // Col 1: Roll Number  
+      // Col 2: Registration No
+      // Col 3: Name
+      // Col 4: Father's Name
+      // Col 5: Total Marks
+      // Col 6: Stream
+      // Col 7: Total Admission Fee
+      // Col 8+: Student Category, Allotted seat category, Counselling Round, Seat Type
 
-      // Extract fee amount
-      const feeMatch = restAfterNames.match(/(\d{3,6}\.\d{2})/);
+      const rollNo = getColText(1);
+      const regNoRaw = getColText(2);
+      const name = getColText(3);
+      const fatherName = getColText(4);
+      const streamRaw = getColText(6);
+      const feeRaw = getColText(7);
+
+      // Clean registration number
+      const regNo = regNoRaw.replace(/\s+/g, '').toUpperCase();
+      if (regNo.length < 5) continue;
+
+      // Validate name
+      if (!name || name.length < 2) continue;
+
+      // Parse fee
+      const feeMatch = feeRaw.match(/(\d{3,6}\.?\d*)/);
       const totalFees = feeMatch ? parseFloat(feeMatch[1]) : 7056;
 
-      // Extract category
+      // Determine stream
+      let stream = 'Arts';
+      if (/Non-Medical/i.test(streamRaw)) stream = 'Non-Medical';
+      else if (/Medical/i.test(streamRaw)) stream = 'Medical';
+      else if (/Commer/i.test(streamRaw)) stream = 'Commerce';
+      else if (/Arts/i.test(streamRaw)) stream = 'Arts';
+
+      // Determine category from remaining columns (8+)
+      const remainingCols = Object.entries(colContent)
+        .filter(([k]) => parseInt(k) >= 8)
+        .map(([, v]) => v.join(' '))
+        .join(' ');
+
       let category = 'General';
-      if (/SCHEDULED\s*CASTE|\(SC\)/i.test(restAfterNames)) category = 'SC';
-      else if (/SCHEDULED\s*TRIBE|\(ST\)/i.test(restAfterNames)) category = 'ST';
-      else if (/OTHER\s*BACKWARD|\(OBC\)/i.test(restAfterNames)) category = 'OBC';
-      else if (/ECONOMICALLY\s*WEAKER|\(EWS\)/i.test(restAfterNames)) category = 'General';
+      if (/SCHEDULED\s*CASTE|\(SC\)/i.test(remainingCols)) category = 'SC';
+      else if (/SCHEDULED\s*TRIBE|\(ST\)/i.test(remainingCols)) category = 'ST';
+      else if (/OTHER\s*BACKWARD|\(OBC\)/i.test(remainingCols)) category = 'OBC';
+      else if (/ECONOMICALLY\s*WEAKER|\(EWS\)/i.test(remainingCols)) category = 'General';
 
-      // Extract seat type
+      // Determine seat type
       let seatType = '';
-      if (/Management\s*Quota/i.test(restAfterNames)) seatType = 'Management Quota';
-      else if (/HP\s*Quota/i.test(restAfterNames)) seatType = 'HP Quota';
-      else if (/Other\s*State/i.test(restAfterNames)) seatType = 'Other State';
+      if (/Management\s*Quota/i.test(remainingCols)) seatType = 'Management Quota';
+      else if (/HP\s*Quota/i.test(remainingCols)) seatType = 'HP Quota';
+      else if (/Other\s*State/i.test(remainingCols)) seatType = 'Other State';
 
-      // Extract counselling round
+      // Determine counselling round
       let counsellingRound = '';
       const roundPatterns = [
         /First\s*Round/i, /Second\s*Round/i, /Third\s*Round/i, /Fourth\s*Round/i,
@@ -264,12 +361,9 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
         /Mop[\s-]*Up/i,
       ];
       for (const pat of roundPatterns) {
-        const m = restAfterNames.match(pat);
+        const m = remainingCols.match(pat);
         if (m) { counsellingRound = m[0]; break; }
       }
-
-      if (!name || name.length < 2) continue;
-      if (!regNo || regNo.length < 5) continue;
 
       globalIdx++;
       const student = rawRecordToStudent(

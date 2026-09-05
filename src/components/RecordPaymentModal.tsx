@@ -175,7 +175,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800/60 text-center">
             <div className="bg-slate-900 p-2 rounded-xl border border-slate-800">
               <span className="text-[10px] text-slate-400 block">Total Degree Fee</span>
-              <span className="text-xs font-bold text-white">{formatCurrencyINR(student.totalFees)}</span>
+              <span className="text-xs font-bold text-white">{student.totalFees > 0 ? formatCurrencyINR(student.totalFees) : 'NIL (TBD)'}</span>
             </div>
             <div className="bg-slate-900 p-2 rounded-xl border border-slate-800">
               <span className="text-[10px] text-slate-400 block">Total Paid So Far</span>
@@ -183,7 +183,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             </div>
             <div className="bg-slate-900 p-2 rounded-xl border border-slate-800">
               <span className="text-[10px] text-slate-400 block">Overall Balance</span>
-              <span className="text-xs font-bold text-amber-400">{formatCurrencyINR(student.remainingFees)}</span>
+              <span className="text-xs font-bold text-amber-400">{student.totalFees > 0 ? formatCurrencyINR(student.remainingFees) : 'TBD'}</span>
             </div>
           </div>
         </div>
@@ -224,7 +224,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                     </span>
                   </div>
                   <div className="text-[10px] text-slate-400 mt-1">
-                    Due: <span className="text-white font-mono font-medium">{formatCurrencyINR(slot ? slot.remainingAmount : 19500)}</span>
+                    Due: <span className="text-white font-mono font-medium">{slot && slot.totalFee > 0 ? formatCurrencyINR(slot.remainingAmount) : 'TBD'}</span>
                   </div>
                 </button>
               );
@@ -237,18 +237,20 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {/* Quick Option: Full Sem vs Custom Installment */}
           <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between gap-2">
             <div>
-              <div className="font-semibold text-white">{selectedSemester} Fee: ₹19,500</div>
-              <div className="text-[11px] text-slate-400">Current Semester Remaining: <span className="text-amber-400 font-bold">{formatCurrencyINR(currentSemSlot.remainingAmount)}</span></div>
+              <div className="font-semibold text-white">{selectedSemester} Fee: {currentSemSlot.totalFee > 0 ? formatCurrencyINR(currentSemSlot.totalFee) : 'NIL / TBD'}</div>
+              <div className="text-[11px] text-slate-400">Current Semester Remaining: <span className="text-amber-400 font-bold">{currentSemSlot.totalFee > 0 ? formatCurrencyINR(currentSemSlot.remainingAmount) : 'TBD'}</span></div>
             </div>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setAmount(currentSemSlot.remainingAmount)}
-                className="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 text-xs font-bold"
-              >
-                1-Click Full Sem Payment ({formatCurrencyINR(currentSemSlot.remainingAmount)})
-              </button>
-            </div>
+            {currentSemSlot.remainingAmount > 0 && (
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setAmount(currentSemSlot.remainingAmount)}
+                  className="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 text-xs font-bold"
+                >
+                  1-Click Full Sem Payment ({formatCurrencyINR(currentSemSlot.remainingAmount)})
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Payment Mode Selector */}

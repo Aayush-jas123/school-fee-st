@@ -41,12 +41,17 @@ const mapRowToStudent = (row: any): Student => {
       developmentFee: 0,
       labFee: 0,
     },
-    semesterFees: row.semester_fees || [
-      { semester: 'Sem 1', year: '1st Year', totalFee: 19500, paidAmount: Number(row.paid_till_now || 0), remainingAmount: Math.max(0, 19500 - Number(row.paid_till_now || 0)), status: Number(row.paid_till_now || 0) >= 19500 ? 'Paid' : Number(row.paid_till_now || 0) > 0 ? 'Partly Paid' : 'Unpaid', dueDate: '2026-10-15' },
-      { semester: 'Sem 2', year: '1st Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2027-03-15' },
-      { semester: 'Sem 3', year: '2nd Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2027-10-15' },
-      { semester: 'Sem 4', year: '2nd Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2028-03-15' },
-    ],
+    semesterFees: row.semester_fees || (() => {
+      const total = Number(row.total_fees || 0);
+      const semFee = total > 0 ? Math.round(total / 4) : 0;
+      const paid = Number(row.paid_till_now || 0);
+      return [
+        { semester: 'Sem 1', year: '1st Year', totalFee: semFee, paidAmount: Math.min(paid, semFee), remainingAmount: Math.max(0, semFee - paid), status: semFee > 0 && paid >= semFee ? 'Paid' : paid > 0 ? 'Partly Paid' : 'Unpaid', dueDate: '2026-10-15' },
+        { semester: 'Sem 2', year: '1st Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee)) : 0, status: paid >= semFee * 2 && semFee > 0 ? 'Paid' : paid > semFee ? 'Partly Paid' : 'Unpaid', dueDate: '2027-03-15' },
+        { semester: 'Sem 3', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee * 2, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 2)) : 0, status: paid >= semFee * 3 && semFee > 0 ? 'Paid' : paid > semFee * 2 ? 'Partly Paid' : 'Unpaid', dueDate: '2027-10-15' },
+        { semester: 'Sem 4', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, paid - semFee * 3), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 3)) : 0, status: paid >= semFee * 4 && semFee > 0 ? 'Paid' : paid > semFee * 3 ? 'Partly Paid' : 'Unpaid', dueDate: '2028-03-15' },
+      ];
+    })(),
     paymentHistory: (row.payment_history as PaymentRecord[]) || [],
     discountAmount: Number(row.discount_amount || 0),
     scholarshipApplied: row.scholarship_applied || undefined,
@@ -68,7 +73,6 @@ const mapStudentToRow = (student: Student) => {
     course: student.course,
     stream: student.stream || 'Arts',
     semester: student.semester,
-    current_semester: student.currentSemester || 'Sem 1',
     roll_no: student.rollNo,
     session: student.session,
     total_fees: student.totalFees,
@@ -79,7 +83,6 @@ const mapStudentToRow = (student: Student) => {
     address: student.address,
     category: student.category,
     fee_breakdown: student.feeBreakdown,
-    semester_fees: student.semesterFees,
     payment_history: student.paymentHistory,
     discount_amount: student.discountAmount || 0,
     scholarship_applied: student.scholarshipApplied || null,

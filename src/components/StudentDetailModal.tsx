@@ -85,7 +85,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
         <div className="grid grid-cols-2 md:grid-cols-4 bg-slate-950/60 border-b border-slate-800 p-4 gap-3 text-xs">
           <div>
             <span className="text-slate-400 block text-[10px] uppercase font-semibold">Total 2-Yr Fee</span>
-            <span className="text-base font-bold text-white">{formatINR(student.totalFees)}</span>
+            <span className="text-base font-bold text-white">{student.totalFees > 0 ? formatINR(student.totalFees) : 'NIL (TBD)'}</span>
           </div>
           <div>
             <span className="text-slate-400 block text-[10px] uppercase font-semibold">Total Paid</span>
@@ -93,7 +93,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
           </div>
           <div>
             <span className="text-slate-400 block text-[10px] uppercase font-semibold">Remaining Fees</span>
-            <span className="text-base font-bold text-amber-400">{formatINR(student.remainingFees)}</span>
+            <span className="text-base font-bold text-amber-400">{student.totalFees > 0 ? formatINR(student.remainingFees) : 'TBD'}</span>
           </div>
           <div>
             <span className="text-slate-400 block text-[10px] uppercase font-semibold">Active Semester</span>
@@ -237,15 +237,17 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 <p className="text-slate-400">
                   Detailed 4-Semester Fee Window Ledger (2-Year B.Ed Degree Session 2026-2028):
                 </p>
-                <span className="text-slate-300 font-bold">Sem Fee: ₹19,500 / Sem</span>
+                <span className="text-slate-300 font-bold">
+                  {student.totalFees > 0 ? `Sem Fee: ${formatINR(Math.round(student.totalFees / 4))} / Sem` : 'Sem Fee: NIL (TBD)'}
+                </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {(student.semesterFees || [
-                  { semester: 'Sem 1', year: '1st Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2026-10-15' },
-                  { semester: 'Sem 2', year: '1st Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2027-03-15' },
-                  { semester: 'Sem 3', year: '2nd Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2027-10-15' },
-                  { semester: 'Sem 4', year: '2nd Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2028-03-15' },
+                  { semester: 'Sem 1', year: '1st Year', totalFee: 0, paidAmount: 0, remainingAmount: 0, status: 'Unpaid', dueDate: '2026-10-15' },
+                  { semester: 'Sem 2', year: '1st Year', totalFee: 0, paidAmount: 0, remainingAmount: 0, status: 'Unpaid', dueDate: '2027-03-15' },
+                  { semester: 'Sem 3', year: '2nd Year', totalFee: 0, paidAmount: 0, remainingAmount: 0, status: 'Unpaid', dueDate: '2027-10-15' },
+                  { semester: 'Sem 4', year: '2nd Year', totalFee: 0, paidAmount: 0, remainingAmount: 0, status: 'Unpaid', dueDate: '2028-03-15' },
                 ]).map((slot) => {
                   const isCurrent = student.currentSemester === slot.semester;
                   const isPaid = slot.status === 'Paid';
@@ -287,7 +289,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                       <div className="space-y-1.5 text-xs">
                         <div className="flex justify-between">
                           <span className="text-slate-400">Prescribed Fee:</span>
-                          <span className="font-bold text-white">{formatINR(slot.totalFee)}</span>
+                          <span className="font-bold text-white">{slot.totalFee > 0 ? formatINR(slot.totalFee) : 'NIL (TBD)'}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-400">Paid Amount:</span>
@@ -296,7 +298,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                         <div className="flex justify-between">
                           <span className="text-slate-400">Semester Due:</span>
                           <span className={`font-bold ${slot.remainingAmount === 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
-                            {formatINR(slot.remainingAmount)}
+                            {slot.totalFee > 0 ? formatINR(slot.remainingAmount) : 'TBD'}
                           </span>
                         </div>
                       </div>

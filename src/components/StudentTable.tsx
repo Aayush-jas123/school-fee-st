@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import type { Student, CourseType, FeeStatusType } from '../types/feeSystem';
+import type { Student, CourseType, FeeStatusType, SemesterFeeSlot } from '../types/feeSystem';
 import {
   Search,
   Filter,
@@ -59,6 +59,10 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   const [editingRollId, setEditingRollId] = useState<string | null>(null);
   const [tempRollVal, setTempRollVal] = useState<string>('');
 
+  // Inline Total Fee Edit State
+  const [editingFeeId, setEditingFeeId] = useState<string | null>(null);
+  const [tempFeeVal, setTempFeeVal] = useState<number>(0);
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -71,6 +75,28 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   const handleSaveRollNumber = (student: Student) => {
     onEditStudent({ ...student, rollNo: tempRollVal });
     setEditingRollId(null);
+  };
+
+  const handleSaveTotalFee = (student: Student) => {
+    const total = Number(tempFeeVal);
+    const paid = student.paidTillNow;
+    const remaining = Math.max(0, total - paid);
+    const semFee = total > 0 ? Math.round(total / 4) : 0;
+    const updatedSemesterFees: SemesterFeeSlot[] = [
+      { semester: 'Sem 1', year: '1st Year', totalFee: semFee, paidAmount: Math.min(paid, semFee), remainingAmount: Math.max(0, semFee - paid), status: semFee > 0 && paid >= semFee ? 'Paid' : paid > 0 ? 'Partly Paid' : 'Unpaid', dueDate: '2026-10-15' },
+      { semester: 'Sem 2', year: '1st Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee)) : 0, status: paid >= semFee * 2 && semFee > 0 ? 'Paid' : paid > semFee ? 'Partly Paid' : 'Unpaid', dueDate: '2027-03-15' },
+      { semester: 'Sem 3', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee * 2, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 2)) : 0, status: paid >= semFee * 3 && semFee > 0 ? 'Paid' : paid > semFee * 2 ? 'Partly Paid' : 'Unpaid', dueDate: '2027-10-15' },
+      { semester: 'Sem 4', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, paid - semFee * 3), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 3)) : 0, status: paid >= semFee * 4 && semFee > 0 ? 'Paid' : paid > semFee * 3 ? 'Partly Paid' : 'Unpaid', dueDate: '2028-03-15' },
+    ];
+
+    onEditStudent({
+      ...student,
+      totalFees: total,
+      remainingFees: remaining,
+      feeStatus: total > 0 && paid >= total ? 'Paid' : paid > 0 ? 'Partly Paid' : 'Unpaid',
+      semesterFees: updatedSemesterFees,
+    });
+    setEditingFeeId(null);
   };
 
   // Filter students based on search, course, status, and semester
@@ -491,9 +517,45 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                       )}
                     </td>
 
-                    {/* Total Fees */}
-                    <td className="py-3.5 px-4 text-right font-bold text-slate-200 whitespace-nowrap">
-                      {formatINR(student.totalFees)}
+                    {/* Total Fees (Editable Live) */}
+                    <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                      {editingFeeId === student.id ? (
+                        <div className="flex items-center justify-end gap-1">
+                          <input
+                            type="number"
+                            value={tempFeeVal}
+                            onChange={(e) => setTempFeeVal(Number(e.target.value))}
+                            placeholder="Enter Fee"
+                            className="w-24 bg-slate-950 border border-indigo-500 rounded px-2 py-0.5 text-xs text-white font-mono text-right font-bold"
+                            autoFocus
+                          />
+                          <button
+                            onClick={() => handleSaveTotalFee(student)}
+                            title="Save Total Fee"
+                            className="p-1 rounded bg-emerald-600 text-white hover:bg-emerald-500"
+                          >
+                            <Check className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => {
+                            if (!isReadOnly) {
+                              setEditingFeeId(student.id);
+                              setTempFeeVal(student.totalFees || 0);
+                            }
+                          }}
+                          title={isReadOnly ? 'Total Fee' : 'Click to Set Total Fee'}
+                          className={`inline-flex items-center gap-1.5 font-mono text-xs px-2 py-1 rounded-lg border transition-all ${
+                            student.totalFees > 0
+                              ? 'bg-slate-800 border-slate-700 text-white hover:border-indigo-500 cursor-pointer font-bold'
+                              : 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20 cursor-pointer font-bold'
+                          }`}
+                        >
+                          <span>{student.totalFees > 0 ? formatINR(student.totalFees) : 'NIL / TBD (+Set Fee)'}</span>
+                          {!isReadOnly && <Edit2 className="w-3 h-3 text-slate-400 group-hover:text-indigo-300" />}
+                        </div>
+                      )}
                     </td>
 
                     {/* Paid Till Now */}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { Student, CourseType, FeeStatusType } from '../types/feeSystem';
+import type { Student, CourseType, FeeStatusType, SemesterFeeSlot } from '../types/feeSystem';
 import { X, Save, CheckCircle2 } from 'lucide-react';
 
 interface EditStudentModalProps {
@@ -25,6 +25,16 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
         const total = field === 'totalFees' ? Number(value) : prev.totalFees;
         const paid = field === 'paidTillNow' ? Number(value) : prev.paidTillNow;
         updated.remainingFees = Math.max(0, total - paid);
+
+        // Update 4 semester slots when total fee is set/edited
+        const semFee = total > 0 ? Math.round(total / 4) : 0;
+        const semSlots: SemesterFeeSlot[] = [
+          { semester: 'Sem 1', year: '1st Year', totalFee: semFee, paidAmount: Math.min(paid, semFee), remainingAmount: Math.max(0, semFee - paid), status: semFee > 0 && paid >= semFee ? 'Paid' : paid > 0 ? 'Partly Paid' : 'Unpaid', dueDate: '2026-10-15' },
+          { semester: 'Sem 2', year: '1st Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee)) : 0, status: paid >= semFee * 2 && semFee > 0 ? 'Paid' : paid > semFee ? 'Partly Paid' : 'Unpaid', dueDate: '2027-03-15' },
+          { semester: 'Sem 3', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee * 2, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 2)) : 0, status: paid >= semFee * 3 && semFee > 0 ? 'Paid' : paid > semFee * 2 ? 'Partly Paid' : 'Unpaid', dueDate: '2027-10-15' },
+          { semester: 'Sem 4', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, paid - semFee * 3), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 3)) : 0, status: paid >= semFee * 4 && semFee > 0 ? 'Paid' : paid > semFee * 3 ? 'Partly Paid' : 'Unpaid', dueDate: '2028-03-15' },
+        ];
+        updated.semesterFees = semSlots;
 
         // Auto calculate status suggestion
         if (paid >= total && total > 0) {

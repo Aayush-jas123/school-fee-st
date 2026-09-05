@@ -39,7 +39,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-slate-900 border border-slate-700 p-3 rounded-xl shadow-xl text-xs text-slate-200">
+        <div className="bg-zinc-900/50 border border-zinc-700/50 p-3 rounded-xl shadow-xl text-xs text-zinc-200">
           <p className="font-bold text-white mb-1">{label || payload[0].name}</p>
           {payload.map((entry: any, index: number) => (
             <p key={`item-${index}`} className="flex items-center gap-2" style={{ color: entry.color }}>
@@ -60,18 +60,18 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Payment Status Distribution Chart (Donut Chart) */}
-      <div className="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+      <div className="lg:col-span-5 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <PieIcon className="w-4 h-4 text-indigo-400" />
+              <PieIcon className="w-4 h-4 text-violet-400" />
               Student Payment Status Ratio
             </h3>
-            <span className="px-2.5 py-1 rounded-md bg-slate-800 border border-slate-700 text-[10px] font-semibold text-slate-300">
+            <span className="px-2.5 py-1 rounded-md bg-zinc-800/60 border border-zinc-700/50 text-[10px] font-semibold text-zinc-300">
               Live Distribution
             </span>
           </div>
-          <p className="text-xs text-slate-400 mb-4">
+          <p className="text-xs text-zinc-500 mb-4">
             Proportion of Fully Paid, Partly Paid, and Unpaid student records.
           </p>
 
@@ -95,7 +95,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
                 <Legend
                   verticalAlign="bottom"
                   height={36}
-                  formatter={(value) => <span className="text-xs font-semibold text-slate-300">{value}</span>}
+                  formatter={(value) => <span className="text-xs font-semibold text-zinc-300">{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -103,13 +103,13 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
             {/* Inner Ring Text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pb-8">
               <span className="text-2xl font-extrabold text-white">{students.length}</span>
-              <span className="text-[10px] font-semibold text-slate-400 uppercase">Students</span>
+              <span className="text-[10px] font-semibold text-zinc-500 uppercase">Students</span>
             </div>
           </div>
         </div>
 
         {/* Legend Summary Pills */}
-        <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-800 text-center text-xs">
+        <div className="grid grid-cols-3 gap-2 pt-3 border-t border-zinc-800/50 text-center text-xs">
           <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
             <span className="block font-bold text-sm">{paidCount}</span>
             <span className="text-[10px]">Paid</span>
@@ -126,7 +126,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
       </div>
 
       {/* Monthly Collection Trend Chart */}
-      <div className="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+      <div className="lg:col-span-7 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
@@ -137,7 +137,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
               FY 2024-2025
             </span>
           </div>
-          <p className="text-xs text-slate-400 mb-4">
+          <p className="text-xs text-zinc-500 mb-4">
             Comparison of monthly fee collections across JBT and B.Ed programs.
           </p>
 
@@ -152,7 +152,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
                   verticalAlign="top"
                   align="right"
                   height={30}
-                  formatter={(value) => <span className="text-xs font-semibold text-slate-300">{value}</span>}
+                  formatter={(value) => <span className="text-xs font-semibold text-zinc-300">{value}</span>}
                 />
                 <Bar dataKey="JBT" fill="#10b981" radius={[4, 4, 0, 0]} name="JBT Program" />
                 <Bar dataKey="BEd" fill="#6366f1" radius={[4, 4, 0, 0]} name="B.Ed Program" />
@@ -162,12 +162,12 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
         </div>
 
         {/* Footer Insight */}
-        <div className="flex items-center justify-between pt-3 border-t border-slate-800 text-xs text-slate-400">
+        <div className="flex items-center justify-between pt-3 border-t border-zinc-800/50 text-xs text-zinc-500">
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-emerald-400" />
-            <span>Peak Collection Month: <strong className="text-slate-200">July (₹5.6 Lakhs)</strong></span>
+            <span>Peak Collection Month: <strong className="text-zinc-200">July (₹5.6 Lakhs)</strong></span>
           </div>
-          <span className="text-[11px] text-slate-500 font-medium">Updated as of today</span>
+          <span className="text-[11px] text-zinc-600 font-medium">Updated as of today</span>
         </div>
       </div>
     </div>

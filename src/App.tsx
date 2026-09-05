@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { CourseType, FeeStatusType, Student, CourseStat, PaymentRecord, CourseFeeRule, AuditLogEntry } from './types/feeSystem';
 import { COURSE_DEFINITIONS } from './data/mockStudents';
 import { LoginPage } from './views/LoginPage';
@@ -18,7 +19,7 @@ import { DailyCollectionReport } from './components/DailyCollectionReport';
 import { AuditLogModal } from './components/AuditLogModal';
 import { PrintableReceipt } from './components/PrintableReceipt';
 import { StudentReceiptModal } from './components/StudentReceiptModal';
-import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircle2, Sparkles } from 'lucide-react';
 
 import {
   getStoredStudents,
@@ -225,7 +226,7 @@ export function App() {
       const rule = rules.find((r) => r.course === student.course);
       if (!rule) return student;
 
-      const totalAnnualFee = rule.tuitionFee + rule.admissionFee + rule.examFee + rule.libraryFee + rule.developmentFee + rule.labFee;
+      const totalAnnualFee = rule.tuitionFee;
       const discount = rule.scholarshipDiscounts[student.category] || 0;
       const discountedFee = totalAnnualFee - discount;
 
@@ -300,7 +301,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans antialiased selection:bg-violet-500/30 selection:text-white">
       {/* Top Header Navbar */}
       <NavbarHeader
         selectedCourse={selectedCourse}
@@ -314,12 +315,20 @@ export function App() {
       />
 
       {/* Toast Notification Popup */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 font-semibold text-xs animate-bounce">
-          <CheckCircle2 className="w-5 h-5" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-2xl shadow-emerald-600/20 flex items-center gap-3 font-semibold text-xs"
+          >
+            <CheckCircle2 className="w-5 h-5" />
+            <span>{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Body Layout */}
       <div className="flex-1 flex overflow-hidden">
@@ -337,13 +346,21 @@ export function App() {
         {/* Dashboard Content Workspace */}
         <main className="flex-1 p-4 md:p-6 lg:p-8 space-y-8 overflow-y-auto max-w-7xl mx-auto w-full">
           {/* Top Banner & Quick Executive CTAs */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-zinc-900/50 border border-zinc-800/50 rounded-3xl p-6 shadow-xl relative overflow-hidden backdrop-blur-sm"
+          >
+            {/* Subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.02] via-transparent to-blue-500/[0.02] pointer-events-none" />
+
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-2.5 py-0.5 rounded-full border border-indigo-500/20">
+                <span className="text-[11px] font-bold text-violet-400 uppercase tracking-widest bg-violet-500/10 px-2.5 py-0.5 rounded-full border border-violet-500/20">
                   {isReadOnlyMode ? 'Read-Only Overview Portal' : 'Institutional Fee Portal'}
                 </span>
-                <span className="text-slate-600">•</span>
+                <span className="text-zinc-700">•</span>
                 <span className={`text-xs font-semibold ${isReadOnlyMode ? 'text-amber-400' : 'text-emerald-400'}`}>
                   {isReadOnlyMode ? 'Viewing Live Data (Editing Locked)' : `${selectedCourse} Program Selected`}
                 </span>
@@ -353,7 +370,7 @@ export function App() {
                   ? 'All Programs Overview Portal'
                   : `${selectedCourse} Program Fee Management`}
               </h1>
-              <p className="text-xs text-slate-400 mt-1 max-w-xl">
+              <p className="text-xs text-zinc-500 mt-1 max-w-xl">
                 {isReadOnlyMode
                   ? 'Viewing live statistical fee records & analytics for JBT & B.Ed programs in Read-Only mode. Access specific program portals to manage student records.'
                   : 'Track student fee collections, issue instant digital receipts, manage JBT & B.Ed program dues, and broadcast fee reminders.'}
@@ -366,7 +383,7 @@ export function App() {
                 <>
                   <button
                     onClick={() => setShowAddStudent(true)}
-                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-violet-600/20 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:shadow-violet-600/30 hover:-translate-y-0.5"
                   >
                     <UserPlus className="w-4 h-4" /> New Admission
                   </button>
@@ -376,7 +393,7 @@ export function App() {
                       const pending = dashboardStudents.find((s) => s.remainingFees > 0) || students[0];
                       setPaymentStudent(pending);
                     }}
-                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/20 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:shadow-emerald-600/30 hover:-translate-y-0.5"
                   >
                     <DollarSign className="w-4 h-4" /> Collect Fee
                   </button>
@@ -385,22 +402,22 @@ export function App() {
 
               <button
                 onClick={() => exportStudentsToCSV(dashboardStudents)}
-                className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="px-3.5 py-2.5 rounded-xl bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-300 text-xs font-semibold border border-zinc-700/50 transition-all duration-200 flex items-center gap-1.5 hover:border-zinc-600"
               >
-                <Download className="w-3.5 h-3.5 text-indigo-400" /> Export CSV
+                <Download className="w-3.5 h-3.5 text-violet-400" /> Export CSV
               </button>
 
               {!isReadOnlyMode && (
                 <button
                   onClick={handleResetData}
                   title="Reset to default demo data"
-                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700 transition-colors cursor-pointer"
+                  className="p-2.5 rounded-xl bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-500 hover:text-white border border-zinc-700/50 transition-all duration-200 cursor-pointer"
                 >
                   <RefreshCw className="w-4 h-4" />
                 </button>
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* TAB 1: MAIN DASHBOARD */}
           {currentTab === 'dashboard' && (
@@ -445,15 +462,15 @@ export function App() {
 
           {/* TAB 5: RECEIPT GENERATOR */}
           {currentTab === 'receipts' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
+            <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-3xl p-6 shadow-xl space-y-6 backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                  <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold border border-emerald-500/20">
                     <Receipt className="w-6 h-6" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white">Official Fee Receipt Generator</h3>
-                    <p className="text-xs text-slate-400">Generate, view, and print official fee payment receipts for JBT & B.Ed students</p>
+                    <p className="text-xs text-zinc-500">Generate, view, and print official fee payment receipts for JBT & B.Ed students</p>
                   </div>
                 </div>
               </div>
@@ -469,15 +486,15 @@ export function App() {
                     remark: 'Tuition Fee Installment',
                   };
                   return (
-                    <div key={st.id} className="bg-slate-950 p-4 rounded-2xl border border-slate-800 flex items-center justify-between hover:border-slate-700 transition-colors">
+                    <div key={st.id} className="bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800/50 flex items-center justify-between hover:border-zinc-700/60 transition-all duration-200 card-premium">
                       <div>
                         <p className="font-bold text-white text-sm">{st.name}</p>
-                        <p className="text-slate-400 font-mono text-[11px]">{st.registrationNo} ({st.course})</p>
+                        <p className="text-zinc-500 font-mono text-[11px]">{st.registrationNo} ({st.course})</p>
                         <p className="text-emerald-400 font-bold mt-1">Paid So Far: {formatCurrencyINR(st.paidTillNow)}</p>
                       </div>
                       <button
                         onClick={() => setPrintableReceiptData({ student: st, payment: lastPayment })}
-                        className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold flex items-center gap-1.5 cursor-pointer shadow-md shadow-indigo-600/30"
+                        className="px-3.5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold flex items-center gap-1.5 cursor-pointer shadow-md shadow-violet-600/20 transition-all duration-200"
                       >
                         <Printer className="w-3.5 h-3.5" /> View Receipt
                       </button>

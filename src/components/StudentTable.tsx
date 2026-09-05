@@ -257,15 +257,15 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   };
 
   return (
-    <div className="bg-slate-900/90 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+    <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-2xl shadow-xl overflow-hidden backdrop-blur-sm">
       {/* Table Top Controls & Filters */}
-      <div className="p-4 md:p-6 border-b border-slate-800 space-y-4">
+      <div className="p-4 md:p-6 border-b border-zinc-800/50 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               Student Fee Management Directory
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-zinc-500 mt-0.5">
               Showing {sortedStudents.length} of {students.length} student records
             </p>
           </div>
@@ -274,18 +274,18 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
             {/* Direct Table Search Bar */}
             <div className="relative flex-1 md:w-64 min-w-[200px]">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search Name, Reg No, Roll No, Sem..."
-                className="w-full pl-9 pr-8 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all shadow-inner font-medium"
+                className="w-full pl-9 pr-8 py-2 bg-zinc-950/60 border border-zinc-800/50 rounded-xl text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500/50 transition-all shadow-inner font-medium"
               />
               {searchTerm && (
                 <button
                   onClick={() => onSearchChange('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-0.5 rounded-full"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white p-0.5 rounded-full"
                   title="Clear search"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -295,7 +295,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
             <button
               onClick={exportCSV}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition-colors"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-800/60 hover:bg-zinc-700/60 border border-zinc-700/50 text-xs font-semibold text-zinc-200 transition-all"
             >
               <Download className="w-4 h-4 text-emerald-400" />
               Export CSV
@@ -304,22 +304,22 @@ export const StudentTable: React.FC<StudentTableProps> = ({
         </div>
 
         {/* Filter Pills Bar */}
-        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-800/60">
-          <div className="flex items-center gap-1.5 text-xs text-slate-400 font-semibold mr-1">
-            <Filter className="w-3.5 h-3.5 text-indigo-400" /> Filter By:
+        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-zinc-800/40/60">
+          <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-semibold mr-1">
+            <Filter className="w-3.5 h-3.5 text-violet-400" /> Filter By:
           </div>
 
           {/* Course Filter */}
-          <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700 text-xs">
-            <span className="text-slate-400 px-2 font-medium">Course:</span>
+          <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-zinc-700/50 text-xs">
+            <span className="text-zinc-500 px-2 font-medium">Course:</span>
             {(['ALL', 'JBT', 'B.Ed'] as const).map((c) => (
               <button
                 key={c}
                 onClick={() => onCourseFilterChange(c)}
                 className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
                   selectedCourseFilter === c
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                    ? 'bg-violet-600 text-white shadow-sm'
+                    : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-700/60/50'
                 }`}
               >
                 {c === 'ALL' ? 'All Courses' : c}
@@ -328,8 +328,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           </div>
 
           {/* Status Filter */}
-          <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700 text-xs">
-            <span className="text-slate-400 px-2 font-medium">Status:</span>
+          <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-zinc-700/50 text-xs">
+            <span className="text-zinc-500 px-2 font-medium">Status:</span>
             {(['ALL', 'Paid', 'Partly Paid', 'Unpaid'] as const).map((st) => (
               <button
                 key={st}
@@ -342,8 +342,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                       ? 'bg-amber-600 text-white shadow-sm'
                       : st === 'Unpaid'
                       ? 'bg-rose-600 text-white shadow-sm'
-                      : 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                      : 'bg-violet-600 text-white shadow-sm'
+                    : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-700/60/50'
                 }`}
               >
                 {st === 'ALL' ? 'All Status' : st}
@@ -355,18 +355,18 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
       {/* Main Table View */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs text-slate-300">
+        <table className="w-full text-left text-xs text-zinc-300">
           {/* Table Header */}
-          <thead className="bg-slate-950/80 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-800">
+          <thead className="bg-zinc-950/80 text-zinc-500 font-bold uppercase tracking-wider border-b border-zinc-800/50">
             <tr>
               <th className="py-3.5 px-4 cursor-pointer hover:text-white" onClick={() => handleSort('registrationNo')}>
                 <div className="flex items-center gap-1">
-                  Reg Number <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  Reg Number <ArrowUpDown className="w-3 h-3 text-zinc-600" />
                 </div>
               </th>
               <th className="py-3.5 px-4 cursor-pointer hover:text-white" onClick={() => handleSort('name')}>
                 <div className="flex items-center gap-1">
-                  Student Name <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  Student Name <ArrowUpDown className="w-3 h-3 text-zinc-600" />
                 </div>
               </th>
               <th className="py-3.5 px-4">Father / Guardian</th>
@@ -374,27 +374,27 @@ export const StudentTable: React.FC<StudentTableProps> = ({
               <th className="py-3.5 px-4">Course & Stream</th>
               <th className="py-3.5 px-4 cursor-pointer hover:text-white" onClick={() => handleSort('rollNo')}>
                 <div className="flex items-center gap-1">
-                  Roll No (Editable) <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  Roll No (Editable) <ArrowUpDown className="w-3 h-3 text-zinc-600" />
                 </div>
               </th>
               <th className="py-3.5 px-4 text-right cursor-pointer hover:text-white" onClick={() => handleSort('totalFees')}>
                 <div className="flex items-center justify-end gap-1">
-                  Total Fees (Editable) <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  Total Fees (Editable) <ArrowUpDown className="w-3 h-3 text-zinc-600" />
                 </div>
               </th>
               <th className="py-3.5 px-4 text-right cursor-pointer hover:text-white" onClick={() => handleSort('paidTillNow')}>
                 <div className="flex items-center justify-end gap-1">
-                  Paid Till Now (Editable) <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  Paid Till Now (Editable) <ArrowUpDown className="w-3 h-3 text-zinc-600" />
                 </div>
               </th>
               <th className="py-3.5 px-4 text-right cursor-pointer hover:text-white" onClick={() => handleSort('remainingFees')}>
                 <div className="flex items-center justify-end gap-1">
-                  Remaining <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  Remaining <ArrowUpDown className="w-3 h-3 text-zinc-600" />
                 </div>
               </th>
               <th className="py-3.5 px-4 text-center cursor-pointer hover:text-white" onClick={() => handleSort('feeStatus')}>
                 <div className="flex items-center justify-center gap-1">
-                  Fee Status <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  Fee Status <ArrowUpDown className="w-3 h-3 text-zinc-600" />
                 </div>
               </th>
               <th className="py-3.5 px-4 text-center">Actions</th>
@@ -402,14 +402,14 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           </thead>
 
           {/* Table Body */}
-          <tbody className="divide-y divide-slate-800/60 font-medium">
+          <tbody className="divide-y divide-zinc-800/40 font-medium">
             {paginatedStudents.length === 0 ? (
               <tr>
-                <td colSpan={11} className="py-12 text-center text-slate-500">
+                <td colSpan={11} className="py-12 text-center text-zinc-600">
                   <div className="max-w-xs mx-auto space-y-2">
-                    <Search className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-                    <p className="text-sm font-semibold text-slate-400">No matching student records found</p>
-                    <p className="text-xs text-slate-500">Try clearing search filters or selecting another course.</p>
+                    <Search className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
+                    <p className="text-sm font-semibold text-zinc-500">No matching student records found</p>
+                    <p className="text-xs text-zinc-600">Try clearing search filters or selecting another course.</p>
                   </div>
                 </td>
               </tr>
@@ -422,35 +422,35 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 )}`;
 
                 return (
-                  <tr key={student.id} className="hover:bg-slate-800/50 transition-colors group">
+                  <tr key={student.id} className="hover:bg-zinc-800/30 transition-colors group">
                     {/* Registration No */}
-                    <td className="py-3.5 px-4 font-mono font-bold text-indigo-300">
+                    <td className="py-3.5 px-4 font-mono font-bold text-violet-300">
                       {student.registrationNo}
                     </td>
 
                     {/* Student Name */}
                     <td className="py-3.5 px-4 text-white font-bold whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-slate-800 text-indigo-400 border border-slate-700 flex items-center justify-center font-bold text-xs shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-zinc-800/60 text-violet-400 border border-zinc-700/50 flex items-center justify-center font-bold text-xs shrink-0">
                           {student.name.charAt(0)}
                         </div>
                         <div>
                           <span>{student.name}</span>
-                          <span className="block text-[10px] text-slate-400 font-normal">{student.category} Category</span>
+                          <span className="block text-[10px] text-zinc-500 font-normal">{student.category} Category</span>
                         </div>
                       </div>
                     </td>
 
                     {/* Father / Guardian */}
-                    <td className="py-3.5 px-4 text-slate-300 whitespace-nowrap">
+                    <td className="py-3.5 px-4 text-zinc-300 whitespace-nowrap">
                       {student.fatherName}
                     </td>
 
                     {/* Phone & WhatsApp Direct Chat */}
-                    <td className="py-3.5 px-4 text-slate-300 whitespace-nowrap">
+                    <td className="py-3.5 px-4 text-zinc-300 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-[11px] flex items-center gap-1 text-slate-300">
-                          <Phone className="w-3 h-3 text-slate-500" />
+                        <span className="font-mono text-[11px] flex items-center gap-1 text-zinc-300">
+                          <Phone className="w-3 h-3 text-zinc-600" />
                           {student.phone}
                         </span>
                         <a
@@ -472,7 +472,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                         <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
                           {student.course}
                         </span>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-violet-500/20 text-violet-300 border border-violet-500/20">
                           {student.currentSemester || 'Sem 1'}
                         </span>
                         {student.stream && (
@@ -492,7 +492,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                             value={tempRollVal}
                             onChange={(e) => setTempRollVal(e.target.value)}
                             placeholder="Enter Roll No"
-                            className="w-24 bg-slate-950 border border-indigo-500 rounded px-2 py-0.5 text-xs text-white font-mono"
+                            className="w-24 bg-zinc-950/60 border border-violet-500/30 rounded px-2 py-0.5 text-xs text-white font-mono"
                             autoFocus
                           />
                           <button
@@ -514,12 +514,12 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           title={isReadOnly ? 'Roll Number' : 'Click to Edit Roll Number'}
                           className={`inline-flex items-center gap-1.5 font-mono text-[11px] px-2 py-1 rounded-lg border transition-all ${
                             student.rollNo
-                              ? 'bg-slate-800 border-slate-700 text-white hover:border-indigo-500 cursor-pointer'
+                              ? 'bg-zinc-800/60 border-zinc-700/50 text-white hover:border-violet-500/30 cursor-pointer'
                               : 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20 cursor-pointer'
                           }`}
                         >
                           <span>{student.rollNo || '+ Set Roll No'}</span>
-                          {!isReadOnly && <Edit2 className="w-3 h-3 text-slate-400 group-hover:text-indigo-300" />}
+                          {!isReadOnly && <Edit2 className="w-3 h-3 text-zinc-500 group-hover:text-violet-300" />}
                         </div>
                       )}
                     </td>
@@ -533,7 +533,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                             value={tempFeeVal}
                             onChange={(e) => setTempFeeVal(Number(e.target.value))}
                             placeholder="Enter Fee"
-                            className="w-24 bg-slate-950 border border-indigo-500 rounded px-2 py-0.5 text-xs text-white font-mono text-right font-bold"
+                            className="w-24 bg-zinc-950/60 border border-violet-500/30 rounded px-2 py-0.5 text-xs text-white font-mono text-right font-bold"
                             autoFocus
                           />
                           <button
@@ -555,12 +555,12 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           title={isReadOnly ? 'Total Fee' : 'Click to Set Total Fee'}
                           className={`inline-flex items-center gap-1.5 font-mono text-xs px-2 py-1 rounded-lg border transition-all ${
                             student.totalFees > 0
-                              ? 'bg-slate-800 border-slate-700 text-white hover:border-indigo-500 cursor-pointer font-bold'
+                              ? 'bg-zinc-800/60 border-zinc-700/50 text-white hover:border-violet-500/30 cursor-pointer font-bold'
                               : 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20 cursor-pointer font-bold'
                           }`}
                         >
                           <span>{student.totalFees > 0 ? formatINR(student.totalFees) : 'NIL / TBD (+Set Fee)'}</span>
-                          {!isReadOnly && <Edit2 className="w-3 h-3 text-slate-400 group-hover:text-indigo-300" />}
+                          {!isReadOnly && <Edit2 className="w-3 h-3 text-zinc-500 group-hover:text-violet-300" />}
                         </div>
                       )}
                     </td>
@@ -574,7 +574,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                             value={tempPaidVal}
                             onChange={(e) => setTempPaidVal(Number(e.target.value))}
                             placeholder="Enter Paid"
-                            className="w-24 bg-slate-950 border border-emerald-500 rounded px-2 py-0.5 text-xs text-emerald-400 font-mono text-right font-bold"
+                            className="w-24 bg-zinc-950/60 border border-emerald-500 rounded px-2 py-0.5 text-xs text-emerald-400 font-mono text-right font-bold"
                             autoFocus
                           />
                           <button
@@ -596,19 +596,19 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           title={isReadOnly ? 'Paid Till Now' : 'Click to Edit / Update Amount Paid'}
                           className={`inline-flex items-center gap-1.5 font-mono text-xs px-2 py-1 rounded-lg border transition-all ${
                             student.paidTillNow > 0
-                              ? 'bg-slate-800 border-slate-700 text-emerald-400 hover:border-emerald-500 cursor-pointer font-bold'
-                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700 cursor-pointer'
+                              ? 'bg-zinc-800/60 border-zinc-700/50 text-emerald-400 hover:border-emerald-500 cursor-pointer font-bold'
+                              : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-500 hover:border-zinc-700/50 cursor-pointer'
                           }`}
                         >
                           <span>{formatINR(student.paidTillNow)}</span>
-                          {!isReadOnly && <Edit2 className="w-3 h-3 text-slate-500 group-hover:text-emerald-300" />}
+                          {!isReadOnly && <Edit2 className="w-3 h-3 text-zinc-600 group-hover:text-emerald-300" />}
                         </div>
                       )}
                     </td>
 
                     {/* Remaining Fees */}
                     <td className="py-3.5 px-4 text-right font-bold whitespace-nowrap">
-                      <span className={student.remainingFees > 0 ? 'text-rose-400' : 'text-slate-400'}>
+                      <span className={student.remainingFees > 0 ? 'text-rose-400' : 'text-zinc-500'}>
                         {formatINR(student.remainingFees)}
                       </span>
                     </td>
@@ -652,7 +652,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                         <button
                           onClick={() => onViewStudent(student)}
                           title="View Full Profile & Fee Details"
-                          className="px-2.5 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-600 text-indigo-400 hover:text-white border border-indigo-500/30 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
+                          className="px-2.5 py-1.5 rounded-lg bg-violet-500/10 hover:bg-violet-600 text-violet-400 hover:text-white border border-violet-500/20 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>View</span>
@@ -661,7 +661,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onEditStudent(student)}
                             title="Edit Full Profile Record"
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-300 border border-zinc-700/50 transition-all cursor-pointer"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
@@ -677,7 +677,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
       </div>
 
       {/* Pagination Controls */}
-      <div className="p-4 border-t border-slate-800 bg-slate-950/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+      <div className="p-4 border-t border-zinc-800/40 bg-zinc-950/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500">
         <div>
           Showing <strong className="text-white">{(currentPage - 1) * itemsPerPage + 1}</strong> to{' '}
           <strong className="text-white">{Math.min(currentPage * itemsPerPage, sortedStudents.length)}</strong> of{' '}
@@ -688,19 +688,19 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           <button
             onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
             disabled={currentPage === 1}
-            className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
 
-          <span className="px-3 py-1 rounded-lg bg-slate-800 border border-slate-700 text-white font-semibold">
+          <span className="px-3 py-1 rounded-lg bg-zinc-800/60 border border-zinc-700/50 text-white font-semibold">
             Page {currentPage} of {totalPages}
           </span>
 
           <button
             onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             <ChevronRight className="w-4 h-4" />
           </button>

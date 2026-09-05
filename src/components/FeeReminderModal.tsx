@@ -44,22 +44,22 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl overflow-hidden text-slate-100 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-fadeIn">
+      <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-3xl max-w-xl w-full p-6 shadow-2xl overflow-hidden text-zinc-100 relative">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+        <div className="flex items-center justify-between border-b border-zinc-800/50 pb-4 mb-6">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
               <BellRing className="w-6 h-6" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-white tracking-tight">Fee Reminder & Demand Notice</h2>
-              <p className="text-xs text-slate-400">Send instant reminder or print formal letter</p>
+              <p className="text-xs text-zinc-500">Send instant reminder or print formal letter</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-800/60 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -73,25 +73,25 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
               {student.feeStatus}
             </span>
           </div>
-          <div className="flex items-center justify-between text-xs text-slate-400">
+          <div className="flex items-center justify-between text-xs text-zinc-500">
             <span>Outstanding Dues:</span>
             <strong className="text-amber-400 font-bold text-sm">{formatCurrencyINR(student.remainingFees)}</strong>
           </div>
-          <div className="flex items-center justify-between text-xs text-slate-400">
+          <div className="flex items-center justify-between text-xs text-zinc-500">
             <span>Contact Phone:</span>
-            <span className="font-mono text-slate-200">{student.phone}</span>
+            <span className="font-mono text-zinc-200">{student.phone}</span>
           </div>
         </div>
 
         {/* Channel Selection */}
         <div className="space-y-4 text-xs">
           <div>
-            <label className="block text-slate-300 font-medium mb-1.5">Notification Method</label>
+            <label className="block text-zinc-300 font-medium mb-1.5">Notification Method</label>
             <div className="grid grid-cols-4 gap-2">
               {[
                 { name: 'WhatsApp', icon: MessageSquare, color: 'text-emerald-400' },
                 { name: 'Email', icon: Mail, color: 'text-blue-400' },
-                { name: 'SMS', icon: Phone, color: 'text-indigo-400' },
+                { name: 'SMS', icon: Phone, color: 'text-violet-400' },
                 { name: 'Printed Notice', icon: Printer, color: 'text-purple-400' },
               ].map((c) => {
                 const IconComponent = c.icon;
@@ -105,8 +105,8 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                     }}
                     className={`p-3 rounded-2xl border flex flex-col items-center gap-1.5 transition-all text-center ${
                       channel === c.name
-                        ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-600/30'
-                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                        ? 'bg-violet-600 border-violet-500/30 text-white shadow-lg shadow-violet-600/20'
+                        : 'bg-zinc-950/60 border-zinc-800/50 text-zinc-500 hover:border-zinc-700/50'
                     }`}
                   >
                     <IconComponent className={`w-5 h-5 ${channel === c.name ? 'text-white' : c.color}`} />
@@ -120,41 +120,41 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
           {/* Late Penalty & Grace Days Config */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-slate-300 font-medium mb-1">Late Penalty Fine (₹)</label>
+              <label className="block text-zinc-300 font-medium mb-1">Late Penalty Fine (₹)</label>
               <input
                 type="number"
                 min={0}
                 value={customLateFee}
                 onChange={(e) => setCustomLateFee(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold focus:outline-none focus:border-indigo-500"
+                className="w-full bg-zinc-950/60 border border-zinc-800/50 rounded-xl px-3 py-2 text-white font-bold focus:outline-none focus:border-violet-500/50"
               />
             </div>
             <div>
-              <label className="block text-slate-300 font-medium mb-1">Grace Period (Days)</label>
+              <label className="block text-zinc-300 font-medium mb-1">Grace Period (Days)</label>
               <input
                 type="number"
                 min={1}
                 value={graceDays}
                 onChange={(e) => setGraceDays(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold focus:outline-none focus:border-indigo-500"
+                className="w-full bg-zinc-950/60 border border-zinc-800/50 rounded-xl px-3 py-2 text-white font-bold focus:outline-none focus:border-violet-500/50"
               />
             </div>
           </div>
 
           {/* Message Preview Box */}
           <div>
-            <label className="block text-slate-300 font-medium mb-1">Generated Message Template</label>
-            <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-slate-300 text-[11px] leading-relaxed font-sans">
+            <label className="block text-zinc-300 font-medium mb-1">Generated Message Template</label>
+            <div className="bg-zinc-950/60 p-3 rounded-xl border border-zinc-800/50 text-zinc-300 text-[11px] leading-relaxed font-sans">
               {getNoticeMessage()}
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-slate-800">
+          <div className="flex items-center justify-between pt-4 border-t border-zinc-800/50">
             <button
               type="button"
               onClick={() => setShowPrintDemandNotice(true)}
-              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-300 font-semibold flex items-center gap-1.5 cursor-pointer text-xs"
+              className="px-4 py-2 rounded-xl bg-zinc-800/60 hover:bg-zinc-700/60 text-purple-300 font-semibold flex items-center gap-1.5 cursor-pointer text-xs"
             >
               <Printer className="w-4 h-4" /> Print Formal Demand Notice
             </button>
@@ -177,7 +177,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
             <div className="bg-white text-slate-900 rounded-3xl max-w-2xl w-full p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto relative print:p-0 print:shadow-none">
               <button
                 onClick={() => setShowPrintDemandNotice(false)}
-                className="absolute right-6 top-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 print:hidden"
+                className="absolute right-6 top-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-zinc-700 print:hidden"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -187,10 +187,10 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                 <h1 className="text-2xl font-black text-indigo-950 uppercase tracking-wide">
                   SHANTI COLLEGE OF EDUCATION
                 </h1>
-                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                <p className="text-xs font-semibold text-zinc-700 uppercase tracking-wider">
                   Approved by NCTE & Affiliated to State University
                 </p>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-zinc-600">
                   Institutional Campus, Education City, Haryana - 134109 • Accounts Wing
                 </p>
               </div>
@@ -251,7 +251,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
               </div>
 
               {/* Instructions & Signature */}
-              <div className="text-[11px] text-slate-600 space-y-2">
+              <div className="text-[11px] text-zinc-700 space-y-2">
                 <p className="font-semibold text-slate-800">Important Instructions:</p>
                 <ul className="list-disc pl-4 space-y-1">
                   <li>Please remit the total payable amount within <strong>{graceDays} days</strong> of receipt of this notice.</li>
@@ -263,12 +263,12 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
               <div className="pt-8 flex justify-between items-end text-xs">
                 <div>
                   <p className="font-bold text-slate-800">Verified By Accounts Dept.</p>
-                  <p className="text-slate-500 text-[10px]">Official Institutional Seal</p>
+                  <p className="text-zinc-600 text-[10px]">Official Institutional Seal</p>
                 </div>
                 <div className="text-center">
                   <div className="h-10 border-b border-slate-400 w-36 mb-1"></div>
                   <p className="font-bold text-slate-900">Finance Officer / Registrar</p>
-                  <p className="text-slate-500 text-[10px]">Shanti College of Education</p>
+                  <p className="text-zinc-600 text-[10px]">Shanti College of Education</p>
                 </div>
               </div>
 
@@ -276,7 +276,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
               <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 print:hidden">
                 <button
                   onClick={() => window.print()}
-                  className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs flex items-center gap-2"
+                  className="px-6 py-2.5 bg-violet-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs flex items-center gap-2"
                 >
                   <Printer className="w-4 h-4" /> Print Demand Letter
                 </button>

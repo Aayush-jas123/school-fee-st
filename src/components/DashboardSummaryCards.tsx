@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import type { Student } from '../types/feeSystem';
 import { Users, IndianRupee, Wallet, Clock, CheckCircle, AlertTriangle, XCircle, TrendingUp } from 'lucide-react';
 
@@ -33,8 +34,7 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
       value: totalStudents.toString(),
       subtext: 'Enrolled in current selection',
       icon: Users,
-      color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
-      iconBg: 'bg-indigo-600',
+      accent: 'violet',
     },
     {
       id: 'expected_fee',
@@ -42,8 +42,7 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
       value: formatINR(totalFeeExpected),
       subtext: 'Annual gross curriculum fees',
       icon: Wallet,
-      color: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-      iconBg: 'bg-blue-600',
+      accent: 'blue',
     },
     {
       id: 'collected_fee',
@@ -51,8 +50,7 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
       value: formatINR(totalFeeCollected),
       subtext: `${collectionPercentage}% of total expected fee`,
       icon: IndianRupee,
-      color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-      iconBg: 'bg-emerald-600',
+      accent: 'emerald',
     },
     {
       id: 'pending_fee',
@@ -60,8 +58,7 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
       value: formatINR(totalPendingFees),
       subtext: 'Outstanding balance across students',
       icon: Clock,
-      color: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-      iconBg: 'bg-rose-600',
+      accent: 'rose',
     },
     {
       id: 'fully_paid',
@@ -69,8 +66,7 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
       value: fullyPaidStudents.toString(),
       subtext: `${totalStudents > 0 ? Math.round((fullyPaidStudents / totalStudents) * 100) : 0}% clearance rate`,
       icon: CheckCircle,
-      color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-      iconBg: 'bg-emerald-500',
+      accent: 'emerald',
       statusTag: 'Paid Status',
     },
     {
@@ -79,8 +75,7 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
       value: partlyPaidStudents.toString(),
       subtext: 'Active installment plans',
       icon: AlertTriangle,
-      color: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-      iconBg: 'bg-amber-500',
+      accent: 'amber',
       statusTag: 'Partly Paid',
     },
     {
@@ -89,76 +84,94 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
       value: unpaidStudents.toString(),
       subtext: 'Requires fee reminder alert',
       icon: XCircle,
-      color: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-      iconBg: 'bg-rose-500',
+      accent: 'rose',
       statusTag: 'Unpaid Dues',
     },
   ];
 
+  const accentStyles: Record<string, { iconBg: string; border: string; tagBg: string; tagText: string; tagBorder: string }> = {
+    violet: { iconBg: 'bg-violet-600', border: 'hover:border-violet-500/30', tagBg: 'bg-violet-500/10', tagText: 'text-violet-400', tagBorder: 'border-violet-500/20' },
+    blue: { iconBg: 'bg-blue-600', border: 'hover:border-blue-500/30', tagBg: 'bg-blue-500/10', tagText: 'text-blue-400', tagBorder: 'border-blue-500/20' },
+    emerald: { iconBg: 'bg-emerald-600', border: 'hover:border-emerald-500/30', tagBg: 'bg-emerald-500/10', tagText: 'text-emerald-400', tagBorder: 'border-emerald-500/20' },
+    rose: { iconBg: 'bg-rose-600', border: 'hover:border-rose-500/30', tagBg: 'bg-rose-500/10', tagText: 'text-rose-400', tagBorder: 'border-rose-500/20' },
+    amber: { iconBg: 'bg-amber-500', border: 'hover:border-amber-500/30', tagBg: 'bg-amber-500/10', tagText: 'text-amber-400', tagBorder: 'border-amber-500/20' },
+  };
+
   return (
     <div className="space-y-4">
       {/* Top Banner stats summary */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900/80 border border-slate-800 rounded-2xl p-4 md:px-6 shadow-md">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl p-4 md:px-6 shadow-lg backdrop-blur-sm"
+      >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold border border-emerald-500/20">
             <TrendingUp className="w-5 h-5" />
           </div>
           <div>
             <h3 className="text-sm font-bold text-white">Overall Fee Collection Progress</h3>
-            <p className="text-xs text-slate-400">Real-time breakdown based on current active filters</p>
+            <p className="text-xs text-zinc-500">Real-time breakdown based on current active filters</p>
           </div>
         </div>
 
         <div className="flex items-center gap-4 text-xs">
           <div className="text-right">
-            <span className="text-slate-400 block text-[11px]">Collection Target</span>
+            <span className="text-zinc-500 block text-[11px]">Collection Target</span>
             <span className="text-emerald-400 font-extrabold text-sm">{collectionPercentage}% Achieved</span>
           </div>
-          <div className="w-32 bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
-            <div
-              className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500"
-              style={{ width: `${collectionPercentage}%` }}
+          <div className="w-32 bg-zinc-800/60 h-2.5 rounded-full overflow-hidden border border-zinc-700/40">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${collectionPercentage}%` }}
+              transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
+              className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full"
             />
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Grid of 7 Summary Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {cards.map((card) => {
+        {cards.map((card, idx) => {
           const Icon = card.icon;
+          const style = accentStyles[card.accent];
           return (
-            <div
+            <motion.div
               key={card.id}
-              className={`bg-slate-900/90 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-lg transition-all duration-200 hover:border-slate-700 relative overflow-hidden group`}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.06, duration: 0.4 }}
+              className={`bg-zinc-900/50 border border-zinc-800/50 rounded-2xl p-4 md:p-5 shadow-lg transition-all duration-300 relative overflow-hidden group card-premium ${style.border}`}
             >
-              {/* Subtle top indicator bar */}
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              {/* Subtle gradient on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+              <div className="flex items-center justify-between mb-3 relative">
+                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                   {card.title}
                 </span>
-                <div className={`w-9 h-9 rounded-xl ${card.iconBg} text-white flex items-center justify-center shadow-md`}>
+                <div className={`w-9 h-9 rounded-xl ${style.iconBg} text-white flex items-center justify-center shadow-md`}>
                   <Icon className="w-4 h-4" />
                 </div>
               </div>
 
-              {/* Metric Value */}
-              <div className="mb-2">
+              <div className="mb-2 relative">
                 <span className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
                   {card.value}
                 </span>
               </div>
 
-              {/* Subtext info */}
-              <div className="flex items-center justify-between text-[11px] text-slate-400">
+              <div className="flex items-center justify-between text-[11px] text-zinc-500 relative">
                 <span>{card.subtext}</span>
                 {card.statusTag && (
-                  <span className={`px-2 py-0.5 rounded-md border text-[10px] font-bold ${card.color}`}>
+                  <span className={`px-2 py-0.5 rounded-md border text-[10px] font-bold ${style.tagBg} ${style.tagText} ${style.tagBorder}`}>
                     {card.statusTag}
                   </span>
                 )}
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>

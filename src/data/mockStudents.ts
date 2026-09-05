@@ -753,7 +753,7 @@ export const INITIAL_STUDENTS: Student[] = [
   },
   {
     "id": "STU-BED-026",
-    "registrationNo": "H26A411044",
+    "registrationNo": "H26A403562",
     "name": "HEENA",
     "fatherName": "SARWAN KUMAR",
     "phone": "0",
@@ -1233,7 +1233,7 @@ export const INITIAL_STUDENTS: Student[] = [
   },
   {
     "id": "STU-BED-042",
-    "registrationNo": "H26A569175",
+    "registrationNo": "H26A405754",
     "name": "RAZIA BEGUM",
     "fatherName": "ABDUL HAKEEM",
     "phone": "0",

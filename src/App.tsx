@@ -88,7 +88,7 @@ export function App() {
   };
 
   // Course Selection handler
-  const handleSelectCourseFromCards = (courseCode: CourseType) => {
+  const handleSelectCourseFromCards = (courseCode: CourseType | 'ALL') => {
     setSelectedCourse(courseCode);
     setActiveView('dashboard');
     setCurrentTab('dashboard');
@@ -202,6 +202,9 @@ export function App() {
     }
   };
 
+  // Compute read-only state for Overview portal mode
+  const isReadOnlyMode = selectedCourse === 'ALL';
+
   // Render Login Page if not logged in
   if (!isLoggedIn) {
     return <LoginPage onLoginSuccess={handleLoginSuccess} />;
@@ -260,41 +263,47 @@ export function App() {
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-2.5 py-0.5 rounded-full border border-indigo-500/20">
-                  Institutional Fee Portal
+                  {isReadOnlyMode ? 'Read-Only Overview Portal' : 'Institutional Fee Portal'}
                 </span>
                 <span className="text-slate-600">•</span>
-                <span className="text-xs font-semibold text-emerald-400">
-                  {selectedCourse === 'ALL' ? 'JBT & B.Ed Programs Active' : `${selectedCourse} Program Selected`}
+                <span className={`text-xs font-semibold ${isReadOnlyMode ? 'text-amber-400' : 'text-emerald-400'}`}>
+                  {isReadOnlyMode ? 'Viewing Live Data (Editing Locked)' : `${selectedCourse} Program Selected`}
                 </span>
               </div>
               <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-                {selectedCourse === 'ALL'
-                  ? 'JBT & B.Ed Institutional Fee Dashboard'
+                {isReadOnlyMode
+                  ? 'All Programs Overview Portal'
                   : `${selectedCourse} Program Fee Management`}
               </h1>
               <p className="text-xs text-slate-400 mt-1 max-w-xl">
-                Track student fee collections, issue instant digital receipts, manage JBT & B.Ed program dues, and broadcast fee reminders.
+                {isReadOnlyMode
+                  ? 'Viewing live statistical fee records & analytics for JBT & B.Ed programs in Read-Only mode. Access specific program portals to manage student records.'
+                  : 'Track student fee collections, issue instant digital receipts, manage JBT & B.Ed program dues, and broadcast fee reminders.'}
               </p>
             </div>
 
             {/* Quick CTAs */}
             <div className="flex flex-wrap items-center gap-2.5 relative z-10">
-              <button
-                onClick={() => setShowAddStudent(true)}
-                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 flex items-center gap-1.5 cursor-pointer"
-              >
-                <UserPlus className="w-4 h-4" /> New Admission
-              </button>
+              {!isReadOnlyMode && (
+                <>
+                  <button
+                    onClick={() => setShowAddStudent(true)}
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <UserPlus className="w-4 h-4" /> New Admission
+                  </button>
 
-              <button
-                onClick={() => {
-                  const pending = dashboardStudents.find((s) => s.remainingFees > 0) || students[0];
-                  setPaymentStudent(pending);
-                }}
-                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 cursor-pointer"
-              >
-                <DollarSign className="w-4 h-4" /> Collect Fee
-              </button>
+                  <button
+                    onClick={() => {
+                      const pending = dashboardStudents.find((s) => s.remainingFees > 0) || students[0];
+                      setPaymentStudent(pending);
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <DollarSign className="w-4 h-4" /> Collect Fee
+                  </button>
+                </>
+              )}
 
               <button
                 onClick={() => exportStudentsToCSV(dashboardStudents)}
@@ -303,13 +312,15 @@ export function App() {
                 <Download className="w-3.5 h-3.5 text-indigo-400" /> Export CSV
               </button>
 
-              <button
-                onClick={handleResetData}
-                title="Reset to default demo data"
-                className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700 transition-colors cursor-pointer"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
+              {!isReadOnlyMode && (
+                <button
+                  onClick={handleResetData}
+                  title="Reset to default demo data"
+                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700 transition-colors cursor-pointer"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
+              )}
             </div>
           </div>
 
@@ -335,6 +346,7 @@ export function App() {
                 onStatusFilterChange={(st) => setSelectedStatus(st)}
                 searchTerm={searchTerm}
                 onSearchChange={setSearchTerm}
+                isReadOnly={isReadOnlyMode}
               />
             </>
           )}
@@ -353,6 +365,7 @@ export function App() {
               onStatusFilterChange={(st) => setSelectedStatus(st)}
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
+              isReadOnly={isReadOnlyMode}
             />
           )}
 
@@ -411,13 +424,13 @@ export function App() {
 
           {/* TAB 5: FEE STRUCTURES */}
           {currentTab === 'structures' && (
-            <FeeStructureManager rules={feeRules} onSaveRules={handleSaveFeeRules} />
+            <FeeStructureManager rules={feeRules} onSaveRules={handleSaveFeeRules} isReadOnly={isReadOnlyMode} />
           )}
         </main>
       </div>
 
       {/* Record Payment Modal */}
-      {paymentStudent && (
+      {paymentStudent && !isReadOnlyMode && (
         <RecordPaymentModal
           student={paymentStudent}
           onClose={() => setPaymentStudent(null)}
@@ -427,7 +440,7 @@ export function App() {
       )}
 
       {/* Add New Student Modal */}
-      {showAddStudent && (
+      {showAddStudent && !isReadOnlyMode && (
         <AddStudentModal
           onClose={() => setShowAddStudent(false)}
           onAddStudent={handleAddStudentSuccess}
@@ -435,7 +448,7 @@ export function App() {
       )}
 
       {/* Fee Reminder Modal */}
-      {reminderStudent && (
+      {reminderStudent && !isReadOnlyMode && (
         <FeeReminderModal
           student={reminderStudent}
           onClose={() => setReminderStudent(null)}
@@ -448,6 +461,7 @@ export function App() {
         student={viewingStudent}
         onClose={() => setViewingStudent(null)}
         onEdit={(s) => setEditingStudent(s)}
+        isReadOnly={isReadOnlyMode}
       />
 
       {/* Edit Student Modal */}

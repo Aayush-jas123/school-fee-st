@@ -6,9 +6,10 @@ import { formatCurrencyINR } from '../utils/exportUtils';
 interface FeeStructureManagerProps {
   rules: CourseFeeRule[];
   onSaveRules: (updatedRules: CourseFeeRule[]) => void;
+  isReadOnly?: boolean;
 }
 
-export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules, onSaveRules }) => {
+export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules, onSaveRules, isReadOnly = false }) => {
   const [localRules, setLocalRules] = useState<CourseFeeRule[]>(rules);
   const [activeCourse, setActiveCourse] = useState<CourseType>('JBT');
   const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
@@ -16,12 +17,14 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
   const currentRule = localRules.find((r) => r.course === activeCourse) || localRules[0];
 
   const handleFeeChange = (field: keyof Omit<CourseFeeRule, 'course' | 'scholarshipDiscounts'>, val: number) => {
+    if (isReadOnly) return;
     setLocalRules((prev) =>
       prev.map((r) => (r.course === activeCourse ? { ...r, [field]: val } : r))
     );
   };
 
   const handleScholarshipChange = (cat: 'SC' | 'ST' | 'OBC' | 'General', val: number) => {
+    if (isReadOnly) return;
     setLocalRules((prev) =>
       prev.map((r) =>
         r.course === activeCourse
@@ -32,6 +35,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
   };
 
   const handleSave = () => {
+    if (isReadOnly) return;
     onSaveRules(localRules);
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3000);
@@ -55,12 +59,18 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           </div>
         </div>
 
-        <button
-          onClick={handleSave}
-          className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/30 cursor-pointer"
-        >
-          <Save className="w-4 h-4" /> Save Fee Rules
-        </button>
+        {isReadOnly ? (
+          <span className="px-4 py-2 rounded-xl bg-amber-500/10 text-amber-300 border border-amber-500/30 font-bold text-xs">
+            Read-Only Portal (Editing Locked)
+          </span>
+        ) : (
+          <button
+            onClick={handleSave}
+            className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/30 cursor-pointer"
+          >
+            <Save className="w-4 h-4" /> Save Fee Rules
+          </button>
+        )}
       </div>
 
       {savedSuccess && (
@@ -116,8 +126,9 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
               <input
                 type="number"
                 value={currentRule.tuitionFee}
+                disabled={isReadOnly}
                 onChange={(e) => handleFeeChange('tuitionFee', Number(e.target.value))}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -126,8 +137,9 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
               <input
                 type="number"
                 value={currentRule.admissionFee}
+                disabled={isReadOnly}
                 onChange={(e) => handleFeeChange('admissionFee', Number(e.target.value))}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -136,8 +148,9 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
               <input
                 type="number"
                 value={currentRule.examFee}
+                disabled={isReadOnly}
                 onChange={(e) => handleFeeChange('examFee', Number(e.target.value))}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -146,8 +159,9 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
               <input
                 type="number"
                 value={currentRule.libraryFee}
+                disabled={isReadOnly}
                 onChange={(e) => handleFeeChange('libraryFee', Number(e.target.value))}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -156,8 +170,9 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
               <input
                 type="number"
                 value={currentRule.developmentFee}
+                disabled={isReadOnly}
                 onChange={(e) => handleFeeChange('developmentFee', Number(e.target.value))}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -166,8 +181,9 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
               <input
                 type="number"
                 value={currentRule.labFee}
+                disabled={isReadOnly}
                 onChange={(e) => handleFeeChange('labFee', Number(e.target.value))}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -193,8 +209,9 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
                 <input
                   type="number"
                   value={currentRule.scholarshipDiscounts.SC}
+                  disabled={isReadOnly}
                   onChange={(e) => handleScholarshipChange('SC', Number(e.target.value))}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -203,8 +220,9 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
                 <input
                   type="number"
                   value={currentRule.scholarshipDiscounts.ST}
+                  disabled={isReadOnly}
                   onChange={(e) => handleScholarshipChange('ST', Number(e.target.value))}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -213,8 +231,9 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
                 <input
                   type="number"
                   value={currentRule.scholarshipDiscounts.OBC}
+                  disabled={isReadOnly}
                   onChange={(e) => handleScholarshipChange('OBC', Number(e.target.value))}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -227,8 +246,9 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
               <input
                 type="number"
                 value={currentRule.lateFeePerDay}
+                disabled={isReadOnly}
                 onChange={(e) => handleFeeChange('lateFeePerDay', Number(e.target.value))}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
           </div>

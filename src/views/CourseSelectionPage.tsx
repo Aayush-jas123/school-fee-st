@@ -4,7 +4,7 @@ import { GraduationCap, BookOpen, ArrowRight, Building2, UserCheck, ChevronRight
 
 interface CourseSelectionPageProps {
   courses: CourseStat[];
-  onSelectCourse: (courseCode: CourseType) => void;
+  onSelectCourse: (courseCode: CourseType | 'ALL') => void;
   staffName: string;
 }
 
@@ -88,14 +88,6 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
                   </p>
                 </div>
 
-                {/* Program Summary Pill */}
-                <div className="bg-slate-950/80 p-3.5 rounded-2xl border border-slate-800/80 flex items-center justify-between text-xs">
-                  <span className="text-slate-400 font-medium">Prescribed Annual Fee:</span>
-                  <strong className="text-white font-bold text-sm">
-                    {isJBT ? '₹65,000 / Year' : '₹78,000 / Year'}
-                  </strong>
-                </div>
-
                 {/* Action CTA Button */}
                 <div
                   className={`w-full py-3.5 px-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg ${
@@ -115,11 +107,11 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
         {/* Overview Option Footer */}
         <div className="text-center pt-4">
           <button
-            onClick={() => onSelectCourse('JBT')}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-md"
+            onClick={() => onSelectCourse('ALL')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-indigo-950/60 hover:bg-indigo-900/60 border border-indigo-500/30 text-indigo-300 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-md"
           >
-            <span>View All Programs Overview</span>
-            <ChevronRight className="w-4 h-4 text-slate-400" />
+            <span>View All Programs Overview (Read-Only)</span>
+            <ChevronRight className="w-4 h-4 text-indigo-400" />
           </button>
         </div>
       </div>

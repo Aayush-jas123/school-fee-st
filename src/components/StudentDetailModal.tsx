@@ -13,9 +13,10 @@ interface StudentDetailModalProps {
   student: Student | null;
   onClose: () => void;
   onEdit: (student: Student) => void;
+  isReadOnly?: boolean;
 }
 
-export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, onClose, onEdit }) => {
+export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, onClose, onEdit, isReadOnly = false }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'breakdown' | 'history'>('overview');
 
   if (!student) return null;
@@ -293,16 +294,18 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
           </button>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                onClose();
-                onEdit(student);
-              }}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold shadow-md transition-colors"
-            >
-              <Edit className="w-4 h-4" />
-              Edit Student Record
-            </button>
+            {!isReadOnly && (
+              <button
+                onClick={() => {
+                  onClose();
+                  onEdit(student);
+                }}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold shadow-md transition-colors"
+              >
+                <Edit className="w-4 h-4" />
+                Edit Student Record
+              </button>
+            )}
             <button
               onClick={onClose}
               className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition-colors"

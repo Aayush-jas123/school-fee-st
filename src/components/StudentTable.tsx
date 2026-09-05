@@ -28,6 +28,7 @@ interface StudentTableProps {
   onStatusFilterChange: (status: FeeStatusType | 'ALL') => void;
   searchTerm: string;
   onSearchChange: (term: string) => void;
+  isReadOnly?: boolean;
 }
 
 type SortField = 'registrationNo' | 'name' | 'rollNo' | 'totalFees' | 'paidTillNow' | 'remainingFees' | 'feeStatus' | 'nextDueDate';
@@ -44,6 +45,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   selectedStatusFilter,
   onStatusFilterChange,
   searchTerm,
+  isReadOnly = false,
 }) => {
   const [sortField, setSortField] = useState<SortField>('registrationNo');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
@@ -409,7 +411,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                   {/* Action Column */}
                   <td className="py-3.5 px-4 text-center whitespace-nowrap">
                     <div className="flex items-center justify-center gap-1.5">
-                      {onRecordPayment && student.remainingFees > 0 && (
+                      {!isReadOnly && onRecordPayment && student.remainingFees > 0 && (
                         <button
                           onClick={() => onRecordPayment(student)}
                           title="Collect Fee Payment"
@@ -418,7 +420,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           Pay
                         </button>
                       )}
-                      {onSendReminder && student.remainingFees > 0 && (
+                      {!isReadOnly && onSendReminder && student.remainingFees > 0 && (
                         <button
                           onClick={() => onSendReminder(student)}
                           title="Send Fee Reminder / Notice"
@@ -430,17 +432,20 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                       <button
                         onClick={() => onViewStudent(student)}
                         title="View Full Profile & Fee Details"
-                        className="p-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-600 text-indigo-400 hover:text-white border border-indigo-500/30 transition-all cursor-pointer"
+                        className="px-2.5 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-600 text-indigo-400 hover:text-white border border-indigo-500/30 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
                       >
                         <Eye className="w-3.5 h-3.5" />
+                        <span>View</span>
                       </button>
-                      <button
-                        onClick={() => onEditStudent(student)}
-                        title="Edit Fee Record"
-                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
+                      {!isReadOnly && (
+                        <button
+                          onClick={() => onEditStudent(student)}
+                          title="Edit Fee Record"
+                          className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

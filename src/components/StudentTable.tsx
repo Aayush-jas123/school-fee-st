@@ -63,6 +63,10 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   const [editingFeeId, setEditingFeeId] = useState<string | null>(null);
   const [tempFeeVal, setTempFeeVal] = useState<number>(0);
 
+  // Inline Paid Amount Edit State
+  const [editingPaidId, setEditingPaidId] = useState<string | null>(null);
+  const [tempPaidVal, setTempPaidVal] = useState<number>(0);
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -99,9 +103,33 @@ export const StudentTable: React.FC<StudentTableProps> = ({
     setEditingFeeId(null);
   };
 
-  // Filter students based on search, course, status, and semester
-  const [selectedSemesterFilter, setSelectedSemesterFilter] = useState<'ALL' | 'Sem 1' | 'Sem 2' | 'Sem 3' | 'Sem 4'>('ALL');
+  const handleSavePaidAmount = (student: Student) => {
+    const newPaid = Number(tempPaidVal);
+    const total = student.totalFees;
+    const remaining = Math.max(0, total - newPaid);
+    const semFee = total > 0 ? Math.round(total / 4) : 0;
+    const updatedSemesterFees: SemesterFeeSlot[] = [
+      { semester: 'Sem 1', year: '1st Year', totalFee: semFee, paidAmount: Math.min(newPaid, semFee), remainingAmount: Math.max(0, semFee - newPaid), status: semFee > 0 && newPaid >= semFee ? 'Paid' : newPaid > 0 ? 'Partly Paid' : 'Unpaid', dueDate: '2026-10-15' },
+      { semester: 'Sem 2', year: '1st Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(newPaid - semFee, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, newPaid - semFee)) : 0, status: newPaid >= semFee * 2 && semFee > 0 ? 'Paid' : newPaid > semFee ? 'Partly Paid' : 'Unpaid', dueDate: '2027-03-15' },
+      { semester: 'Sem 3', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(newPaid - semFee * 2, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, newPaid - semFee * 2)) : 0, status: newPaid >= semFee * 3 && semFee > 0 ? 'Paid' : newPaid > semFee * 2 ? 'Partly Paid' : 'Unpaid', dueDate: '2027-10-15' },
+      { semester: 'Sem 4', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, newPaid - semFee * 3), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, newPaid - semFee * 3)) : 0, status: newPaid >= semFee * 4 && semFee > 0 ? 'Paid' : newPaid > semFee * 3 ? 'Partly Paid' : 'Unpaid', dueDate: '2028-03-15' },
+    ];
 
+    let newStatus: FeeStatusType = 'Unpaid';
+    if (total > 0 && newPaid >= total) newStatus = 'Paid';
+    else if (newPaid > 0) newStatus = 'Partly Paid';
+
+    onEditStudent({
+      ...student,
+      paidTillNow: newPaid,
+      remainingFees: remaining,
+      feeStatus: newStatus,
+      semesterFees: updatedSemesterFees,
+    });
+    setEditingPaidId(null);
+  };
+
+  // Filter students based on search, course, and status
   const filteredStudents = useMemo(() => {
     return students.filter((s) => {
       // Course Filter
@@ -113,12 +141,6 @@ export const StudentTable: React.FC<StudentTableProps> = ({
         if (selectedStatusFilter === 'Unpaid' && (s.feeStatus === 'Unpaid' || s.feeStatus === 'Overdue')) {
           // match both unpaid & overdue
         } else if (s.feeStatus !== selectedStatusFilter) {
-          return false;
-        }
-      }
-      // Semester Filter
-      if (selectedSemesterFilter !== 'ALL') {
-        if (s.currentSemester !== selectedSemesterFilter) {
           return false;
         }
       }
@@ -138,7 +160,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
       return true;
     });
-  }, [students, selectedCourseFilter, selectedStatusFilter, selectedSemesterFilter, searchTerm]);
+  }, [students, selectedCourseFilter, selectedStatusFilter, searchTerm]);
 
   // Sort students
   const sortedStudents = useMemo(() => {
@@ -302,24 +324,6 @@ export const StudentTable: React.FC<StudentTableProps> = ({
             ))}
           </div>
 
-          {/* Semester Filter */}
-          <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700 text-xs">
-            <span className="text-slate-400 px-2 font-medium">Sem Window:</span>
-            {(['ALL', 'Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'] as const).map((sem) => (
-              <button
-                key={sem}
-                onClick={() => setSelectedSemesterFilter(sem)}
-                className={`px-2.5 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
-                  selectedSemesterFilter === sem
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
-                }`}
-              >
-                {sem}
-              </button>
-            ))}
-          </div>
-
           {/* Status Filter */}
           <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700 text-xs">
             <span className="text-slate-400 px-2 font-medium">Status:</span>
@@ -372,12 +376,12 @@ export const StudentTable: React.FC<StudentTableProps> = ({
               </th>
               <th className="py-3.5 px-4 text-right cursor-pointer hover:text-white" onClick={() => handleSort('totalFees')}>
                 <div className="flex items-center justify-end gap-1">
-                  Total Fees <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  Total Fees (Editable) <ArrowUpDown className="w-3 h-3 text-slate-500" />
                 </div>
               </th>
               <th className="py-3.5 px-4 text-right cursor-pointer hover:text-white" onClick={() => handleSort('paidTillNow')}>
                 <div className="flex items-center justify-end gap-1">
-                  Paid Till Now <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                  Paid Till Now (Editable) <ArrowUpDown className="w-3 h-3 text-slate-500" />
                 </div>
               </th>
               <th className="py-3.5 px-4 text-right cursor-pointer hover:text-white" onClick={() => handleSort('remainingFees')}>
@@ -558,9 +562,45 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                       )}
                     </td>
 
-                    {/* Paid Till Now */}
-                    <td className="py-3.5 px-4 text-right font-bold text-emerald-400 whitespace-nowrap">
-                      {formatINR(student.paidTillNow)}
+                    {/* Paid Till Now (Editable Live) */}
+                    <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                      {editingPaidId === student.id ? (
+                        <div className="flex items-center justify-end gap-1">
+                          <input
+                            type="number"
+                            value={tempPaidVal}
+                            onChange={(e) => setTempPaidVal(Number(e.target.value))}
+                            placeholder="Enter Paid"
+                            className="w-24 bg-slate-950 border border-emerald-500 rounded px-2 py-0.5 text-xs text-emerald-400 font-mono text-right font-bold"
+                            autoFocus
+                          />
+                          <button
+                            onClick={() => handleSavePaidAmount(student)}
+                            title="Save Paid Amount"
+                            className="p-1 rounded bg-emerald-600 text-white hover:bg-emerald-500"
+                          >
+                            <Check className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => {
+                            if (!isReadOnly) {
+                              setEditingPaidId(student.id);
+                              setTempPaidVal(student.paidTillNow || 0);
+                            }
+                          }}
+                          title={isReadOnly ? 'Paid Till Now' : 'Click to Edit / Update Amount Paid'}
+                          className={`inline-flex items-center gap-1.5 font-mono text-xs px-2 py-1 rounded-lg border transition-all ${
+                            student.paidTillNow > 0
+                              ? 'bg-slate-800 border-slate-700 text-emerald-400 hover:border-emerald-500 cursor-pointer font-bold'
+                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700 cursor-pointer'
+                          }`}
+                        >
+                          <span>{formatINR(student.paidTillNow)}</span>
+                          {!isReadOnly && <Edit2 className="w-3 h-3 text-slate-500 group-hover:text-emerald-300" />}
+                        </div>
+                      )}
                     </td>
 
                     {/* Remaining Fees */}

@@ -326,29 +326,7 @@ export function App() {
 
           {/* TAB 1: MAIN DASHBOARD */}
           {currentTab === 'dashboard' && (
-            <>
-              {/* Summary Cards */}
-              <DashboardSummaryCards students={dashboardStudents} />
-
-              {/* Recharts Analytics Section */}
-              <AnalyticsCharts students={dashboardStudents} />
-
-              {/* Student Directory Table */}
-              <StudentTable
-                students={students}
-                onViewStudent={(s) => setViewingStudent(s)}
-                onEditStudent={(s) => setEditingStudent(s)}
-                onRecordPayment={(s) => setPaymentStudent(s)}
-                onSendReminder={(s) => setReminderStudent(s)}
-                selectedCourseFilter={selectedCourse}
-                onCourseFilterChange={(c) => setSelectedCourse(c)}
-                selectedStatusFilter={selectedStatus}
-                onStatusFilterChange={(st) => setSelectedStatus(st)}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                isReadOnly={isReadOnlyMode}
-              />
-            </>
+            <DashboardSummaryCards students={dashboardStudents} />
           )}
 
           {/* TAB 2: DIRECTORY ONLY */}

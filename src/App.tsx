@@ -27,6 +27,7 @@ import {
 import {
   fetchStudentsFromDB,
   saveStudentToDB,
+  syncAllStudentsToDB,
   fetchAuditLogsFromDB,
   addAuditLogToDB,
   fetchFeeRulesFromDB,
@@ -216,12 +217,14 @@ export function App() {
 
   // Reset to default demo data
   const handleResetData = async () => {
-    if (confirm('Reset all student fee records and logs back to default institutional demo data?')) {
+    if (confirm('Reset all student fee records and sync full Excel dataset (49 B.Ed students) to database?')) {
       resetToDemoData();
-      setStudents(getStoredStudents());
+      await syncAllStudentsToDB();
+      const freshStudents = await fetchStudentsFromDB();
+      setStudents(freshStudents);
       setAuditLogs(getStoredAuditLogs());
       setFeeRules(getStoredFeeRules());
-      showToast('Reset system to default institutional demo data.');
+      showToast('Reset & synced 49 B.Ed student records to database.');
     }
   };
 

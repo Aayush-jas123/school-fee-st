@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import type { Student, AuditLogEntry, CourseFeeRule, FeeBreakdown, PaymentRecord } from '../types/feeSystem';
+import { INITIAL_STUDENTS } from '../data/mockStudents';
 import {
   getStoredStudents,
   saveStoredStudents,
@@ -94,15 +95,56 @@ export async function fetchStudentsFromDB(): Promise<Student[]> {
       }
 
       if (data && data.length > 0) {
-        const students = data.map(mapRowToStudent);
-        saveStoredStudents(students); // Sync to local storage backup
-        return students;
+        const fetchedStudents = data.map(mapRowToStudent);
+
+        // Check if any INITIAL_STUDENTS (49 B.Ed students) are missing in Supabase Cloud DB
+        const dbIds = new Set(fetchedStudents.map((s) => s.id));
+        const missingInitial = INITIAL_STUDENTS.filter((initS) => !dbIds.has(initS.id));
+
+        if (missingInitial.length > 0) {
+          console.log(`Syncing ${missingInitial.length} missing batch students to Supabase...`);
+          const rowsToUpsert = INITIAL_STUDENTS.map(mapStudentToRow);
+          await supabase.from('students').upsert(rowsToUpsert);
+
+          // Re-fetch all combined students
+          const allMergedMap = new Map<string, Student>();
+          INITIAL_STUDENTS.forEach((s) => allMergedMap.set(s.id, s));
+          fetchedStudents.forEach((s) => allMergedMap.set(s.id, s));
+          const resultList = Array.from(allMergedMap.values());
+
+          saveStoredStudents(resultList);
+          return resultList;
+        }
+
+        saveStoredStudents(fetchedStudents); // Sync to local storage backup
+        return fetchedStudents;
+      } else {
+        // Table is empty, bulk upsert all INITIAL_STUDENTS into Supabase
+        console.log('Supabase table is empty. Uploading all 49 B.Ed students...');
+        const rowsToUpsert = INITIAL_STUDENTS.map(mapStudentToRow);
+        await supabase.from('students').upsert(rowsToUpsert);
+        saveStoredStudents(INITIAL_STUDENTS);
+        return INITIAL_STUDENTS;
       }
     } catch (err) {
       console.warn('Supabase connection failed, falling back to local storage:', err);
     }
   }
   return getStoredStudents();
+}
+
+export async function syncAllStudentsToDB(studentsList: Student[] = INITIAL_STUDENTS): Promise<void> {
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      const rows = studentsList.map(mapStudentToRow);
+      const { error } = await supabase.from('students').upsert(rows);
+      if (error) {
+        console.error('Error syncing all students to Supabase:', error.message);
+      }
+    } catch (err) {
+      console.error('Failed to sync all students to Supabase:', err);
+    }
+  }
 }
 
 export async function saveStudentToDB(student: Student): Promise<void> {

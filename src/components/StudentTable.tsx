@@ -16,6 +16,7 @@ import {
   MessageSquare,
   Check,
   X,
+  Receipt,
 } from 'lucide-react';
 
 interface StudentTableProps {
@@ -24,6 +25,7 @@ interface StudentTableProps {
   onEditStudent: (student: Student) => void;
   onRecordPayment?: (student: Student) => void;
   onSendReminder?: (student: Student) => void;
+  onGenerateReceipt?: (student: Student) => void;
   selectedCourseFilter: CourseType | 'ALL';
   onCourseFilterChange: (course: CourseType | 'ALL') => void;
   selectedStatusFilter: FeeStatusType | 'ALL';
@@ -42,6 +44,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   onEditStudent,
   onRecordPayment,
   onSendReminder,
+  onGenerateReceipt,
   selectedCourseFilter,
   onCourseFilterChange,
   selectedStatusFilter,
@@ -634,6 +637,16 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                             className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-600 text-amber-400 hover:text-white border border-amber-500/30 transition-all cursor-pointer"
                           >
                             Notice
+                          </button>
+                        )}
+                        {onGenerateReceipt && (
+                          <button
+                            onClick={() => onGenerateReceipt(student)}
+                            title="Generate Fee Receipt"
+                            className="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
+                          >
+                            <Receipt className="w-3.5 h-3.5" />
+                            <span>Receipt</span>
                           </button>
                         )}
                         <button

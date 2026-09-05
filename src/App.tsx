@@ -17,6 +17,7 @@ import { FeeStructureManager } from './components/FeeStructureManager';
 import { DailyCollectionReport } from './components/DailyCollectionReport';
 import { AuditLogModal } from './components/AuditLogModal';
 import { PrintableReceipt } from './components/PrintableReceipt';
+import { StudentReceiptModal } from './components/StudentReceiptModal';
 import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 import {
@@ -61,6 +62,7 @@ export function App() {
   const [reminderStudent, setReminderStudent] = useState<Student | null>(null);
   const [showAddStudent, setShowAddStudent] = useState<boolean>(false);
   const [showAuditModal, setShowAuditModal] = useState<boolean>(false);
+  const [receiptStudent, setReceiptStudent] = useState<Student | null>(null);
   const [printableReceiptData, setPrintableReceiptData] = useState<{ student: Student; payment: PaymentRecord } | null>(null);
 
   // Toast feedback
@@ -364,6 +366,7 @@ export function App() {
               onEditStudent={(s) => setEditingStudent(s)}
               onRecordPayment={(s) => setPaymentStudent(s)}
               onSendReminder={(s) => setReminderStudent(s)}
+              onGenerateReceipt={(s) => setReceiptStudent(s)}
               selectedCourseFilter={selectedCourse}
               onCourseFilterChange={(c) => setSelectedCourse(c)}
               selectedStatusFilter={selectedStatus}
@@ -489,6 +492,18 @@ export function App() {
       {/* Audit Log Modal */}
       {showAuditModal && (
         <AuditLogModal logs={auditLogs} onClose={() => setShowAuditModal(false)} />
+      )}
+
+      {/* Student Receipt Generation Modal */}
+      {receiptStudent && (
+        <StudentReceiptModal
+          student={receiptStudent}
+          onClose={() => setReceiptStudent(null)}
+          onGenerateReceipt={(st, pm) => {
+            setReceiptStudent(null);
+            setPrintableReceiptData({ student: st, payment: pm });
+          }}
+        />
       )}
 
       {/* Printable Receipt Overlay */}

@@ -65,8 +65,8 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
               <p><span className="text-slate-500">Registration No:</span> <strong className="font-mono">{student.registrationNo}</strong></p>
             </div>
             <div>
-              <p><span className="text-slate-500">Course Program:</span> <strong className="text-indigo-900 font-extrabold">{student.course} ({student.semester})</strong></p>
-              <p><span className="text-slate-500">Roll No / Session:</span> <strong>{student.rollNo} ({student.session})</strong></p>
+              <p><span className="text-slate-500">Course Program:</span> <strong className="text-indigo-900 font-extrabold">{student.course} ({payment.targetSemester || student.currentSemester || 'Sem 1'})</strong></p>
+              <p><span className="text-slate-500">Roll No / Session:</span> <strong>{student.rollNo || 'Pending'} ({student.session})</strong></p>
               <p><span className="text-slate-500">Category:</span> <strong>{student.category}</strong></p>
             </div>
           </div>
@@ -75,7 +75,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
           <table className="w-full text-xs border-collapse border border-slate-300">
             <thead>
               <tr className="bg-slate-100 text-slate-800 font-bold">
-                <th className="border border-slate-300 p-2 text-left">Particulars / Payment Breakdown</th>
+                <th className="border border-slate-300 p-2 text-left">Particulars / Fee Payment Window</th>
                 <th className="border border-slate-300 p-2 text-center">Payment Mode</th>
                 <th className="border border-slate-300 p-2 text-right">Amount Paid (₹)</th>
               </tr>
@@ -83,7 +83,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
             <tbody>
               <tr>
                 <td className="border border-slate-300 p-2.5">
-                  <p className="font-bold text-slate-900">{payment.remark || 'Tuition Fee Installment'}</p>
+                  <p className="font-bold text-slate-900">{payment.remark || 'Semester Fee Payment'} {payment.targetSemester ? `(${payment.targetSemester})` : ''}</p>
                   <p className="text-[10px] text-slate-500">Ref: {payment.transactionRef}</p>
                 </td>
                 <td className="border border-slate-300 p-2 text-center font-bold">{payment.mode}</td>
@@ -101,7 +101,11 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
                 </tr>
               ) : null}
               <tr className="bg-slate-50">
-                <td colSpan={2} className="border border-slate-300 p-2 text-right font-bold text-slate-700">Total Program Fee:</td>
+                <td colSpan={2} className="border border-slate-300 p-2 text-right font-bold text-slate-700">Prescribed Semester Fee (₹19,500/Sem):</td>
+                <td className="border border-slate-300 p-2 text-right font-bold">{formatCurrencyINR(19500)}</td>
+              </tr>
+              <tr className="bg-slate-50">
+                <td colSpan={2} className="border border-slate-300 p-2 text-right font-bold text-slate-700">Total 2-Year Program Fee:</td>
                 <td className="border border-slate-300 p-2 text-right font-bold">{formatCurrencyINR(student.totalFees)}</td>
               </tr>
               <tr className="bg-emerald-50 text-emerald-950 font-extrabold text-sm">
@@ -109,7 +113,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
                 <td className="border border-slate-300 p-2 text-right">{formatCurrencyINR(student.paidTillNow)}</td>
               </tr>
               <tr className="bg-amber-50 text-amber-950 font-bold text-xs">
-                <td colSpan={2} className="border border-slate-300 p-2 text-right">Balance Outstanding Dues:</td>
+                <td colSpan={2} className="border border-slate-300 p-2 text-right">Overall 2-Year Outstanding Balance:</td>
                 <td className="border border-slate-300 p-2 text-right">{formatCurrencyINR(student.remainingFees)}</td>
               </tr>
             </tbody>

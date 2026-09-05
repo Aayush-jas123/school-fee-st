@@ -18,7 +18,7 @@ interface StudentDetailModalProps {
 }
 
 export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, onClose, onEdit, isReadOnly = false }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'breakdown' | 'history'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'semesters' | 'breakdown' | 'history'>('overview');
 
   if (!student) return null;
 
@@ -58,6 +58,9 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 >
                   {student.course} Program
                 </span>
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                  {student.currentSemester || 'Sem 1'}
+                </span>
                 {student.stream && (
                   <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
                     {student.stream}
@@ -81,29 +84,21 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
         {/* Quick Status Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 bg-slate-950/60 border-b border-slate-800 p-4 gap-3 text-xs">
           <div>
-            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Total Fee</span>
+            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Total 2-Yr Fee</span>
             <span className="text-base font-bold text-white">{formatINR(student.totalFees)}</span>
           </div>
           <div>
-            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Paid Till Now</span>
+            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Total Paid</span>
             <span className="text-base font-bold text-emerald-400">{formatINR(student.paidTillNow)}</span>
           </div>
           <div>
             <span className="text-slate-400 block text-[10px] uppercase font-semibold">Remaining Fees</span>
-            <span className="text-base font-bold text-rose-400">{formatINR(student.remainingFees)}</span>
+            <span className="text-base font-bold text-amber-400">{formatINR(student.remainingFees)}</span>
           </div>
           <div>
-            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Fee Status</span>
-            <span
-              className={`inline-block mt-0.5 px-2 py-0.5 rounded text-xs font-bold ${
-                student.feeStatus === 'Paid'
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                  : student.feeStatus === 'Partly Paid'
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                  : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-              }`}
-            >
-              {student.feeStatus}
+            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Active Semester</span>
+            <span className="inline-block mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+              {student.currentSemester || 'Sem 1'} ({student.feeStatus})
             </span>
           </div>
         </div>
@@ -116,7 +111,15 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
               activeTab === 'overview' ? 'border-indigo-500 text-indigo-400 font-bold' : 'border-transparent hover:text-slate-200'
             }`}
           >
-            Personal & Academic Profile
+            Personal Profile
+          </button>
+          <button
+            onClick={() => setActiveTab('semesters')}
+            className={`py-3 border-b-2 transition-all cursor-pointer ${
+              activeTab === 'semesters' ? 'border-indigo-500 text-indigo-400 font-bold' : 'border-transparent hover:text-slate-200'
+            }`}
+          >
+            4-Semester Fee Ledger
           </button>
           <button
             onClick={() => setActiveTab('breakdown')}
@@ -124,7 +127,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
               activeTab === 'breakdown' ? 'border-indigo-500 text-indigo-400 font-bold' : 'border-transparent hover:text-slate-200'
             }`}
           >
-            Fee Structure Breakdown
+            Annual Headwise Breakdown
           </button>
           <button
             onClick={() => setActiveTab('history')}
@@ -132,7 +135,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
               activeTab === 'history' ? 'border-indigo-500 text-indigo-400 font-bold' : 'border-transparent hover:text-slate-200'
             }`}
           >
-            Payment Transactions ({student.paymentHistory.length})
+            Payment Logs ({student.paymentHistory.length})
           </button>
         </div>
 
@@ -194,20 +197,20 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 {/* Academic & Fee Schedule */}
                 <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-3">
                   <h4 className="font-bold text-slate-200 uppercase tracking-wider text-[11px] flex items-center gap-1.5 border-b border-slate-800 pb-2">
-                    <Building className="w-3.5 h-3.5 text-emerald-400" /> Academic & Fee Schedule
+                    <Building className="w-3.5 h-3.5 text-emerald-400" /> Academic Schedule
                   </h4>
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span className="text-slate-400">Course Program:</span>
-                      <span className="font-bold text-white">{student.course}</span>
+                      <span className="font-bold text-white">{student.course} (2-Year Degree)</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Stream:</span>
                       <span className="font-bold text-amber-300">{student.stream || 'Arts'}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Current Semester/Year:</span>
-                      <span className="font-semibold text-slate-200">{student.semester}</span>
+                      <span className="text-slate-400">Current Semester:</span>
+                      <span className="font-semibold text-indigo-400">{student.currentSemester || 'Sem 1'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Class Roll Number:</span>
@@ -227,7 +230,96 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
             </div>
           )}
 
-          {/* TAB 2: FEE STRUCTURE BREAKDOWN */}
+          {/* TAB 2: 4-SEMESTER FEE LEDGER */}
+          {activeTab === 'semesters' && (
+            <div className="space-y-4 text-xs">
+              <div className="flex items-center justify-between">
+                <p className="text-slate-400">
+                  Detailed 4-Semester Fee Window Ledger (2-Year B.Ed Degree Session 2026-2028):
+                </p>
+                <span className="text-slate-300 font-bold">Sem Fee: ₹19,500 / Sem</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {(student.semesterFees || [
+                  { semester: 'Sem 1', year: '1st Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2026-10-15' },
+                  { semester: 'Sem 2', year: '1st Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2027-03-15' },
+                  { semester: 'Sem 3', year: '2nd Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2027-10-15' },
+                  { semester: 'Sem 4', year: '2nd Year', totalFee: 19500, paidAmount: 0, remainingAmount: 19500, status: 'Unpaid', dueDate: '2028-03-15' },
+                ]).map((slot) => {
+                  const isCurrent = student.currentSemester === slot.semester;
+                  const isPaid = slot.status === 'Paid';
+                  const isPartly = slot.status === 'Partly Paid';
+                  const is1stYear = slot.year === '1st Year';
+
+                  return (
+                    <div
+                      key={slot.semester}
+                      className={`p-4 rounded-2xl border transition-all ${
+                        isCurrent
+                          ? 'bg-indigo-950/30 border-indigo-500/60 ring-1 ring-indigo-500/30'
+                          : 'bg-slate-950/60 border-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between border-b border-slate-800/80 pb-2 mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-sm text-white">{slot.semester}</span>
+                          <span className="text-[10px] text-slate-400 font-medium">({is1stYear ? '1st Year' : '2nd Year'})</span>
+                          {isCurrent && (
+                            <span className="px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 text-[9px] font-bold border border-indigo-500/30">
+                              Active
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                            isPaid
+                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                              : isPartly
+                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                              : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                          }`}
+                        >
+                          {slot.status}
+                        </span>
+                      </div>
+
+                      <div className="space-y-1.5 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Prescribed Fee:</span>
+                          <span className="font-bold text-white">{formatINR(slot.totalFee)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Paid Amount:</span>
+                          <span className="font-bold text-emerald-400">{formatINR(slot.paidAmount)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Semester Due:</span>
+                          <span className={`font-bold ${slot.remainingAmount === 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                            {formatINR(slot.remainingAmount)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Progress bar */}
+                      <div className="mt-3">
+                        <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all duration-300 ${
+                              isPaid ? 'bg-emerald-500' : isPartly ? 'bg-amber-500' : 'bg-slate-700'
+                            }`}
+                            style={{ width: `${Math.min(100, (slot.paidAmount / slot.totalFee) * 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: FEE STRUCTURE BREAKDOWN */}
           {activeTab === 'breakdown' && (
             <div className="space-y-4">
               <p className="text-xs text-slate-400">
@@ -269,7 +361,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                   </tbody>
                   <tfoot className="bg-slate-900 text-white font-bold border-t border-slate-700">
                     <tr>
-                      <td className="p-3">Total Course Annual Fee</td>
+                      <td className="p-3">Total Course 2-Year Fee</td>
                       <td className="p-3 text-right text-sm text-indigo-400">{formatINR(student.totalFees)}</td>
                     </tr>
                   </tfoot>
@@ -278,7 +370,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
             </div>
           )}
 
-          {/* TAB 3: PAYMENT HISTORY */}
+          {/* TAB 4: PAYMENT HISTORY */}
           {activeTab === 'history' && (
             <div className="space-y-4">
               {student.paymentHistory.length === 0 ? (
@@ -294,10 +386,15 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <span className="font-mono font-bold text-indigo-400">{rec.id}</span>
-                          <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold">{rec.mode}</span>
+                          {rec.targetSemester && (
+                            <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30 text-[10px]">
+                              {rec.targetSemester}
+                            </span>
+                          )}
+                          <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold text-[10px]">{rec.mode}</span>
                         </div>
-                        <p className="text-slate-400">{rec.remark}</p>
-                        <p className="text-[10px] text-slate-500 font-mono">Ref: {rec.transactionRef}</p>
+                        <p className="text-slate-300 font-medium">{rec.remark}</p>
+                        <p className="text-[10px] text-slate-500 font-mono">Ref: {rec.transactionRef} | Staff: {rec.staffName || 'Admin'}</p>
                       </div>
 
                       <div className="text-right">

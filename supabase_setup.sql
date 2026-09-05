@@ -25,6 +25,8 @@ CREATE TABLE IF NOT EXISTS public.students (
     address TEXT,
     category TEXT CHECK (category IN ('General', 'OBC', 'SC', 'ST')),
     fee_breakdown JSONB NOT NULL DEFAULT '{}'::jsonb,
+    current_semester TEXT DEFAULT 'Sem 1',
+    semester_fees JSONB NOT NULL DEFAULT '[]'::jsonb,
     payment_history JSONB NOT NULL DEFAULT '[]'::jsonb,
     discount_amount NUMERIC DEFAULT 0,
     scholarship_applied TEXT,
@@ -37,6 +39,8 @@ CREATE TABLE IF NOT EXISTS public.students (
 -- Ensure columns exist if table was previously created
 ALTER TABLE public.students ADD COLUMN IF NOT EXISTS whatsapp_no TEXT;
 ALTER TABLE public.students ADD COLUMN IF NOT EXISTS stream TEXT;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS current_semester TEXT DEFAULT 'Sem 1';
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS semester_fees JSONB DEFAULT '[]'::jsonb;
 
 -- 2. Create 'audit_logs' Table
 CREATE TABLE IF NOT EXISTS public.audit_logs (

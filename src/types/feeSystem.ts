@@ -13,6 +13,18 @@ export interface FeeBreakdown {
   labFee: number;
 }
 
+export type SemesterName = 'Sem 1' | 'Sem 2' | 'Sem 3' | 'Sem 4';
+
+export interface SemesterFeeSlot {
+  semester: SemesterName;
+  year: '1st Year' | '2nd Year';
+  totalFee: number;
+  paidAmount: number;
+  remainingAmount: number;
+  status: FeeStatusType;
+  dueDate: string;
+}
+
 export interface PaymentRecord {
   id: string;
   amount: number;
@@ -20,6 +32,7 @@ export interface PaymentRecord {
   mode: PaymentMode;
   transactionRef: string;
   remark: string;
+  targetSemester?: SemesterName;
   discountApplied?: number;
   staffName?: string;
 }
@@ -35,6 +48,7 @@ export interface Student {
   course: CourseType;
   stream?: string;
   semester: string;
+  currentSemester?: SemesterName;
   rollNo: string;
   session: string;
   totalFees: number;
@@ -45,6 +59,7 @@ export interface Student {
   address: string;
   category: 'General' | 'OBC' | 'SC' | 'ST';
   feeBreakdown: FeeBreakdown;
+  semesterFees?: SemesterFeeSlot[];
   paymentHistory: PaymentRecord[];
   discountAmount?: number;
   scholarshipApplied?: string;

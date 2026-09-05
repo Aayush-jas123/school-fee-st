@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import type { Student, PaymentMode, PaymentRecord } from '../types/feeSystem';
-import { X, QrCode, CheckCircle2, DollarSign } from 'lucide-react';
+import type { Student, PaymentMode, PaymentRecord, SemesterName, SemesterFeeSlot } from '../types/feeSystem';
+import { X, QrCode, CheckCircle2, DollarSign, Layers } from 'lucide-react';
 import { formatCurrencyINR } from '../utils/exportUtils';
 
 interface RecordPaymentModalProps {
@@ -18,15 +18,39 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 }) => {
   if (!student) return null;
 
-  const [amount, setAmount] = useState<number>(student.remainingFees > 0 ? Math.min(35000, student.remainingFees) : 0);
+  // Find default semester slot (first unpaid or current)
+  const defaultSem = student.currentSemester || 'Sem 1';
+  const [selectedSemester, setSelectedSemester] = useState<SemesterName>(defaultSem);
+
+  const currentSemSlot = (student.semesterFees || []).find(s => s.semester === selectedSemester) || {
+    semester: selectedSemester,
+    year: selectedSemester === 'Sem 1' || selectedSemester === 'Sem 2' ? ('1st Year' as const) : ('2nd Year' as const),
+    totalFee: 19500,
+    paidAmount: 0,
+    remainingAmount: 19500,
+    status: 'Unpaid' as const,
+    dueDate: '2026-10-15',
+  };
+
+  const defaultAmount = currentSemSlot.remainingAmount > 0 ? Math.min(19500, currentSemSlot.remainingAmount) : 0;
+  const [amount, setAmount] = useState<number>(defaultAmount);
   const [paymentMode, setPaymentMode] = useState<PaymentMode>('UPI');
   const [transactionRef, setTransactionRef] = useState<string>(`UPI/${Math.floor(1000000000 + Math.random() * 9000000000)}`);
-  const [remark, setRemark] = useState<string>('Installment Fee Payment');
+  const [remark, setRemark] = useState<string>(`${selectedSemester} Fee Payment`);
   const [discount, setDiscount] = useState<number>(0);
   const [showQrModal, setShowQrModal] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const calculatedRemainingAfterPayment = Math.max(0, student.remainingFees - amount - discount);
+  const handleSemesterChange = (sem: SemesterName) => {
+    setSelectedSemester(sem);
+    const slot = (student.semesterFees || []).find(s => s.semester === sem);
+    const semRemaining = slot ? slot.remainingAmount : 19500;
+    setAmount(semRemaining > 0 ? semRemaining : 0);
+    setRemark(`${sem} Fee Payment`);
+  };
+
+  const calculatedSemRemainingAfterPayment = Math.max(0, currentSemSlot.remainingAmount - amount - discount);
+  const calculatedTotalRemainingAfterPayment = Math.max(0, student.remainingFees - amount - discount);
 
   const handleModeChange = (mode: PaymentMode) => {
     setPaymentMode(mode);
@@ -56,12 +80,42 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       remark: remark,
       discountApplied: discount > 0 ? discount : undefined,
       staffName: staffName,
+      targetSemester: selectedSemester,
     };
 
-    const newPaidTillNow = student.paidTillNow + amount + discount;
-    const newRemaining = Math.max(0, student.totalFees - newPaidTillNow);
-    let newStatus: Student['feeStatus'] = 'Partly Paid';
+    const updatedSemesterFees = (student.semesterFees || []).map((slot) => {
+      if (slot.semester === selectedSemester) {
+        const newPaid = slot.paidAmount + amount + discount;
+        const newRem = Math.max(0, slot.totalFee - newPaid);
+        let newSemStatus: SemesterFeeSlot['status'] = 'Partly Paid';
+        if (newRem <= 0) newSemStatus = 'Paid';
+        else if (newPaid === 0) newSemStatus = 'Unpaid';
 
+        return {
+          ...slot,
+          paidAmount: newPaid,
+          remainingAmount: newRem,
+          status: newSemStatus,
+        };
+      }
+      return slot;
+    });
+
+    const newPaidTillNow = updatedSemesterFees.reduce((sum, s) => sum + s.paidAmount, 0);
+    const newRemaining = Math.max(0, student.totalFees - newPaidTillNow);
+
+    // Advance current semester if selected semester becomes fully paid and next semester exists
+    let nextSemester = student.currentSemester;
+    if (selectedSemester === student.currentSemester) {
+      const currentSlot = updatedSemesterFees.find(s => s.semester === selectedSemester);
+      if (currentSlot && currentSlot.status === 'Paid') {
+        if (selectedSemester === 'Sem 1') nextSemester = 'Sem 2';
+        else if (selectedSemester === 'Sem 2') nextSemester = 'Sem 3';
+        else if (selectedSemester === 'Sem 3') nextSemester = 'Sem 4';
+      }
+    }
+
+    let newStatus: Student['feeStatus'] = 'Partly Paid';
     if (newRemaining <= 0) {
       newStatus = 'Paid';
     } else if (newPaidTillNow === 0) {
@@ -73,6 +127,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       paidTillNow: newPaidTillNow,
       remainingFees: newRemaining,
       feeStatus: newStatus,
+      currentSemester: nextSemester,
+      semesterFees: updatedSemesterFees,
       paymentHistory: [newPaymentRecord, ...student.paymentHistory],
       discountAmount: (student.discountAmount || 0) + discount,
     };
@@ -83,7 +139,6 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       onClose();
     }, 400);
   };
-
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
@@ -96,7 +151,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             </div>
             <div>
               <h2 className="text-xl font-bold text-white tracking-tight">Record Fee Payment</h2>
-              <p className="text-xs text-slate-400">Collect payment & issue official receipt</p>
+              <p className="text-xs text-slate-400">Collect Semester Fee & Issue Official Digital Receipt</p>
             </div>
           </div>
           <button
@@ -108,33 +163,94 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         </div>
 
         {/* Student Summary Pill */}
-        <div className="bg-slate-950/80 rounded-2xl p-4 border border-slate-800/80 mb-6 space-y-2">
+        <div className="bg-slate-950/80 rounded-2xl p-4 border border-slate-800/80 mb-5 space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="text-slate-400">Student:</span>
             <span className="font-bold text-white text-sm">{student.name} ({student.course})</span>
           </div>
           <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400">Registration No:</span>
-            <span className="font-mono text-indigo-400 font-semibold">{student.registrationNo}</span>
+            <span className="text-slate-400">Father's Name / Reg No:</span>
+            <span className="font-mono text-indigo-400 font-semibold">{student.fatherName} | {student.registrationNo}</span>
           </div>
           <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800/60 text-center">
             <div className="bg-slate-900 p-2 rounded-xl border border-slate-800">
-              <span className="text-[10px] text-slate-400 block">Total Fee</span>
+              <span className="text-[10px] text-slate-400 block">Total Degree Fee</span>
               <span className="text-xs font-bold text-white">{formatCurrencyINR(student.totalFees)}</span>
             </div>
             <div className="bg-slate-900 p-2 rounded-xl border border-slate-800">
-              <span className="text-[10px] text-slate-400 block">Paid So Far</span>
+              <span className="text-[10px] text-slate-400 block">Total Paid So Far</span>
               <span className="text-xs font-bold text-emerald-400">{formatCurrencyINR(student.paidTillNow)}</span>
             </div>
             <div className="bg-slate-900 p-2 rounded-xl border border-slate-800">
-              <span className="text-[10px] text-slate-400 block">Current Dues</span>
+              <span className="text-[10px] text-slate-400 block">Overall Balance</span>
               <span className="text-xs font-bold text-amber-400">{formatCurrencyINR(student.remainingFees)}</span>
             </div>
           </div>
         </div>
 
+        {/* Target Semester Window Selector */}
+        <div className="mb-5">
+          <label className="block text-slate-300 font-semibold text-xs mb-1.5 flex items-center gap-1.5">
+            <Layers className="w-4 h-4 text-indigo-400" /> Select Target Semester Payment Window:
+          </label>
+          <div className="grid grid-cols-4 gap-2">
+            {(['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'] as SemesterName[]).map((sem) => {
+              const slot = (student.semesterFees || []).find(s => s.semester === sem);
+              const isSelected = selectedSemester === sem;
+              const isPaid = slot?.status === 'Paid';
+              const isPartly = slot?.status === 'Partly Paid';
+
+              return (
+                <button
+                  type="button"
+                  key={sem}
+                  onClick={() => handleSemesterChange(sem)}
+                  className={`p-2.5 rounded-xl border text-left transition-all relative ${
+                    isSelected
+                      ? 'bg-indigo-600/20 border-indigo-500 text-white ring-2 ring-indigo-500/50'
+                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs">{sem}</span>
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${
+                      isPaid
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        : isPartly
+                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                    }`}>
+                      {slot?.status || 'Unpaid'}
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-1">
+                    Due: <span className="text-white font-mono font-medium">{formatCurrencyINR(slot ? slot.remainingAmount : 19500)}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Payment Form */}
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+          {/* Quick Option: Full Sem vs Custom Installment */}
+          <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between gap-2">
+            <div>
+              <div className="font-semibold text-white">{selectedSemester} Fee: ₹19,500</div>
+              <div className="text-[11px] text-slate-400">Current Semester Remaining: <span className="text-amber-400 font-bold">{formatCurrencyINR(currentSemSlot.remainingAmount)}</span></div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setAmount(currentSemSlot.remainingAmount)}
+                className="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 text-xs font-bold"
+              >
+                1-Click Full Sem Payment ({formatCurrencyINR(currentSemSlot.remainingAmount)})
+              </button>
+            </div>
+          </div>
+
           {/* Payment Mode Selector */}
           <div>
             <label className="block text-slate-300 font-medium mb-1.5">Payment Method</label>
@@ -164,7 +280,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 <input
                   type="number"
                   min={1}
-                  max={student.remainingFees}
+                  max={currentSemSlot.remainingAmount || 19500}
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
                   required
@@ -172,10 +288,10 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 />
                 <button
                   type="button"
-                  onClick={() => setAmount(student.remainingFees)}
+                  onClick={() => setAmount(currentSemSlot.remainingAmount)}
                   className="absolute right-2 top-1.5 px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 text-[10px] font-bold"
                 >
-                  Full Due
+                  Full Sem
                 </button>
               </div>
             </div>
@@ -213,7 +329,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 value={remark}
                 onChange={(e) => setRemark(e.target.value)}
                 required
-                placeholder="e.g. 1st Installment Fee"
+                placeholder="e.g. Sem 1 Installment Fee"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500"
               />
             </div>
@@ -224,7 +340,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             <div className="bg-indigo-950/40 border border-indigo-800/60 rounded-xl p-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <QrCode className="w-5 h-5 text-indigo-400" />
-                <span className="text-slate-300 font-medium">Generate Instant Student Payment QR</span>
+                <span className="text-slate-300 font-medium">Generate Dynamic Payment QR ({selectedSemester})</span>
               </div>
               <button
                 type="button"
@@ -238,10 +354,18 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Post-Payment Calculated Preview */}
           <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
-            <span className="text-slate-400">Remaining Balance After Payment:</span>
-            <span className={`font-bold text-sm ${calculatedRemainingAfterPayment === 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
-              {formatCurrencyINR(calculatedRemainingAfterPayment)}
-            </span>
+            <div>
+              <span className="text-slate-400 block font-medium">{selectedSemester} Balance After Payment:</span>
+              <span className={`font-bold text-sm ${calculatedSemRemainingAfterPayment === 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                {formatCurrencyINR(calculatedSemRemainingAfterPayment)}
+              </span>
+            </div>
+            <div className="text-right">
+              <span className="text-slate-400 block font-medium">Overall 2-Yr Balance:</span>
+              <span className={`font-bold text-sm ${calculatedTotalRemainingAfterPayment === 0 ? 'text-emerald-400' : 'text-slate-200'}`}>
+                {formatCurrencyINR(calculatedTotalRemainingAfterPayment)}
+              </span>
+            </div>
           </div>
 
           {/* Action Buttons */}
@@ -259,7 +383,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-2 cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4" />
-              {isSubmitting ? 'Processing...' : 'Confirm & Collect Payment'}
+              {isSubmitting ? 'Processing...' : 'Confirm & Print Receipt'}
             </button>
           </div>
         </form>

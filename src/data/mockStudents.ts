@@ -29,7 +29,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-002",
@@ -59,7 +98,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-003",
@@ -89,7 +167,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-004",
@@ -119,7 +236,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-005",
@@ -149,7 +305,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-006",
@@ -179,7 +374,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-007",
@@ -209,7 +443,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-008",
@@ -239,7 +512,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-009",
@@ -269,7 +581,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-010",
@@ -299,7 +650,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-011",
@@ -329,7 +719,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-012",
@@ -359,7 +788,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-013",
@@ -389,7 +857,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-014",
@@ -419,7 +926,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-015",
@@ -449,7 +995,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-016",
@@ -479,7 +1064,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-017",
@@ -509,7 +1133,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-018",
@@ -539,7 +1202,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-019",
@@ -569,7 +1271,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-020",
@@ -599,7 +1340,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-021",
@@ -629,7 +1409,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-022",
@@ -659,7 +1478,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-023",
@@ -689,7 +1547,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-024",
@@ -719,7 +1616,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-025",
@@ -749,7 +1685,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-026",
@@ -779,7 +1754,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-027",
@@ -809,7 +1823,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-028",
@@ -839,7 +1892,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-029",
@@ -869,7 +1961,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-030",
@@ -899,7 +2030,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-031",
@@ -929,7 +2099,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-032",
@@ -959,7 +2168,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-033",
@@ -989,7 +2237,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-034",
@@ -1019,7 +2306,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-035",
@@ -1049,7 +2375,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-036",
@@ -1079,7 +2444,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-037",
@@ -1109,7 +2513,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-038",
@@ -1139,7 +2582,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-039",
@@ -1169,7 +2651,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-040",
@@ -1199,7 +2720,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-041",
@@ -1229,7 +2789,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-042",
@@ -1259,7 +2858,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-043",
@@ -1289,7 +2927,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-044",
@@ -1319,7 +2996,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-045",
@@ -1349,7 +3065,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-046",
@@ -1379,7 +3134,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-047",
@@ -1409,7 +3203,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-048",
@@ -1439,7 +3272,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   },
   {
     "id": "STU-BED-049",
@@ -1469,7 +3341,46 @@ export const INITIAL_STUDENTS: Student[] = [
       "developmentFee": 5000,
       "labFee": 3000
     },
-    "paymentHistory": []
+    "paymentHistory": [],
+    "currentSemester": "Sem 1",
+    "semesterFees": [
+      {
+        "semester": "Sem 1",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2026-10-15"
+      },
+      {
+        "semester": "Sem 2",
+        "year": "1st Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-03-15"
+      },
+      {
+        "semester": "Sem 3",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2027-10-15"
+      },
+      {
+        "semester": "Sem 4",
+        "year": "2nd Year",
+        "totalFee": 19500,
+        "paidAmount": 0,
+        "remainingAmount": 19500,
+        "status": "Unpaid",
+        "dueDate": "2028-03-15"
+      }
+    ]
   }
 ];
 
@@ -1491,7 +3402,7 @@ export const COURSE_DEFINITIONS: CourseStat[] = [
     code: 'B.Ed',
     title: 'B.Ed',
     fullName: 'Bachelor of Education (Secondary Teacher Education)',
-    duration: '2 Years Degree',
+    duration: '2 Years Degree (4 Semesters)',
     totalStudents: 49,
     pendingStudents: 49,
     totalExpected: 3822000,

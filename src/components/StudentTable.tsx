@@ -73,7 +73,9 @@ export const StudentTable: React.FC<StudentTableProps> = ({
     setEditingRollId(null);
   };
 
-  // Filter students based on search, course, and status
+  // Filter students based on search, course, status, and semester
+  const [selectedSemesterFilter, setSelectedSemesterFilter] = useState<'ALL' | 'Sem 1' | 'Sem 2' | 'Sem 3' | 'Sem 4'>('ALL');
+
   const filteredStudents = useMemo(() => {
     return students.filter((s) => {
       // Course Filter
@@ -88,6 +90,12 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           return false;
         }
       }
+      // Semester Filter
+      if (selectedSemesterFilter !== 'ALL') {
+        if (s.currentSemester !== selectedSemesterFilter) {
+          return false;
+        }
+      }
       // Search term match
       if (searchTerm && searchTerm.trim() !== '') {
         const query = searchTerm.trim().toLowerCase();
@@ -98,12 +106,13 @@ export const StudentTable: React.FC<StudentTableProps> = ({
         const matchesFather = (s.fatherName || '').toLowerCase().includes(query);
         const matchesStream = (s.stream || '').toLowerCase().includes(query);
         const matchesCategory = (s.category || '').toLowerCase().includes(query);
-        return matchesName || matchesReg || matchesRoll || matchesPhone || matchesFather || matchesStream || matchesCategory;
+        const matchesSem = (s.currentSemester || '').toLowerCase().includes(query);
+        return matchesName || matchesReg || matchesRoll || matchesPhone || matchesFather || matchesStream || matchesCategory || matchesSem;
       }
 
       return true;
     });
-  }, [students, selectedCourseFilter, selectedStatusFilter, searchTerm]);
+  }, [students, selectedCourseFilter, selectedStatusFilter, selectedSemesterFilter, searchTerm]);
 
   // Sort students
   const sortedStudents = useMemo(() => {
@@ -167,7 +176,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   };
 
   const exportCSV = () => {
-    const headers = ['Registration No', 'Student Name', 'Father Name', 'Phone', 'WhatsApp', 'Course', 'Stream', 'Roll No', 'Session', 'Total Fees', 'Paid', 'Remaining', 'Status', 'Next Due Date'];
+    const headers = ['Registration No', 'Student Name', 'Father Name', 'Phone', 'WhatsApp', 'Course', 'Stream', 'Current Sem', 'Roll No', 'Session', 'Total Fees', 'Paid', 'Remaining', 'Status', 'Next Due Date'];
     const rows = sortedStudents.map((s) => [
       s.registrationNo,
       s.name,
@@ -176,6 +185,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
       s.whatsappNo || s.phone,
       s.course,
       s.stream || 'Arts',
+      s.currentSemester || 'Sem 1',
       s.rollNo,
       s.session,
       s.totalFees,
@@ -218,7 +228,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 type="text"
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Search Name, Reg No, Roll No..."
+                placeholder="Search Name, Reg No, Roll No, Sem..."
                 className="w-full pl-9 pr-8 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all shadow-inner font-medium"
               />
               {searchTerm && (
@@ -262,6 +272,24 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 }`}
               >
                 {c === 'ALL' ? 'All Courses' : c}
+              </button>
+            ))}
+          </div>
+
+          {/* Semester Filter */}
+          <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700 text-xs">
+            <span className="text-slate-400 px-2 font-medium">Sem Window:</span>
+            {(['ALL', 'Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'] as const).map((sem) => (
+              <button
+                key={sem}
+                onClick={() => setSelectedSemesterFilter(sem)}
+                className={`px-2.5 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
+                  selectedSemesterFilter === sem
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                }`}
+              >
+                {sem}
               </button>
             ))}
           </div>
@@ -405,14 +433,17 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                       </div>
                     </td>
 
-                    {/* Course & Stream */}
+                    {/* Course, Stream & Semester */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="flex items-center gap-1.5">
                         <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
                           {student.course}
                         </span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                          {student.currentSemester || 'Sem 1'}
+                        </span>
                         {student.stream && (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
                             {student.stream}
                           </span>
                         )}

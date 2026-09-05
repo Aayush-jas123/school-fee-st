@@ -40,6 +40,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
   const waLink = cleanWhatsapp ? `https://wa.me/91${cleanWhatsapp.slice(-10)}` : null;
 
   return (
+    <AnimatePresence>
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -329,7 +330,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                         <div className="w-full bg-zinc-900/50 rounded-full h-1.5 overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${
-                              isPaid ? 'bg-emerald-500' : isPartly ? 'bg-amber-500' : 'bg-slate-700'
+                              isPaid ? 'bg-emerald-500' : isPartly ? 'bg-amber-500' : 'bg-zinc-700'
                             }`}
                             style={{ width: `${slot.totalFee > 0 ? Math.min(100, (slot.paidAmount / slot.totalFee) * 100) : 0}%` }}
                           />

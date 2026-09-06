@@ -47,6 +47,7 @@ export function App() {
   // Navigation & Authentication state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [staffName, setStaffName] = useState('Dr. Rajesh Sharma');
+  const [userRole, setUserRole] = useState<'admin' | 'clerk'>('admin');
   const [activeView, setActiveView] = useState<'course_select' | 'dashboard'>('course_select');
   const [currentTab, setCurrentTab] = useState('dashboard');
 
@@ -119,8 +120,9 @@ export function App() {
   };
 
   // Login handler
-  const handleLoginSuccess = (name: string) => {
+  const handleLoginSuccess = (name: string, role: 'admin' | 'clerk') => {
     setStaffName(name);
+    setUserRole(role);
     setIsLoggedIn(true);
     setActiveView('course_select');
   };
@@ -341,8 +343,10 @@ export function App() {
     }
   };
 
-  // Compute read-only state for Overview portal mode
+  // Compute read-only state for Overview portal mode OR clerk user
   const isReadOnlyMode = selectedCourse === 'ALL';
+  const isClerkUser = userRole === 'clerk';
+  const blockEditing = isReadOnlyMode || isClerkUser;
 
   // Render Login Page if not logged in
   if (!isLoggedIn) {
@@ -373,6 +377,7 @@ export function App() {
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         availableSessions={availableSessions}
+        userRole={userRole}
       />
 
       {/* Toast Notification Popup */}
@@ -421,28 +426,31 @@ export function App() {
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="text-[11px] font-bold text-stone-700 uppercase tracking-widest bg-stone-100 px-2.5 py-0.5 rounded-full border border-stone-200">
-                  {isReadOnlyMode ? 'Read-Only Overview Portal' : 'Institutional Fee Portal'}
+                  {blockEditing ? (isClerkUser ? 'Clerk View-Only Access' : 'Read-Only Overview Portal') : 'Institutional Fee Portal'}
                 </span>
                 <span className="text-stone-500">•</span>
-                <span className={`text-xs font-semibold ${isReadOnlyMode ? 'text-stone-500' : 'text-stone-700'}`}>
-                  {isReadOnlyMode ? 'Viewing Live Data (Editing Locked)' : `${selectedCourse} Program Selected`}
+                <span className={`text-xs font-semibold ${blockEditing ? 'text-stone-500' : 'text-stone-700'}`}>
+                  {blockEditing ? (isClerkUser ? 'Viewing All Data (Editing Locked)' : 'Viewing Live Data (Editing Locked)') : `${selectedCourse} Program Selected`}
                 </span>
               </div>
               <h1 className="text-2xl md:text-3xl font-extrabold text-stone-900 tracking-tight">
-                {isReadOnlyMode
-                  ? 'All Programs Overview Portal'
+                {blockEditing
+                  ? (isClerkUser ? `${selectedCourse === 'ALL' ? 'All Programs' : selectedCourse} — View-Only Mode`
+                  : 'All Programs Overview Portal')
                   : `${selectedCourse} Program Fee Management`}
               </h1>
               <p className="text-xs text-stone-500 mt-1 max-w-xl">
-                {isReadOnlyMode
-                  ? 'Viewing live statistical fee records & analytics for JBT & B.Ed programs in Read-Only mode. Access specific program portals to manage student records.'
+                {blockEditing
+                  ? (isClerkUser
+                    ? 'You are logged in with clerk privileges. All data is visible but editing, payments, and record modifications are restricted.'
+                    : 'Viewing live statistical fee records & analytics for JBT & B.Ed programs in Read-Only mode. Access specific program portals to manage student records.')
                   : 'Track student fee collections, issue instant digital receipts, manage JBT & B.Ed program dues, and broadcast fee reminders.'}
               </p>
             </div>
 
             {/* Quick CTAs */}
             <div className="flex flex-wrap items-center gap-2.5 relative z-10">
-              {!isReadOnlyMode && (
+              {!blockEditing && (
                 <>
                   <button
                     onClick={() => setShowImportModal(true)}
@@ -483,7 +491,7 @@ export function App() {
                 <Download className="w-3.5 h-3.5 text-stone-600" /> Export CSV
               </motion.button>
 
-              {!isReadOnlyMode && (
+              {!blockEditing && (
                 <motion.button
                   whileHover={{ scale: 1.05, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
@@ -517,7 +525,7 @@ export function App() {
               onStatusFilterChange={(st) => setSelectedStatus(st)}
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
-              isReadOnly={isReadOnlyMode}
+              isReadOnly={blockEditing}
             />
           )}
 
@@ -549,13 +557,13 @@ export function App() {
               onCollectFee={(s) => setPaymentStudent(s)}
               onGenerateReceipt={(s) => setReceiptStudent(s)}
               onViewReceipt={(s, p) => setPrintableReceiptData({ student: s, payment: p })}
-              isReadOnly={isReadOnlyMode}
+              isReadOnly={blockEditing}
             />
           )}
 
           {/* TAB 6: FEE STRUCTURES */}
           {currentTab === 'structures' && (
-            <FeeStructureManager rules={feeRules} sessions={availableSessions} onSaveRules={handleSaveFeeRules} onApplyToAllStudents={handleApplyFeeRulesToAllStudents} isReadOnly={isReadOnlyMode} />
+            <FeeStructureManager rules={feeRules} sessions={availableSessions} onSaveRules={handleSaveFeeRules} onApplyToAllStudents={handleApplyFeeRulesToAllStudents} isReadOnly={blockEditing} />
           )}
 
           {/* TAB 7: BACKUP & RESTORE */}
@@ -570,7 +578,7 @@ export function App() {
                 refreshAuditLogs();
                 showToast(`Backup restored: ${restoredStudents.length} students loaded`);
               }}
-              isReadOnly={isReadOnlyMode}
+              isReadOnly={blockEditing}
             />
           )}
         </main>
@@ -578,7 +586,7 @@ export function App() {
 
       {/* Record Payment Modal */}
       <AnimatePresence>
-      {paymentStudent && !isReadOnlyMode && (
+      {paymentStudent && !blockEditing && (
         <RecordPaymentModal
           student={paymentStudent}
           onClose={() => setPaymentStudent(null)}
@@ -589,7 +597,7 @@ export function App() {
       </AnimatePresence>
 
       {/* Add New Student Modal */}
-      {showAddStudent && !isReadOnlyMode && (
+      {showAddStudent && !blockEditing && (
         <AddStudentModal
           onClose={() => setShowAddStudent(false)}
           onAddStudent={handleAddStudentSuccess}
@@ -597,7 +605,7 @@ export function App() {
       )}
 
       {/* Fee Reminder Modal */}
-      {reminderStudent && !isReadOnlyMode && (
+      {reminderStudent && !blockEditing && (
         <FeeReminderModal
           student={reminderStudent}
           onClose={() => setReminderStudent(null)}
@@ -613,15 +621,17 @@ export function App() {
         onViewReceipt={(s, p) => setPrintableReceiptData({ student: s, payment: p })}
         onCollectPayment={(s) => { setViewingStudent(null); setPaymentStudent(s); }}
         onOpenReceiptCenter={(s) => { setViewingStudent(null); setReceiptStudent(s); }}
-        isReadOnly={isReadOnlyMode}
+        isReadOnly={blockEditing}
       />
 
       {/* Edit Student Modal */}
+      {editingStudent && !blockEditing && (
       <EditStudentModal
         student={editingStudent}
         onClose={() => setEditingStudent(null)}
         onSave={handleSaveStudent}
       />
+      )}
 
       {/* Audit Log Modal */}
       {showAuditModal && (
@@ -641,7 +651,7 @@ export function App() {
       )}
 
       {/* Import Data Modal */}
-      {showImportModal && !isReadOnlyMode && (
+      {showImportModal && !blockEditing && (
         <ImportDataModal
           onClose={() => setShowImportModal(false)}
           onImport={handleImportStudents}

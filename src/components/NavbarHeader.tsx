@@ -1,6 +1,6 @@
 import React from 'react';
 import type { CourseType } from '../types/feeSystem';
-import { Building2, Search, Bell, LogOut, ChevronDown, Calendar, Database, Zap, X } from 'lucide-react';
+import { Building2, Search, Bell, LogOut, ChevronDown, Calendar, Database, Zap, X, Eye } from 'lucide-react';
 import { isSupabaseConfigured } from '../lib/supabase';
 
 interface NavbarHeaderProps {
@@ -13,6 +13,7 @@ interface NavbarHeaderProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
   availableSessions?: string[];
+  userRole?: 'admin' | 'clerk';
 }
 
 export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
@@ -20,10 +21,12 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
   onCourseChange,
   selectedSession,
   onSessionChange,
+  staffName: _staffName,
   onLogout,
   searchTerm,
   onSearchChange,
   availableSessions = [],
+  userRole = 'admin',
 }) => {
   const isSupabaseActive = isSupabaseConfigured();
 
@@ -121,6 +124,13 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
             <Bell className="w-4 h-4" />
             <span className="w-2 h-2 rounded-full bg-rose-800 absolute top-2 right-2 animate-pulse" />
           </button>
+
+          {/* Staff role badge */}
+          {userRole === 'clerk' && (
+            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-[10px] font-bold uppercase tracking-wider">
+              <Eye className="w-3 h-3" /> View Only
+            </div>
+          )}
 
           {/* Logout Button */}
           <button

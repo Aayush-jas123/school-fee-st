@@ -204,6 +204,24 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               )}
             </motion.button>
           </form>
+
+          {/* Demo Credentials Hint */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.4 }}
+            className="mt-5 p-3 rounded-xl bg-stone-50 border border-stone-200 text-[11px] text-stone-500 space-y-1"
+          >
+            <p className="font-semibold text-stone-600 text-center mb-1.5">Demo Credentials</p>
+            <div className="flex justify-between items-center">
+              <span><strong className="text-stone-700">Admin:</strong> admin / admin@123</span>
+              <span className="text-stone-400">Full Access</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span><strong className="text-stone-700">Clerk:</strong> clerk / clerk@123</span>
+              <span className="text-amber-600 font-medium">View Only</span>
+            </div>
+          </motion.div>
         </div>
 
         {/* Footer info */}

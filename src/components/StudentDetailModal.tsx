@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Student, PaymentRecord } from '../types/feeSystem';
+import { getPeriodsForCourse, buildPeriodFeeSlots } from '../types/feeSystem';
 import {
   X,
   User,
@@ -89,8 +90,8 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 >
                   {student.course} Program
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-violet-500/20 text-neutral-700 border border-neutral-200">
-                  {student.currentSemester || 'Sem 1'}
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
+                  {student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1')}
                 </span>
                 {student.stream && (
                   <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
@@ -106,7 +107,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
+            className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -128,7 +129,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
           </div>
           <div>
             <span className="text-neutral-500 block text-[10px] uppercase font-semibold">Active Semester</span>
-            <span className="inline-block mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-violet-500/20 text-neutral-700 border border-neutral-200">
+            <span className="inline-block mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
               {student.currentSemester || 'Sem 1'} ({student.feeStatus})
             </span>
           </div>
@@ -261,25 +262,20 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
             </div>
           )}
 
-          {/* TAB 2: 4-SEMESTER FEE LEDGER */}
+          {/* TAB 2: PERIOD FEE LEDGER */}
           {activeTab === 'semesters' && (
             <div className="space-y-4 text-xs">
               <div className="flex items-center justify-between">
                 <p className="text-neutral-500">
-                  Detailed 4-Semester Fee Window Ledger (2-Year B.Ed Degree Session 2026-2028):
+                  Detailed {student.course === 'JBT' ? '2-Session' : '4-Semester'} Fee Window Ledger ({student.course} Program Session {student.session}):
                 </p>
                 <span className="text-neutral-700 font-bold">
-                  {student.totalFees > 0 ? `Sem Fee: ${formatINR(Math.round((student.totalFees - (student.discountAmount || 0)) / 4))} / Sem` : 'Sem Fee: NIL (TBD)'}
+                  {student.totalFees > 0 ? `${student.course === 'JBT' ? 'Session' : 'Sem'} Fee: ${formatINR(Math.round((student.totalFees - (student.discountAmount || 0)) / getPeriodsForCourse(student.course).length))} / ${student.course === 'JBT' ? 'Sess' : 'Sem'}` : 'Fee: NIL (TBD)'}
                 </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(student.semesterFees || [
-                  { semester: 'Sem 1', year: '1st Year', totalFee: 0, paidAmount: 0, remainingAmount: 0, status: 'Unpaid', dueDate: '2026-10-15' },
-                  { semester: 'Sem 2', year: '1st Year', totalFee: 0, paidAmount: 0, remainingAmount: 0, status: 'Unpaid', dueDate: '2027-03-15' },
-                  { semester: 'Sem 3', year: '2nd Year', totalFee: 0, paidAmount: 0, remainingAmount: 0, status: 'Unpaid', dueDate: '2027-10-15' },
-                  { semester: 'Sem 4', year: '2nd Year', totalFee: 0, paidAmount: 0, remainingAmount: 0, status: 'Unpaid', dueDate: '2028-03-15' },
-                ]).map((slot) => {
+                {(student.semesterFees && student.semesterFees.length > 0 ? student.semesterFees : buildPeriodFeeSlots(student.course, student.totalFees, 0)).map((slot) => {
                   const isCurrent = student.currentSemester === slot.semester;
                   const isPaid = slot.status === 'Paid';
                   const isPartly = slot.status === 'Partly Paid';
@@ -304,7 +300,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                           <span className="font-extrabold text-sm text-neutral-900">{slot.semester}</span>
                           <span className="text-[10px] text-neutral-500 font-medium">({is1stYear ? '1st Year' : '2nd Year'})</span>
                           {isCurrent && (
-                            <span className="px-1.5 py-0.5 rounded bg-violet-500/20 text-neutral-700 text-[9px] font-bold border border-neutral-200">
+                            <span className="px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[9px] font-bold border border-neutral-200">
                               Active
                             </span>
                           )}
@@ -315,7 +311,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                               ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                               : isPartly
                               ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
-                              : 'bg-rose-500/20 text-neutral-700 border border-rose-500/30'
+                              : 'bg-neutral-200 text-neutral-700 border border-neutral-300'
                           }`}
                         >
                           {slot.status}
@@ -379,7 +375,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                                   {onViewReceipt && (
                                     <button
                                       onClick={() => onViewReceipt(student, inst)}
-                                      className="p-1 rounded bg-violet-600/30 hover:bg-violet-600 text-neutral-700 hover:text-neutral-900 transition-colors cursor-pointer"
+                                      className="p-1 rounded bg-neutral-100 hover:bg-neutral-900 text-neutral-700 hover:text-white transition-colors cursor-pointer border border-neutral-200"
                                       title="Print Receipt"
                                     >
                                       <Printer className="w-3 h-3" />
@@ -412,7 +408,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                       <th className="p-3 text-right">Amount (₹)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-800/40 text-neutral-700">
+                  <tbody className="divide-y divide-neutral-200 text-neutral-700">
                     <tr>
                       <td className="p-3 font-medium">Tuition & Academic Training Fee</td>
                       <td className="p-3 text-right font-bold text-neutral-900">{formatINR(student.feeBreakdown.tuitionFee)}</td>
@@ -488,7 +484,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-mono font-bold text-neutral-700">{rec.id}</span>
                             {rec.targetSemester && (
-                              <span className="px-2 py-0.5 rounded bg-violet-500/20 text-neutral-700 font-bold border border-neutral-200 text-[10px]">
+                              <span className="px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 font-bold border border-neutral-200 text-[10px]">
                                 {rec.targetSemester}
                               </span>
                             )}
@@ -523,7 +519,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
             {!isReadOnly && student.remainingFees > 0 && onCollectPayment && (
               <button
                 onClick={handleCollectFee}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold shadow-md transition-colors cursor-pointer"
               >
                 <DollarSign className="w-4 h-4" />
                 Collect Fee
@@ -532,7 +528,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
             {onOpenReceiptCenter && (
               <button
                 onClick={handleOpenReceiptCenter}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold shadow-md transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold shadow-md transition-colors cursor-pointer"
               >
                 <Receipt className="w-4 h-4" />
                 Generate Receipt
@@ -547,7 +543,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                   onClose();
                   onEdit(student);
                 }}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-neutral-900 font-semibold shadow-md transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-semibold shadow-md transition-colors"
               >
                 <Edit className="w-4 h-4" />
                 Edit Student Record
@@ -555,7 +551,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
             )}
             <button
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 font-semibold transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold transition-colors"
             >
               Close
             </button>

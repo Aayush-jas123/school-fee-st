@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import type { Student, AuditLogEntry, CourseFeeRule, FeeBreakdown, PaymentRecord, SeatTypeFees } from '../types/feeSystem';
+import { buildPeriodFeeSlots } from '../types/feeSystem';
 import { INITIAL_STUDENTS } from '../data/mockStudents';
 import {
   getStoredStudents,
@@ -26,7 +27,7 @@ const mapRowToStudent = (row: any): Student => {
     stream: row.stream || 'Arts',
     seatType: row.seat_type || undefined,
     semester: row.semester,
-    currentSemester: row.current_semester || row.semester || 'Sem 1',
+    currentSemester: row.current_semester || row.semester || (row.course === 'JBT' ? 'Session 1' : 'Sem 1'),
     rollNo: row.roll_no || '',
     session: row.session,
     totalFees: Number(row.total_fees || 0),
@@ -46,14 +47,8 @@ const mapRowToStudent = (row: any): Student => {
     },
     semesterFees: row.semester_fees || (() => {
       const total = Number(row.total_fees || 0);
-      const semFee = total > 0 ? Math.round(total / 4) : 0;
       const paid = Number(row.paid_till_now || 0);
-      return [
-        { semester: 'Sem 1', year: '1st Year', totalFee: semFee, paidAmount: Math.min(paid, semFee), remainingAmount: Math.max(0, semFee - paid), status: semFee > 0 && paid >= semFee ? 'Paid' : paid > 0 ? 'Partly Paid' : 'Unpaid', dueDate: '2026-10-15' },
-        { semester: 'Sem 2', year: '1st Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee)) : 0, status: paid >= semFee * 2 && semFee > 0 ? 'Paid' : paid > semFee ? 'Partly Paid' : 'Unpaid', dueDate: '2027-03-15' },
-        { semester: 'Sem 3', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee * 2, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 2)) : 0, status: paid >= semFee * 3 && semFee > 0 ? 'Paid' : paid > semFee * 2 ? 'Partly Paid' : 'Unpaid', dueDate: '2027-10-15' },
-        { semester: 'Sem 4', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, paid - semFee * 3), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 3)) : 0, status: paid >= semFee * 4 && semFee > 0 ? 'Paid' : paid > semFee * 3 ? 'Partly Paid' : 'Unpaid', dueDate: '2028-03-15' },
-      ];
+      return buildPeriodFeeSlots(row.course, total, paid);
     })(),
     paymentHistory: Array.isArray(row.payment_history)
       ? row.payment_history

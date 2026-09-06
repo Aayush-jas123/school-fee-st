@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Student, PaymentRecord, SemesterFeeSlot } from '../types/feeSystem';
+import { buildPeriodFeeSlots, getPeriodYear } from '../types/feeSystem';
 import { Printer, X, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { formatCurrencyINR } from '../utils/exportUtils';
 
@@ -14,15 +15,10 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
   const effectiveFee = student.totalFees - (student.discountAmount || 0);
   const semesterSlots: SemesterFeeSlot[] = student.semesterFees && student.semesterFees.length > 0
     ? student.semesterFees
-    : [
-        { semester: 'Sem 1', year: '1st Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2026-10-15' },
-        { semester: 'Sem 2', year: '1st Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2027-03-15' },
-        { semester: 'Sem 3', year: '2nd Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2027-10-15' },
-        { semester: 'Sem 4', year: '2nd Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2028-03-15' },
-      ];
+    : buildPeriodFeeSlots(student.course, effectiveFee, 0);
 
-  // Get installments for the target semester of this payment
-  const targetSem = payment.targetSemester || student.currentSemester || 'Sem 1';
+  // Get installments for the target period of this payment
+  const targetSem = payment.targetSemester || student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1');
   const targetSlot = semesterSlots.find(s => s.semester === targetSem);
   const semInstallments = targetSlot?.installments && targetSlot.installments.length > 0
     ? targetSlot.installments
@@ -45,7 +41,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
           <div className="flex items-center gap-3">
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-neutral-900 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-violet-600/20"
+              className="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-neutral-900/20"
             >
               <Printer className="w-4 h-4" /> Print Official Receipt
             </button>
@@ -61,9 +57,9 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
         {/* Printable Area - White background for official printing */}
         <div className="bg-white text-slate-900 p-8 rounded-2xl border border-slate-200 space-y-5 shadow-md print:shadow-none print:border-none print:p-0">
           {/* Header */}
-          <div className="flex justify-between items-start border-b-2 border-indigo-900 pb-4">
+          <div className="flex justify-between items-start border-b-2 border-neutral-900 pb-4">
             <div>
-              <h1 className="text-2xl font-black text-indigo-950 uppercase tracking-wide">
+              <h1 className="text-2xl font-black text-neutral-900 uppercase tracking-wide">
                 SHANTI COLLEGE OF EDUCATION
               </h1>
               <p className="text-xs font-semibold text-neutral-600 uppercase tracking-wider">
@@ -72,13 +68,13 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
               <p className="text-[11px] text-neutral-600">Institutional Campus, Education Hub, Haryana • Contact: +91 172 2589012</p>
             </div>
             <div className="text-right">
-              <span className="px-3 py-1 bg-indigo-900 text-neutral-900 text-xs font-extrabold rounded-lg uppercase tracking-wider block mb-1">
+              <span className="px-3 py-1 bg-neutral-900 text-white text-xs font-extrabold rounded-lg uppercase tracking-wider block mb-1">
                 FEE RECEIPT
               </span>
               <p className="text-xs font-bold font-mono text-slate-700">No: {payment.id}</p>
               <p className="text-[11px] text-neutral-600">Date: {payment.date}</p>
               {payment.installmentNo && (
-                <p className="text-[11px] text-indigo-700 font-bold">Installment #{payment.installmentNo}</p>
+                <p className="text-[11px] text-neutral-700 font-bold">Installment #{payment.installmentNo}</p>
               )}
             </div>
           </div>
@@ -91,7 +87,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
               <p><span className="text-neutral-600">Registration No:</span> <strong className="font-mono">{student.registrationNo}</strong></p>
             </div>
             <div>
-              <p><span className="text-neutral-600">Course Program:</span> <strong className="text-indigo-900 font-extrabold">{student.course} (2-Year)</strong></p>
+              <p><span className="text-neutral-600">Course Program:</span> <strong className="text-neutral-900 font-extrabold">{student.course} (2-Year)</strong></p>
               <p><span className="text-neutral-600">Roll No / Session:</span> <strong>{student.rollNo || 'Pending'} ({student.session})</strong></p>
               <p><span className="text-neutral-600">Category:</span> <strong>{student.category}</strong></p>
             </div>
@@ -99,12 +95,12 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
 
           {/* Current Payment Details */}
           <div>
-            <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2 border-b border-indigo-200 pb-1">Payment Transaction Details</h3>
+            <h3 className="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-2 border-b border-neutral-200 pb-1">Payment Transaction Details</h3>
             <table className="w-full text-xs border-collapse border border-slate-300">
               <tbody>
                 <tr>
                   <td className="border border-slate-300 p-2 font-medium text-neutral-600 w-1/3">Payment For</td>
-                  <td className="border border-slate-300 p-2 font-bold">{targetSem} — {targetSlot?.year || (targetSem === 'Sem 1' || targetSem === 'Sem 2' ? '1st Year' : '2nd Year')}</td>
+                  <td className="border border-slate-300 p-2 font-bold">{targetSem} — {targetSlot?.year || getPeriodYear(targetSem as any)}</td>
                 </tr>
                 <tr>
                   <td className="border border-slate-300 p-2 font-medium text-neutral-600">Description</td>
@@ -121,9 +117,9 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
                   <td className="border border-slate-300 p-2 font-medium text-neutral-600">Transaction Reference</td>
                   <td className="border border-slate-300 p-2 font-mono font-bold">{payment.transactionRef}</td>
                 </tr>
-                <tr className="bg-emerald-50">
-                  <td className="border border-slate-300 p-2 font-medium text-emerald-800 font-bold">Amount Paid Now</td>
-                  <td className="border border-slate-300 p-2 font-extrabold text-emerald-800 text-sm">
+                <tr className="bg-neutral-100">
+                  <td className="border border-slate-300 p-2 font-medium text-neutral-900 font-bold">Amount Paid Now</td>
+                  <td className="border border-slate-300 p-2 font-extrabold text-neutral-900 text-sm">
                     {formatCurrencyINR(payment.amount)}
                     {payment.discountApplied && payment.discountApplied > 0 ? ` (+ ${formatCurrencyINR(payment.discountApplied)} concession)` : ''}
                   </td>
@@ -134,7 +130,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
 
           {/* Semester-wise Fee Status Breakdown */}
           <div>
-            <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2 border-b border-indigo-200 pb-1">Semester-wise Fee Status (All 4 Semesters)</h3>
+            <h3 className="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-2 border-b border-neutral-200 pb-1">Semester-wise Fee Status (All 4 Semesters)</h3>
             <table className="w-full text-xs border-collapse border border-slate-300">
               <thead>
                 <tr className="bg-slate-100 text-slate-800 font-bold">
@@ -150,20 +146,20 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
                 {semesterSlots.map((slot) => {
                   const isTarget = slot.semester === targetSem;
                   return (
-                    <tr key={slot.semester} className={isTarget ? 'bg-indigo-50 font-semibold' : ''}>
+                    <tr key={slot.semester} className={isTarget ? 'bg-neutral-100 font-semibold' : ''}>
                       <td className="border border-slate-300 p-2">
                         {slot.semester}
                         {isTarget ? ' ← Current' : ''}
                       </td>
                       <td className="border border-slate-300 p-2 text-center">{slot.year}</td>
                       <td className="border border-slate-300 p-2 text-right font-mono">{slot.totalFee > 0 ? formatCurrencyINR(slot.totalFee) : 'TBD'}</td>
-                      <td className="border border-slate-300 p-2 text-right font-mono text-emerald-800">{formatCurrencyINR(slot.paidAmount)}</td>
-                      <td className="border border-slate-300 p-2 text-right font-mono font-bold text-amber-800">{slot.remainingAmount > 0 ? formatCurrencyINR(slot.remainingAmount) : '—'}</td>
+                      <td className="border border-slate-300 p-2 text-right font-mono text-neutral-700">{formatCurrencyINR(slot.paidAmount)}</td>
+                      <td className="border border-slate-300 p-2 text-right font-mono font-bold text-neutral-700">{slot.remainingAmount > 0 ? formatCurrencyINR(slot.remainingAmount) : '—'}</td>
                       <td className="border border-slate-300 p-2 text-center">
                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                          slot.status === 'Paid' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                          slot.status === 'Partly Paid' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
-                          'bg-rose-100 text-rose-800 border border-rose-300'
+                          slot.status === 'Paid' ? 'bg-neutral-100 text-neutral-700 border border-neutral-200' :
+                          slot.status === 'Partly Paid' ? 'bg-neutral-100 text-neutral-700 border border-neutral-200' :
+                          'bg-neutral-200 text-neutral-700 border border-neutral-300'
                         }`}>
                           {slot.status}
                         </span>
@@ -176,8 +172,8 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
                 <tr className="bg-slate-50 font-bold">
                   <td colSpan={2} className="border border-slate-300 p-2 text-right">Total (2-Year Program):</td>
                   <td className="border border-slate-300 p-2 text-right font-mono">{formatCurrencyINR(student.totalFees)}</td>
-                  <td className="border border-slate-300 p-2 text-right font-mono text-emerald-800">{formatCurrencyINR(student.paidTillNow)}</td>
-                  <td className="border border-slate-300 p-2 text-right font-mono text-amber-800">{formatCurrencyINR(student.remainingFees)}</td>
+                  <td className="border border-slate-300 p-2 text-right font-mono text-neutral-700">{formatCurrencyINR(student.paidTillNow)}</td>
+                  <td className="border border-slate-300 p-2 text-right font-mono text-neutral-700">{formatCurrencyINR(student.remainingFees)}</td>
                   <td className="border border-slate-300 p-2"></td>
                 </tr>
               </tfoot>
@@ -187,7 +183,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
           {/* EMI / Installment History for Target Semester */}
           {semInstallments.length > 0 && (
             <div>
-              <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2 border-b border-indigo-200 pb-1">
+              <h3 className="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-2 border-b border-neutral-200 pb-1">
                 EMI Installment History — {targetSem}
               </h3>
               <table className="w-full text-xs border-collapse border border-slate-300">
@@ -204,7 +200,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
                   {semInstallments.map((inst, idx) => {
                     const isCurrentPayment = inst.id === payment.id;
                     return (
-                      <tr key={inst.id || idx} className={isCurrentPayment ? 'bg-emerald-50 font-bold' : ''}>
+                      <tr key={inst.id || idx} className={isCurrentPayment ? 'bg-neutral-100 font-bold' : ''}>
                         <td className="border border-slate-300 p-2 text-center">
                           #{inst.installmentNo || idx + 1}
                           {isCurrentPayment ? ' (Latest)' : ''}
@@ -212,7 +208,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
                         <td className="border border-slate-300 p-2">{inst.date}</td>
                         <td className="border border-slate-300 p-2 font-medium">{inst.mode}</td>
                         <td className="border border-slate-300 p-2 font-mono text-[10px]">{inst.transactionRef}</td>
-                        <td className="border border-slate-300 p-2 text-right font-bold text-emerald-800">{formatCurrencyINR(inst.amount)}</td>
+                        <td className="border border-slate-300 p-2 text-right font-bold text-neutral-700">{formatCurrencyINR(inst.amount)}</td>
                       </tr>
                     );
                   })}
@@ -222,8 +218,8 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
           )}
 
           {/* Outstanding Summary Box */}
-          <div className="border-2 border-indigo-300 rounded-xl p-4 bg-indigo-50 space-y-2">
-            <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider">Outstanding Fee Summary</h3>
+          <div className="border-2 border-neutral-300 rounded-xl p-4 bg-neutral-50 space-y-2">
+            <h3 className="text-xs font-bold text-neutral-900 uppercase tracking-wider">Outstanding Fee Summary</h3>
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
                 <p className="text-neutral-600">Total 2-Year Program Fee:</p>
@@ -231,15 +227,15 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
               </div>
               <div>
                 <p className="text-neutral-600">Total Paid Till Date:</p>
-                <p className="text-base font-extrabold text-emerald-800">{formatCurrencyINR(student.paidTillNow)}</p>
+                <p className="text-base font-extrabold text-neutral-900">{formatCurrencyINR(student.paidTillNow)}</p>
               </div>
               <div>
                 <p className="text-neutral-600">{targetSem} Pending Balance:</p>
-                <p className="text-base font-extrabold text-amber-800">{semRemaining > 0 ? formatCurrencyINR(semRemaining) : 'CLEARED ✓'}</p>
+                <p className="text-base font-extrabold text-neutral-700">{semRemaining > 0 ? formatCurrencyINR(semRemaining) : 'CLEARED ✓'}</p>
               </div>
               <div>
                 <p className="text-neutral-600">Overall Pending Balance:</p>
-                <p className="text-base font-extrabold text-rose-800">{student.remainingFees > 0 ? formatCurrencyINR(student.remainingFees) : 'ALL CLEARED ✓'}</p>
+                <p className="text-base font-extrabold text-neutral-700">{student.remainingFees > 0 ? formatCurrencyINR(student.remainingFees) : 'ALL CLEARED ✓'}</p>
               </div>
             </div>
           </div>
@@ -264,11 +260,11 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
               </div>
               <div>
                 <p className="font-bold text-slate-800 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Digital Verified Receipt
+                  <ShieldCheck className="w-3.5 h-3.5 text-neutral-700" /> Digital Verified Receipt
                 </p>
                 <p className="text-[10px] text-neutral-600">Issued by: {payment.staffName || 'Accounts Officer'}</p>
                 <p className="text-[10px] text-neutral-600">Computer Generated • No Physical Stamp Needed</p>
-                <p className="text-[10px] text-indigo-600 font-semibold">This receipt confirms payment of {formatCurrencyINR(payment.amount)} towards {targetSem}.</p>
+                <p className="text-[10px] text-neutral-700 font-semibold">This receipt confirms payment of {formatCurrencyINR(payment.amount)} towards {targetSem}.</p>
               </div>
             </div>
 

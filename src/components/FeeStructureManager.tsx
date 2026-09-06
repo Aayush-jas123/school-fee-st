@@ -94,7 +94,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-violet-500/20 text-neutral-700 flex items-center justify-center font-bold">
+          <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
             <Settings2 className="w-6 h-6" />
           </div>
           <div>
@@ -111,13 +111,13 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           <div className="flex gap-2">
             <button
               onClick={handleApplyToAll}
-              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-neutral-900 font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/30 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-neutral-900/20 cursor-pointer"
             >
               <Users className="w-4 h-4" /> Apply to Students ({activeSession})
             </button>
             <button
               onClick={handleSave}
-              className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-neutral-900 font-bold text-xs flex items-center gap-2 shadow-lg shadow-violet-600/20 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-neutral-900/20 cursor-pointer"
             >
               <Save className="w-4 h-4" /> Save Fee Rules
             </button>
@@ -145,8 +145,8 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           onClick={() => setActiveCourse('JBT')}
           className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
             activeCourse === 'JBT'
-              ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 shadow-lg ring-1 ring-neutral-200'
-              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
+              ? 'bg-neutral-900 border-neutral-900 text-white shadow-lg ring-1 ring-neutral-900'
+              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
           }`}
         >
           <GraduationCap className="w-6 h-6 text-neutral-700" />
@@ -160,8 +160,8 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           onClick={() => setActiveCourse('B.Ed')}
           className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
             activeCourse === 'B.Ed'
-              ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 shadow-lg ring-1 ring-neutral-200'
-              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
+              ? 'bg-neutral-900 border-neutral-900 text-white shadow-lg ring-1 ring-neutral-900'
+              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
           }`}
         >
           <BookOpen className="w-6 h-6 text-neutral-700" />
@@ -197,7 +197,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
         {activeSession && !localRules.some((r) => r.course === activeCourse && r.session === activeSession) && (
           <button
             onClick={handleAddSessionRule}
-            className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer transition-colors"
+            className="px-3 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold cursor-pointer transition-colors"
           >
             + Create Rule for this Session
           </button>
@@ -293,7 +293,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
       {/* Seat Type Premium Fee Configuration */}
       <div className="bg-white border border-neutral-200 rounded-2xl p-5 space-y-5">
         <div className="flex items-center gap-3 border-b border-neutral-200 pb-3">
-          <div className="w-9 h-9 rounded-xl bg-violet-500/20 text-neutral-700 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center">
             <Armchair className="w-5 h-5" />
           </div>
           <div>
@@ -315,23 +315,23 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
                 key={stf.seatType}
                 className={`rounded-2xl border p-4 space-y-3 transition-all ${
                   stf.seatType === 'Management'
-                    ? 'bg-amber-50/50 border-amber-200'
+                    ? 'bg-neutral-50 border-neutral-200'
                     : stf.seatType === 'Subsidised'
-                    ? 'bg-emerald-50/50 border-emerald-200'
+                    ? 'bg-neutral-50 border-neutral-200'
                     : stf.seatType === 'Non-Subsidised'
-                    ? 'bg-sky-50/50 border-sky-200'
+                    ? 'bg-neutral-50 border-neutral-200'
                     : 'bg-neutral-50/60 border-neutral-200'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    {stf.seatType === 'Management' && <span className="text-amber-500 text-sm">★</span>}
+                    {stf.seatType === 'Management' && <span className="text-neutral-500 text-sm">★</span>}
                     <span className="text-sm font-bold text-neutral-900">{stf.seatType}</span>
                   </div>
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                     isBase
                       ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
-                      : 'bg-violet-500/20 text-neutral-700 border border-neutral-200'
+                      : 'bg-neutral-200 text-neutral-700 border border-neutral-200'
                   }`}>
                     {isBase ? 'BASE' : 'PREMIUM'}
                   </span>

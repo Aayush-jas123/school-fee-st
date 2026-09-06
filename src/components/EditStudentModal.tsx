@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import type { Student, CourseType, FeeStatusType, SemesterFeeSlot } from '../types/feeSystem';
-import { getSeatTypesForCourse } from '../types/feeSystem';
+import type { Student, CourseType, FeeStatusType } from '../types/feeSystem';
+import { getSeatTypesForCourse, buildPeriodFeeSlots } from '../types/feeSystem';
 import { X, Save, CheckCircle2, Armchair } from 'lucide-react';
 import { DEFAULT_FEE_RULES } from '../utils/storage';
 
@@ -35,15 +35,8 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
         const paid = field === 'paidTillNow' ? Number(value) : prev.paidTillNow;
         updated.remainingFees = Math.max(0, total - paid);
 
-        // Update 4 semester slots when total fee is set/edited
-        const semFee = total > 0 ? Math.round(total / 4) : 0;
-        const semSlots: SemesterFeeSlot[] = [
-          { semester: 'Sem 1', year: '1st Year', totalFee: semFee, paidAmount: Math.min(paid, semFee), remainingAmount: Math.max(0, semFee - paid), status: semFee > 0 && paid >= semFee ? 'Paid' : paid > 0 ? 'Partly Paid' : 'Unpaid', dueDate: '2026-10-15' },
-          { semester: 'Sem 2', year: '1st Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee)) : 0, status: paid >= semFee * 2 && semFee > 0 ? 'Paid' : paid > semFee ? 'Partly Paid' : 'Unpaid', dueDate: '2027-03-15' },
-          { semester: 'Sem 3', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee * 2, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 2)) : 0, status: paid >= semFee * 3 && semFee > 0 ? 'Paid' : paid > semFee * 2 ? 'Partly Paid' : 'Unpaid', dueDate: '2027-10-15' },
-          { semester: 'Sem 4', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, paid - semFee * 3), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 3)) : 0, status: paid >= semFee * 4 && semFee > 0 ? 'Paid' : paid > semFee * 3 ? 'Partly Paid' : 'Unpaid', dueDate: '2028-03-15' },
-        ];
-        updated.semesterFees = semSlots;
+        // Update period slots when total fee is set/edited (course-aware)
+        updated.semesterFees = buildPeriodFeeSlots(prev.course, total, paid);
 
         // Auto calculate status suggestion
         if (paid >= total && total > 0) {
@@ -80,7 +73,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-500 hover:text-neutral-900 transition-colors"
+            className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -88,7 +81,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
 
         {/* Toast Alert */}
         {showToast && (
-          <div className="bg-neutral-100 border-b border-emerald-500/40 p-3 text-center text-neutral-700 text-xs font-semibold flex items-center justify-center gap-2">
+          <div className="bg-neutral-100 border-b border-neutral-300 p-3 text-center text-neutral-700 text-xs font-semibold flex items-center justify-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
             Record updated in prototype state successfully!
           </div>
@@ -104,7 +97,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleChange('name', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none"
                 required
               />
             </div>
@@ -116,7 +109,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 type="text"
                 value={formData.fatherName}
                 onChange={(e) => handleChange('fatherName', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none"
                 required
               />
             </div>
@@ -128,7 +121,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 type="text"
                 value={formData.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:border-neutral-400 focus:outline-none"
                 required
               />
             </div>
@@ -140,7 +133,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 type="text"
                 value={formData.whatsappNo || formData.phone}
                 onChange={(e) => handleChange('whatsappNo', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-700 font-mono focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-700 font-mono focus:border-neutral-400 focus:outline-none"
               />
             </div>
 
@@ -151,7 +144,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:border-neutral-400 focus:outline-none"
               />
             </div>
 
@@ -163,7 +156,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 value={formData.rollNo}
                 onChange={(e) => handleChange('rollNo', e.target.value)}
                 placeholder="e.g. 11643"
-                className="w-full bg-neutral-50/60 border border-neutral-200/50 rounded-xl px-3 py-2 text-neutral-700 font-mono font-bold focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200/50 rounded-xl px-3 py-2 text-neutral-700 font-mono font-bold focus:border-neutral-400 focus:outline-none"
               />
             </div>
 
@@ -178,7 +171,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                   handleChange('course', newCourse);
                   handleChange('seatType', defaultSeat);
                 }}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-violet-500/50 focus:outline-none cursor-pointer"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none cursor-pointer"
               >
                 <option value="JBT">JBT (Junior Basic Training)</option>
                 <option value="B.Ed">B.Ed (Bachelor of Education)</option>
@@ -202,10 +195,10 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                       className={`px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                         isActive
                           ? st === 'Management'
-                            ? 'bg-amber-50 border-amber-300 text-amber-700 ring-1 ring-amber-300'
+                            ? 'bg-neutral-100 border-neutral-300 text-neutral-700 ring-1 ring-neutral-300'
                             : st === 'Subsidised'
-                            ? 'bg-emerald-50 border-emerald-300 text-emerald-700 ring-1 ring-emerald-300'
-                            : 'bg-violet-600/20 border-neutral-200 text-neutral-900 ring-1 ring-neutral-200'
+                            ? 'bg-neutral-100 border-neutral-300 text-neutral-700 ring-1 ring-neutral-300'
+                            : 'bg-neutral-900 border-neutral-900 text-white ring-1 ring-neutral-900'
                           : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
                       }`}
                     >
@@ -223,7 +216,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               <select
                 value={formData.stream || 'Arts'}
                 onChange={(e) => handleChange('stream', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-violet-500/50 focus:outline-none cursor-pointer"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none cursor-pointer"
               >
                 <option value="Arts">Arts</option>
                 <option value="Non-Medical">Non-Medical</option>
@@ -239,7 +232,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 type="text"
                 value={formData.semester}
                 onChange={(e) => handleChange('semester', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none"
               />
             </div>
 
@@ -250,7 +243,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 type="number"
                 value={formData.totalFees}
                 onChange={(e) => handleChange('totalFees', Number(e.target.value))}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono font-bold focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono font-bold focus:border-neutral-400 focus:outline-none"
                 required
               />
             </div>
@@ -262,7 +255,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 type="number"
                 value={formData.paidTillNow}
                 onChange={(e) => handleChange('paidTillNow', Number(e.target.value))}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-700 font-mono font-bold focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-700 font-mono font-bold focus:border-neutral-400 focus:outline-none"
                 required
               />
             </div>
@@ -284,7 +277,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               <select
                 value={formData.feeStatus}
                 onChange={(e) => handleChange('feeStatus', e.target.value as FeeStatusType)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-semibold focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-semibold focus:border-neutral-400 focus:outline-none"
               >
                 <option value="Paid">Paid (Green)</option>
                 <option value="Partly Paid">Partly Paid (Yellow)</option>
@@ -300,7 +293,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                 type="date"
                 value={formData.nextDueDate}
                 onChange={(e) => handleChange('nextDueDate', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:border-neutral-400 focus:outline-none"
               />
             </div>
 
@@ -310,7 +303,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               <select
                 value={formData.session}
                 onChange={(e) => handleChange('session', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none"
               >
                 <option value="2026-2027">2026-2027</option>
                 <option value="2024-2026">2024-2026</option>
@@ -324,7 +317,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               <select
                 value={formData.category}
                 onChange={(e) => handleChange('category', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-violet-500/50 focus:outline-none"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none"
               >
                 <option value="General">General</option>
                 <option value="OBC">OBC</option>
@@ -341,7 +334,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               rows={2}
               value={formData.address}
               onChange={(e) => handleChange('address', e.target.value)}
-              className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-violet-500/50 focus:outline-none resize-none"
+              className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none resize-none"
             />
           </div>
 
@@ -350,13 +343,13 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 font-semibold transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-neutral-900 font-bold shadow-lg shadow-violet-600/20 transition-all cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold shadow-lg shadow-neutral-900/20 transition-all cursor-pointer"
             >
               <Save className="w-4 h-4" />
               Save Changes (Prototype)

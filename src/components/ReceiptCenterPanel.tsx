@@ -195,7 +195,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                           {student.course}
                         </span>
                         <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-violet-50 text-violet-700 border border-violet-200">
-                          {student.currentSemester || 'Sem 1'}
+                          {student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1')}
                         </span>
                         <span className={getStatusBadge(student.feeStatus)}>
                           <span className="flex items-center gap-1">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Student, PaymentRecord, SemesterFeeSlot } from '../types/feeSystem';
+import { buildPeriodFeeSlots } from '../types/feeSystem';
 import {
   X,
   Receipt,
@@ -41,12 +42,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
   const semesterSlots: SemesterFeeSlot[] =
     student.semesterFees && student.semesterFees.length > 0
       ? student.semesterFees
-      : [
-          { semester: 'Sem 1', year: '1st Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2026-10-15' },
-          { semester: 'Sem 2', year: '1st Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2027-03-15' },
-          { semester: 'Sem 3', year: '2nd Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2027-10-15' },
-          { semester: 'Sem 4', year: '2nd Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2028-03-15' },
-        ];
+      : buildPeriodFeeSlots(student.course, effectiveFee, 0);
 
   // Generate a synthetic "full statement" payment record
   const generateFullStatement = (): PaymentRecord => {
@@ -58,7 +54,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
       mode: 'Cash',
       transactionRef: `FULL-STATEMENT-${Date.now()}`,
       remark: 'Complete Fee Statement — All Payments Consolidated',
-      targetSemester: student.currentSemester || 'Sem 1',
+      targetSemester: student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1'),
       staffName: 'Accounts Office',
     };
   };
@@ -101,7 +97,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
+            className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -124,7 +120,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
             <span className="text-neutral-500 block text-[10px] uppercase font-semibold">Course / Semester</span>
             <span className="text-sm font-bold text-neutral-900 flex items-center gap-1.5">
               <BookOpen className="w-3.5 h-3.5 text-neutral-700" />
-              {student.course} — {student.currentSemester || 'Sem 1'}
+              {student.course} — {student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1')}
             </span>
           </div>
           <div>
@@ -142,7 +138,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
           <button
             onClick={() => setActiveSection('payments')}
             className={`py-3 border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeSection === 'payments' ? 'border-emerald-500 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
+              activeSection === 'payments' ? 'border-neutral-900 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
             }`}
           >
             <CreditCard className="w-3.5 h-3.5" />
@@ -160,7 +156,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
           <button
             onClick={() => setActiveSection('statement')}
             className={`py-3 border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeSection === 'statement' ? 'border-amber-500 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
+              activeSection === 'statement' ? 'border-neutral-500 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
             }`}
           >
             <FileText className="w-3.5 h-3.5" />
@@ -195,7 +191,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                           onClick={() => setSelectedPaymentId(rec.id)}
                           className={`p-4 rounded-xl border cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-neutral-50 border-emerald-500/60 ring-1 ring-emerald-500/30'
+                              ? 'bg-neutral-50 border-neutral-400 ring-1 ring-neutral-300'
                               : 'bg-neutral-50/50 border-neutral-200 hover:border-neutral-200'
                           }`}
                         >
@@ -210,7 +206,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <span className="font-mono font-bold text-neutral-700 text-xs">{rec.id}</span>
                                   {rec.targetSemester && (
-                                    <span className="px-1.5 py-0.5 rounded bg-violet-500/20 text-neutral-700 font-bold border border-neutral-200 text-[10px]">
+                                    <span className="px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-700 font-bold border border-neutral-200 text-[10px]">
                                       {rec.targetSemester}
                                     </span>
                                   )}
@@ -258,7 +254,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                         </div>
                         <button
                           onClick={handleGenerateSelected}
-                          className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-neutral-900 font-bold text-xs flex items-center gap-2 cursor-pointer shadow-lg shadow-emerald-600/30 transition-colors"
+                          className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-lg shadow-neutral-900/20 transition-colors"
                         >
                           <Printer className="w-4 h-4" />
                           Generate Receipt
@@ -290,9 +286,9 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                       key={slot.semester}
                       className={`p-4 rounded-2xl border space-y-3 ${
                         isPaid
-                          ? 'bg-emerald-950/20 border-emerald-800/40'
+                          ? 'bg-neutral-100 border-neutral-300'
                           : isPartly
-                          ? 'bg-amber-950/20 border-amber-800/40'
+                          ? 'bg-neutral-50 border-neutral-200'
                           : 'bg-neutral-50/50 border-neutral-200'
                       }`}
                     >
@@ -307,7 +303,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                               ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                               : isPartly
                               ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
-                              : 'bg-rose-500/20 text-neutral-700 border border-rose-500/30'
+                              : 'bg-neutral-200 text-neutral-700 border border-neutral-300'
                           }`}
                         >
                           {slot.status}
@@ -339,7 +335,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                       <div className="w-full bg-white rounded-full h-1.5 overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all ${
-                            isPaid ? 'bg-emerald-500' : isPartly ? 'bg-amber-500' : 'bg-slate-700'
+                            isPaid ? 'bg-neutral-900' : isPartly ? 'bg-neutral-600' : 'bg-neutral-300'
                           }`}
                           style={{
                             width: `${slot.totalFee > 0 ? Math.min(100, (slot.paidAmount / slot.totalFee) * 100) : 0}%`,
@@ -364,7 +360,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                             };
                             onGenerateReceipt(student, semReceipt);
                           }}
-                          className="w-full px-3 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-neutral-900 font-semibold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-indigo-600/20 transition-colors"
+                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-neutral-900/20 transition-colors"
                         >
                           <Printer className="w-3.5 h-3.5" />
                           Generate Semester Receipt
@@ -424,7 +420,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                         <th className="p-2.5 text-center">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-zinc-800/40 text-neutral-700">
+                    <tbody className="divide-y divide-neutral-200 text-neutral-700">
                       {semesterSlots.map((slot) => (
                         <tr key={slot.semester} className="hover:bg-neutral-100/40">
                           <td className="p-2.5 font-bold text-neutral-900">{slot.semester}</td>
@@ -441,7 +437,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                                   ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                                   : slot.status === 'Partly Paid'
                                   ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
-                                  : 'bg-rose-500/20 text-neutral-700 border border-rose-500/30'
+                                  : 'bg-neutral-200 text-neutral-700 border border-neutral-300'
                               }`}
                             >
                               {slot.status}
@@ -471,7 +467,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                         <th className="p-2.5 text-right">Amount</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-zinc-800/40 text-neutral-700">
+                    <tbody className="divide-y divide-neutral-200 text-neutral-700">
                       <tr><td className="p-2.5">Tuition & Academic Training</td><td className="p-2.5 text-right font-bold text-neutral-900">{formatINR(student.feeBreakdown.tuitionFee)}</td></tr>
                       <tr><td className="p-2.5">Admission & Registration</td><td className="p-2.5 text-right font-bold text-neutral-900">{formatINR(student.feeBreakdown.admissionFee)}</td></tr>
                       <tr><td className="p-2.5">University Examination</td><td className="p-2.5 text-right font-bold text-neutral-900">{formatINR(student.feeBreakdown.examFee)}</td></tr>
@@ -509,7 +505,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
           </p>
           <button
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 font-semibold transition-colors cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold transition-colors cursor-pointer"
           >
             Close
           </button>

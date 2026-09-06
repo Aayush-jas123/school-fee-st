@@ -284,7 +284,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
                     </td>
                     <td className="py-3 px-4 whitespace-nowrap">
                       <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-violet-500/20 text-neutral-700 border border-neutral-200">
-                        {payment.targetSemester || student.currentSemester || 'Sem 1'}
+                        {payment.targetSemester || student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1')}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-center whitespace-nowrap">

@@ -122,8 +122,8 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
                 <div
                   className={`w-full py-3.5 px-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all duration-300 shadow-lg ${
                     isJBT
-                      ? 'bg-zinc-800/80 group-hover:bg-emerald-600 text-neutral-700 group-hover:text-neutral-900 shadow-emerald-950/20'
-                      : 'bg-zinc-800/80 group-hover:bg-violet-600 text-neutral-700 group-hover:text-neutral-900 shadow-violet-950/20'
+                      ? 'bg-neutral-900 group-hover:bg-neutral-800 text-white shadow-neutral-900/20'
+                      : 'bg-neutral-900 group-hover:bg-neutral-800 text-white shadow-neutral-900/20'
                   }`}
                 >
                   <span>Access {course.title} Portal</span>
@@ -143,7 +143,7 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
         >
           <button
             onClick={() => onSelectCourse('ALL')}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-violet-950/30 hover:bg-violet-900/30 border border-neutral-200 text-neutral-700 hover:text-neutral-900 text-xs font-semibold transition-all cursor-pointer shadow-md hover:shadow-violet-500/10 hover:border-neutral-200"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-neutral-700 hover:text-neutral-900 text-xs font-semibold transition-all cursor-pointer shadow-md hover:shadow-neutral-900/10 hover:border-neutral-300"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>View All Programs Overview (Read-Only)</span>

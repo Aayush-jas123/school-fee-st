@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import type { Student, CourseType, SeatType } from '../types/feeSystem';
-import { getSeatTypesForCourse } from '../types/feeSystem';
+import type { Student, CourseType, SeatType, PeriodName } from '../types/feeSystem';
+import { getSeatTypesForCourse, getPeriodsForCourse, getPeriodYear } from '../types/feeSystem';
 import { X, UserPlus, GraduationCap, BookOpen, CheckCircle2, Armchair } from 'lucide-react';
 import { DEFAULT_FEE_RULES } from '../utils/storage';
 
@@ -17,7 +17,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [category, setCategory] = useState<'General' | 'OBC' | 'SC' | 'ST'>('General');
-  const [semester, setSemester] = useState('1st Year');
+  const [currentPeriod, setCurrentPeriod] = useState<PeriodName>('Session 1');
   const [session, setSession] = useState('2026-2027');
   const [address, setAddress] = useState('');
   const [initialPayment, setInitialPayment] = useState<number>(0);
@@ -29,6 +29,14 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
 
   // Available seat types for selected course
   const availableSeatTypes = useMemo(() => getSeatTypesForCourse(course), [course]);
+  // Available periods for selected course
+  const availablePeriods = useMemo(() => getPeriodsForCourse(course), [course]);
+
+  // Reset currentPeriod when course changes
+  React.useEffect(() => {
+    const periods = getPeriodsForCourse(course);
+    setCurrentPeriod(periods[0]);
+  }, [course]);
 
   // Derive total fee based on selected course + seat type
   const currentFeeRule = DEFAULT_FEE_RULES.find((r) => r.course === course) || DEFAULT_FEE_RULES[0];
@@ -50,6 +58,8 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
     const remaining = Math.max(0, defaultTotalFee - initialPaid);
     const feeStatus = initialPaid >= defaultTotalFee ? 'Paid' : initialPaid > 0 ? 'Partly Paid' : 'Unpaid';
 
+    const periodYear = getPeriodYear(currentPeriod);
+
     const newStudent: Student = {
       id: regNo,
       registrationNo: regNo,
@@ -61,7 +71,8 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
       seatType,
       email: email || `${name.toLowerCase().replace(/\s+/g, '.')}@gmail.com`,
       course,
-      semester,
+      semester: periodYear,
+      currentSemester: currentPeriod,
       rollNo,
       session,
       totalFees: defaultTotalFee,
@@ -111,7 +122,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-neutral-200 pb-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-violet-500/20 text-neutral-700 flex items-center justify-center font-bold">
+            <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
               <UserPlus className="w-6 h-6" />
             </div>
             <div>
@@ -138,11 +149,11 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 onClick={() => { setCourse('JBT'); setSeatType('Subsidised'); }}
                 className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all ${
                   course === 'JBT'
-                    ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 shadow-lg shadow-violet-500/15 ring-1 ring-neutral-200'
-                    : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
+                    ? 'bg-neutral-900 border-neutral-900 text-white shadow-lg shadow-neutral-900/15 ring-1 ring-neutral-900'
+                    : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
                 }`}
               >
-                <div className="w-9 h-9 rounded-xl bg-violet-500/20 text-neutral-700 flex items-center justify-center font-bold">
+                <div className="w-9 h-9 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
                   <GraduationCap className="w-5 h-5" />
                 </div>
                 <div>
@@ -156,8 +167,8 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 onClick={() => { setCourse('B.Ed'); setSeatType('Normal'); }}
                 className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all ${
                   course === 'B.Ed'
-                    ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 shadow-lg shadow-violet-500/15 ring-1 ring-neutral-200'
-                    : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
+                    ? 'bg-neutral-900 border-neutral-900 text-white shadow-lg shadow-neutral-900/15 ring-1 ring-neutral-900'
+                    : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
                 }`}
               >
                 <div className="w-9 h-9 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
@@ -192,15 +203,15 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                     className={`relative p-4 rounded-2xl border text-center transition-all cursor-pointer ${
                       isSelected
                         ? st === 'Management'
-                          ? 'bg-amber-50 border-amber-300 shadow-lg shadow-amber-500/10 ring-1 ring-amber-300'
+                          ? 'bg-neutral-100 border-neutral-300 shadow-lg shadow-neutral-900/10 ring-1 ring-neutral-300'
                           : st === 'Subsidised'
-                          ? 'bg-emerald-50 border-emerald-300 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-300'
-                          : 'bg-violet-600/20 border-neutral-200 shadow-lg shadow-violet-500/15 ring-1 ring-neutral-200'
+                          ? 'bg-neutral-100 border-neutral-300 shadow-lg shadow-neutral-900/10 ring-1 ring-neutral-300'
+                          : 'bg-neutral-900 border-neutral-900 shadow-lg shadow-neutral-900/15 ring-1 ring-neutral-900'
                         : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
                     }`}
                   >
                     {st === 'Management' && (
-                      <span className="absolute top-2 right-2 text-amber-500 text-xs">★</span>
+                      <span className="absolute top-2 right-2 text-neutral-500 text-xs">★</span>
                     )}
                     <div className={`text-sm font-bold ${isSelected ? 'text-neutral-900' : 'text-neutral-700'}`}>
                       {st}
@@ -227,7 +238,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="e.g. Vikas Sharma"
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400"
               />
             </div>
 
@@ -239,7 +250,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 onChange={(e) => setFatherName(e.target.value)}
                 required
                 placeholder="e.g. Satish Sharma"
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400"
               />
             </div>
           </div>
@@ -254,7 +265,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 onChange={(e) => setPhone(e.target.value)}
                 required
                 placeholder="+91 98765 43210"
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400"
               />
             </div>
 
@@ -265,7 +276,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 value={whatsappNo}
                 onChange={(e) => setWhatsappNo(e.target.value)}
                 placeholder="e.g. 9876543210"
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-emerald-500"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400"
               />
             </div>
 
@@ -276,7 +287,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="student@gmail.com"
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400"
               />
             </div>
           </div>
@@ -288,7 +299,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
               <select
                 value={stream}
                 onChange={(e) => setStream(e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50 cursor-pointer"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400 cursor-pointer"
               >
                 <option value="Arts">Arts</option>
                 <option value="Medical">Medical</option>
@@ -302,7 +313,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as any)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50 cursor-pointer"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400 cursor-pointer"
               >
                 <option value="General">General</option>
                 <option value="OBC">OBC</option>
@@ -312,14 +323,15 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
             </div>
 
             <div>
-              <label className="block text-neutral-700 font-medium mb-1">Year / Semester</label>
+              <label className="block text-neutral-700 font-medium mb-1">{course === 'JBT' ? 'Session' : 'Semester'}</label>
               <select
-                value={semester}
-                onChange={(e) => setSemester(e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50 cursor-pointer"
+                value={currentPeriod}
+                onChange={(e) => setCurrentPeriod(e.target.value as PeriodName)}
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400 cursor-pointer"
               >
-                <option value="1st Year">1st Year</option>
-                <option value="2nd Year">2nd Year</option>
+                {availablePeriods.map((p) => (
+                  <option key={p} value={p}>{p} ({getPeriodYear(p)})</option>
+                ))}
               </select>
             </div>
 
@@ -328,7 +340,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
               <select
                 value={session}
                 onChange={(e) => setSession(e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50 cursor-pointer"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400 cursor-pointer"
               >
                 <option value="2026-2027">2026-2027</option>
                 <option value="2024-2026">2024-2026</option>
@@ -343,7 +355,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 value={rollNoInput}
                 onChange={(e) => setRollNoInput(e.target.value)}
                 placeholder="Auto or Manual"
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50 font-mono text-xs"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400 font-mono text-xs"
               />
             </div>
           </div>
@@ -356,7 +368,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="House No, Village/Sector, District, State"
-              className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50"
+              className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400"
             />
           </div>
 
@@ -370,7 +382,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
               max={defaultTotalFee}
               value={initialPayment}
               onChange={(e) => setInitialPayment(Number(e.target.value))}
-              className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold text-sm focus:outline-none focus:border-violet-500/50"
+              className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold text-sm focus:outline-none focus:border-neutral-400"
             />
           </div>
 
@@ -379,7 +391,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 font-semibold cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold cursor-pointer"
             >
               Cancel
             </button>

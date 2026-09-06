@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import type { Student, PaymentMode, PaymentRecord, SemesterName, SemesterFeeSlot } from '../types/feeSystem';
+import type { Student, PaymentMode, PaymentRecord, SemesterName, SessionName, PeriodName, SemesterFeeSlot } from '../types/feeSystem';
+import { getPeriodsForCourse, getNextPeriod, getPeriodYear } from '../types/feeSystem';
 import { X, QrCode, CheckCircle2, DollarSign, Layers, Receipt, Clock } from 'lucide-react';
 import { formatCurrencyINR } from '../utils/exportUtils';
 
@@ -17,13 +18,14 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   onPaymentSuccess,
   staffName,
 }) => {
-  // Find default semester slot (first unpaid or current)
-  const defaultSem = student?.currentSemester || 'Sem 1';
-  const [selectedSemester, setSelectedSemester] = useState<SemesterName>(defaultSem);
+  // Course-aware period list: B.Ed → 4 semesters, JBT → 2 sessions
+  const coursePeriods = getPeriodsForCourse(student?.course || 'B.Ed');
+  const defaultSem = (student?.currentSemester || coursePeriods[0]) as PeriodName;
+  const [selectedSemester, setSelectedSemester] = useState<PeriodName>(defaultSem);
 
   const currentSemSlot = (student?.semesterFees || []).find(s => s.semester === selectedSemester) || {
     semester: selectedSemester,
-    year: selectedSemester === 'Sem 1' || selectedSemester === 'Sem 2' ? ('1st Year' as const) : ('2nd Year' as const),
+    year: getPeriodYear(selectedSemester),
     totalFee: 19500,
     paidAmount: 0,
     remainingAmount: 19500,
@@ -42,7 +44,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
   if (!student) return null;
 
-  const handleSemesterChange = (sem: SemesterName) => {
+  const handleSemesterChange = (sem: PeriodName) => {
     setSelectedSemester(sem);
     const slot = (student.semesterFees || []).find(s => s.semester === sem);
     const semRemaining = slot ? slot.remainingAmount : 19500;
@@ -97,7 +99,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       remark: remark,
       discountApplied: discount > 0 ? discount : undefined,
       staffName: staffName,
-      targetSemester: selectedSemester,
+      targetSemester: selectedSemester as SemesterName | SessionName,
       installmentNo: installmentNo,
     };
 
@@ -126,14 +128,13 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
     const totalDiscount = (student.discountAmount || 0) + discount;
     const newRemaining = Math.max(0, student.totalFees - totalDiscount - newPaidTillNow);
 
-    // Advance current semester if selected semester becomes fully paid and next semester exists
+    // Auto-advance to next period if selected period becomes fully paid
     let nextSemester = student.currentSemester;
     if (selectedSemester === student.currentSemester) {
       const currentSlot = updatedSemesterFees.find(s => s.semester === selectedSemester);
       if (currentSlot && currentSlot.status === 'Paid') {
-        if (selectedSemester === 'Sem 1') nextSemester = 'Sem 2';
-        else if (selectedSemester === 'Sem 2') nextSemester = 'Sem 3';
-        else if (selectedSemester === 'Sem 3') nextSemester = 'Sem 4';
+        const next = getNextPeriod(student.course, selectedSemester);
+        if (next) nextSemester = next;
       }
     }
 
@@ -180,7 +181,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-200 pb-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-violet-500/20 text-neutral-700 flex items-center justify-center font-bold">
+            <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
               <DollarSign className="w-6 h-6" />
             </div>
             <div>
@@ -223,37 +224,37 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           </div>
         </div>
 
-        {/* Target Semester Window Selector */}
+        {/* Target Period Window Selector */}
         <div className="mb-5">
           <label className="block text-neutral-700 font-semibold text-xs mb-1.5 flex items-center gap-1.5">
-            <Layers className="w-4 h-4 text-neutral-700" /> Select Target Semester Payment Window:
+            <Layers className="w-4 h-4 text-neutral-700" /> Select Target {student.course === 'JBT' ? 'Session' : 'Semester'} Payment Window:
           </label>
-          <div className="grid grid-cols-4 gap-2">
-            {(['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'] as SemesterName[]).map((sem) => {
-              const slot = (student.semesterFees || []).find(s => s.semester === sem);
-              const isSelected = selectedSemester === sem;
+          <div className={`grid gap-2 ${coursePeriods.length === 2 ? 'grid-cols-2' : 'grid-cols-4'}`}>
+            {coursePeriods.map((period) => {
+              const slot = (student.semesterFees || []).find(s => s.semester === period);
+              const isSelected = selectedSemester === period;
               const isPaid = slot?.status === 'Paid';
               const isPartly = slot?.status === 'Partly Paid';
 
               return (
                 <button
                   type="button"
-                  key={sem}
-                  onClick={() => handleSemesterChange(sem)}
+                  key={period}
+                  onClick={() => handleSemesterChange(period)}
                   className={`p-2.5 rounded-xl border text-left transition-all relative ${
                     isSelected
-                      ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 ring-2 ring-neutral-200'
-                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
+                      ? 'bg-neutral-900 border-neutral-900 text-white ring-2 ring-neutral-900'
+                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs">{sem}</span>
+                    <span className="font-bold text-xs">{period}</span>
                     <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${
                       isPaid
                         ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                         : isPartly
                         ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
-                        : 'bg-rose-500/20 text-neutral-700 border border-rose-500/30'
+                        : 'bg-neutral-200 text-neutral-700 border border-neutral-300'
                     }`}>
                       {slot?.status || 'Unpaid'}
                     </span>
@@ -278,7 +279,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               {semesterEmiHistory.map((inst, idx) => (
                 <div key={inst.id || idx} className="flex items-center justify-between bg-white p-2 rounded-lg border border-neutral-200 text-[11px]">
                   <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 rounded bg-violet-500/20 text-neutral-700 font-bold text-[10px]">EMI #{inst.installmentNo || idx + 1}</span>
+                    <span className="px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-700 font-bold text-[10px]">EMI #{inst.installmentNo || idx + 1}</span>
                     <span className="text-neutral-500 font-mono">{inst.date}</span>
                     <span className="text-neutral-600">{inst.mode}</span>
                   </div>
@@ -306,7 +307,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setAmount(currentSemSlot.remainingAmount)}
-                  className="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-neutral-700 border border-emerald-500/40 text-xs font-bold"
+                  className="px-3 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 border border-neutral-200 text-xs font-bold"
                 >
                   1-Click Full Sem Payment ({formatCurrencyINR(currentSemSlot.remainingAmount)})
                 </button>
@@ -325,8 +326,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   onClick={() => handleModeChange(mode)}
                   className={`py-2 px-2 rounded-xl font-semibold border transition-all text-center ${
                     paymentMode === mode
-                      ? 'bg-violet-600 border-neutral-200 text-neutral-900 shadow-lg shadow-violet-600/20'
-                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200 hover:text-neutral-900'
+                      ? 'bg-neutral-900 border-neutral-900 text-white shadow-lg shadow-neutral-900/20'
+                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300 hover:text-neutral-900'
                   }`}
                 >
                   {mode}
@@ -347,12 +348,12 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
                   required
-                  className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold text-sm focus:outline-none focus:border-violet-500/50"
+                  className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold text-sm focus:outline-none focus:border-neutral-400"
                 />
                 <button
                   type="button"
                   onClick={() => setAmount(currentSemSlot.remainingAmount)}
-                  className="absolute right-2 top-1.5 px-2 py-0.5 rounded bg-violet-500/20 text-neutral-700 hover:bg-violet-500/30 text-[10px] font-bold"
+                  className="absolute right-2 top-1.5 px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 hover:bg-neutral-200 text-[10px] font-bold border border-neutral-200"
                 >
                   Full Sem
                 </button>
@@ -367,7 +368,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 value={discount}
                 onChange={(e) => setDiscount(Number(e.target.value))}
                 placeholder="0"
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold text-sm focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold text-sm focus:outline-none focus:border-neutral-400"
               />
             </div>
           </div>
@@ -381,7 +382,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 value={transactionRef}
                 onChange={(e) => setTransactionRef(e.target.value)}
                 required
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:outline-none focus:border-neutral-400"
               />
             </div>
 
@@ -392,15 +393,15 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 value={remark}
                 onChange={(e) => setRemark(e.target.value)}
                 required
-                placeholder="e.g. Sem 1 Installment Fee"
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50"
+                placeholder={`e.g. ${selectedSemester} Installment Fee`}
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400"
               />
             </div>
           </div>
 
           {/* UPI Live QR Button if UPI Mode selected */}
           {paymentMode === 'UPI' && (
-            <div className="bg-violet-950/30 border border-neutral-200 rounded-xl p-3 flex items-center justify-between">
+            <div className="bg-neutral-100 border border-neutral-200 rounded-xl p-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <QrCode className="w-5 h-5 text-neutral-700" />
                 <span className="text-neutral-700 font-medium">Generate Dynamic Payment QR ({selectedSemester})</span>
@@ -408,7 +409,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               <button
                 type="button"
                 onClick={() => setShowQrModal(true)}
-                className="px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-neutral-900 font-semibold text-xs flex items-center gap-1 cursor-pointer"
+                className="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs flex items-center gap-1 cursor-pointer"
               >
                 <QrCode className="w-3.5 h-3.5" /> Show QR
               </button>
@@ -416,7 +417,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           )}
 
           {/* Next EMI Number Preview */}
-          <div className="bg-neutral-50 p-2.5 rounded-xl border border-violet-800/30 flex items-center justify-between text-xs">
+          <div className="bg-neutral-50 p-2.5 rounded-xl border border-neutral-200 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-neutral-700" />
               <span className="text-neutral-700">This will be recorded as <strong className="text-neutral-700">EMI #{emiCount + 1}</strong> for {selectedSemester}</span>
@@ -447,7 +448,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 font-semibold cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold cursor-pointer"
             >
               Cancel
             </button>
@@ -496,7 +497,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   <rect x="40" y="10" width="15" height="10" fill="black" />
                   <rect x="45" y="25" width="10" height="10" fill="black" />
                   <rect x="10" y="45" width="25" height="10" fill="black" />
-                  <rect x="45" y="45" width="20" height="20" fill="indigo" />
+                  <rect x="45" y="45" width="20" height="20" fill="black" />
                   <rect x="70" y="45" width="20" height="10" fill="black" />
                   <rect x="40" y="70" width="25" height="20" fill="black" />
                   <rect x="70" y="70" width="20" height="20" fill="black" />
@@ -510,7 +511,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
               <button
                 onClick={() => setShowQrModal(false)}
-                className="w-full py-2 bg-violet-600 hover:bg-violet-500 text-neutral-900 rounded-xl text-xs font-semibold"
+                className="w-full py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold"
               >
                 Close QR Code
               </button>

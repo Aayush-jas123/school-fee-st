@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import type { Student, CourseType, FeeStatusType, SemesterFeeSlot, SeatType } from '../types/feeSystem';
-import { getSeatTypesForCourse } from '../types/feeSystem';
+import type { Student, CourseType, FeeStatusType, SeatType } from '../types/feeSystem';
+import { getSeatTypesForCourse, buildPeriodFeeSlots } from '../types/feeSystem';
 import {
   Search,
   Filter,
@@ -90,13 +90,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
     const total = Number(tempFeeVal);
     const paid = student.paidTillNow;
     const remaining = Math.max(0, total - paid);
-    const semFee = total > 0 ? Math.round(total / 4) : 0;
-    const updatedSemesterFees: SemesterFeeSlot[] = [
-      { semester: 'Sem 1', year: '1st Year', totalFee: semFee, paidAmount: Math.min(paid, semFee), remainingAmount: Math.max(0, semFee - paid), status: semFee > 0 && paid >= semFee ? 'Paid' : paid > 0 ? 'Partly Paid' : 'Unpaid', dueDate: '2026-10-15' },
-      { semester: 'Sem 2', year: '1st Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee)) : 0, status: paid >= semFee * 2 && semFee > 0 ? 'Paid' : paid > semFee ? 'Partly Paid' : 'Unpaid', dueDate: '2027-03-15' },
-      { semester: 'Sem 3', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(paid - semFee * 2, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 2)) : 0, status: paid >= semFee * 3 && semFee > 0 ? 'Paid' : paid > semFee * 2 ? 'Partly Paid' : 'Unpaid', dueDate: '2027-10-15' },
-      { semester: 'Sem 4', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, paid - semFee * 3), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 3)) : 0, status: paid >= semFee * 4 && semFee > 0 ? 'Paid' : paid > semFee * 3 ? 'Partly Paid' : 'Unpaid', dueDate: '2028-03-15' },
-    ];
+    const updatedSemesterFees = buildPeriodFeeSlots(student.course, total, paid);
 
     onEditStudent({
       ...student,
@@ -112,13 +106,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
     const newPaid = Number(tempPaidVal);
     const total = student.totalFees;
     const remaining = Math.max(0, total - newPaid);
-    const semFee = total > 0 ? Math.round(total / 4) : 0;
-    const updatedSemesterFees: SemesterFeeSlot[] = [
-      { semester: 'Sem 1', year: '1st Year', totalFee: semFee, paidAmount: Math.min(newPaid, semFee), remainingAmount: Math.max(0, semFee - newPaid), status: semFee > 0 && newPaid >= semFee ? 'Paid' : newPaid > 0 ? 'Partly Paid' : 'Unpaid', dueDate: '2026-10-15' },
-      { semester: 'Sem 2', year: '1st Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(newPaid - semFee, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, newPaid - semFee)) : 0, status: newPaid >= semFee * 2 && semFee > 0 ? 'Paid' : newPaid > semFee ? 'Partly Paid' : 'Unpaid', dueDate: '2027-03-15' },
-      { semester: 'Sem 3', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, Math.min(newPaid - semFee * 2, semFee)), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, newPaid - semFee * 2)) : 0, status: newPaid >= semFee * 3 && semFee > 0 ? 'Paid' : newPaid > semFee * 2 ? 'Partly Paid' : 'Unpaid', dueDate: '2027-10-15' },
-      { semester: 'Sem 4', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, newPaid - semFee * 3), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, newPaid - semFee * 3)) : 0, status: newPaid >= semFee * 4 && semFee > 0 ? 'Paid' : newPaid > semFee * 3 ? 'Partly Paid' : 'Unpaid', dueDate: '2028-03-15' },
-    ];
+    const updatedSemesterFees = buildPeriodFeeSlots(student.course, total, newPaid);
 
     let newStatus: FeeStatusType = 'Unpaid';
     if (total > 0 && newPaid >= total) newStatus = 'Paid';
@@ -222,7 +210,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
       case 'Unpaid':
       case 'Overdue':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-rose-500/30">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-300">
             <XCircle className="w-3.5 h-3.5" />
             {status}
           </span>
@@ -243,7 +231,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
       s.course,
       s.seatType || 'Normal',
       s.stream || 'Arts',
-      s.currentSemester || 'Sem 1',
+      s.currentSemester || (s.course === 'JBT' ? 'Session 1' : 'Sem 1'),
       s.rollNo,
       s.session,
       s.totalFees,
@@ -287,7 +275,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search Name, Reg No, Roll No, Sem..."
-                className="w-full pl-9 pr-8 py-2 bg-neutral-50/60 border border-neutral-200 rounded-xl text-xs text-neutral-900 placeholder-zinc-600 focus:outline-none focus:border-violet-500/50 transition-all shadow-inner font-medium"
+                className="w-full pl-9 pr-8 py-2 bg-neutral-50/60 border border-neutral-200 rounded-xl text-xs text-neutral-900 placeholder-neutral-500 focus:outline-none focus:border-neutral-400 transition-all shadow-inner font-medium"
               />
               {searchTerm && (
                 <button
@@ -302,7 +290,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
             <button
               onClick={exportCSV}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 border border-neutral-200 text-xs font-semibold text-neutral-800 transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-xs font-semibold text-neutral-800 transition-all"
             >
               <Download className="w-4 h-4 text-neutral-700" />
               Export CSV
@@ -317,7 +305,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           </div>
 
           {/* Course Filter */}
-          <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-neutral-200 text-xs">
+          <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200 text-xs">
             <span className="text-neutral-500 px-2 font-medium">Course:</span>
             {(['ALL', 'JBT', 'B.Ed'] as const).map((c) => (
               <button
@@ -325,8 +313,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 onClick={() => onCourseFilterChange(c)}
                 className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
                   selectedCourseFilter === c
-                    ? 'bg-violet-600 text-neutral-900 shadow-sm'
-                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-zinc-700/60/50'
+                    ? 'bg-neutral-900 text-white shadow-sm'
+                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-200/50'
                 }`}
               >
                 {c === 'ALL' ? 'All Courses' : c}
@@ -336,14 +324,14 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
           {/* Seat Type Filter */}
           {selectedCourseFilter !== 'ALL' && (
-            <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-neutral-200 text-xs">
+            <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200 text-xs">
               <span className="text-neutral-500 px-2 font-medium">Seat:</span>
               <button
                 onClick={() => setSelectedSeatFilter('ALL')}
                 className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                   selectedSeatFilter === 'ALL'
-                    ? 'bg-violet-600 text-neutral-900 shadow-sm'
-                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-zinc-700/60/50'
+                    ? 'bg-neutral-900 text-white shadow-sm'
+                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-200/50'
                 }`}
               >
                 All Seats
@@ -354,8 +342,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                   onClick={() => setSelectedSeatFilter(st)}
                   className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                     selectedSeatFilter === st
-                      ? 'bg-violet-600 text-neutral-900 shadow-sm'
-                      : 'text-neutral-500 hover:text-neutral-800 hover:bg-zinc-700/60/50'
+                      ? 'bg-neutral-900 text-white shadow-sm'
+                      : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-200/50'
                   }`}
                 >
                   {st}
@@ -365,7 +353,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           )}
 
           {/* Status Filter */}
-          <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-neutral-200 text-xs">
+          <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200 text-xs">
             <span className="text-neutral-500 px-2 font-medium">Status:</span>
             {(['ALL', 'Paid', 'Partly Paid', 'Unpaid'] as const).map((st) => (
               <button
@@ -374,13 +362,13 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                   selectedStatusFilter === st
                     ? st === 'Paid'
-                      ? 'bg-emerald-600 text-neutral-900 shadow-sm'
+                      ? 'bg-neutral-900 text-white shadow-sm'
                       : st === 'Partly Paid'
-                      ? 'bg-amber-600 text-neutral-900 shadow-sm'
+                      ? 'bg-neutral-800 text-white shadow-sm'
                       : st === 'Unpaid'
-                      ? 'bg-rose-600 text-neutral-900 shadow-sm'
-                      : 'bg-violet-600 text-neutral-900 shadow-sm'
-                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-zinc-700/60/50'
+                      ? 'bg-neutral-700 text-white shadow-sm'
+                      : 'bg-neutral-900 text-white shadow-sm'
+                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-200/50'
                 }`}
               >
                 {st === 'ALL' ? 'All Status' : st}
@@ -440,7 +428,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           </thead>
 
           {/* Table Body */}
-          <tbody className="divide-y divide-zinc-800/40 font-medium">
+          <tbody className="divide-y divide-neutral-200 font-medium">
             {paginatedStudents.length === 0 ? (
               <tr>
                 <td colSpan={12} className="py-12 text-center text-neutral-600">
@@ -496,7 +484,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           target="_blank"
                           rel="noopener noreferrer"
                           title={`Chat on WhatsApp with ${student.name}`}
-                          className="px-2 py-0.5 rounded-lg bg-neutral-100 hover:bg-emerald-600 text-neutral-700 hover:text-neutral-900 border border-neutral-200 flex items-center gap-1 text-[10px] font-bold transition-all"
+                          className="px-2 py-0.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 border border-neutral-200 flex items-center gap-1 text-[10px] font-bold transition-all"
                         >
                           <MessageSquare className="w-3 h-3" />
                           <span>WhatsApp</span>
@@ -510,8 +498,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                         <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
                           {student.course}
                         </span>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-violet-500/20 text-neutral-700 border border-neutral-200">
-                          {student.currentSemester || 'Sem 1'}
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
+                          {student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1')}
                         </span>
                         {student.stream && (
                           <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 text-neutral-700 border border-neutral-200">
@@ -526,12 +514,12 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                       {student.seatType ? (
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border ${
                           student.seatType === 'Management'
-                            ? 'bg-amber-50 text-amber-700 border-amber-200'
-                            : student.seatType === 'Normal'
                             ? 'bg-neutral-100 text-neutral-700 border-neutral-200'
+                            : student.seatType === 'Normal'
+                            ? 'bg-neutral-50 text-neutral-700 border-neutral-200'
                             : student.seatType === 'Subsidised'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : 'bg-sky-50 text-sky-700 border-sky-200'
+                            ? 'bg-neutral-100 text-neutral-700 border-neutral-200'
+                            : 'bg-neutral-50 text-neutral-700 border-neutral-200'
                         }`}>
                           {student.seatType === 'Management' && '★ '}
                           {student.seatType}
@@ -556,7 +544,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => handleSaveRollNumber(student)}
                             title="Save Roll No"
-                            className="p-1 rounded bg-emerald-600 text-neutral-900 hover:bg-emerald-500"
+                            className="p-1 rounded bg-neutral-900 text-white hover:bg-neutral-800"
                           >
                             <Check className="w-3 h-3" />
                           </button>
@@ -597,7 +585,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => handleSaveTotalFee(student)}
                             title="Save Total Fee"
-                            className="p-1 rounded bg-emerald-600 text-neutral-900 hover:bg-emerald-500"
+                            className="p-1 rounded bg-neutral-900 text-white hover:bg-neutral-800"
                           >
                             <Check className="w-3 h-3" />
                           </button>
@@ -632,13 +620,13 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                             value={tempPaidVal}
                             onChange={(e) => setTempPaidVal(Number(e.target.value))}
                             placeholder="Enter Paid"
-                            className="w-24 bg-neutral-50/60 border border-emerald-500 rounded px-2 py-0.5 text-xs text-neutral-700 font-mono text-right font-bold"
+                            className="w-24 bg-neutral-50/60 border border-neutral-200 rounded px-2 py-0.5 text-xs text-neutral-700 font-mono text-right font-bold"
                             autoFocus
                           />
                           <button
                             onClick={() => handleSavePaidAmount(student)}
                             title="Save Paid Amount"
-                            className="p-1 rounded bg-emerald-600 text-neutral-900 hover:bg-emerald-500"
+                            className="p-1 rounded bg-neutral-900 text-white hover:bg-neutral-800"
                           >
                             <Check className="w-3 h-3" />
                           </button>
@@ -654,7 +642,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           title={isReadOnly ? 'Paid Till Now' : 'Click to Edit / Update Amount Paid'}
                           className={`inline-flex items-center gap-1.5 font-mono text-xs px-2 py-1 rounded-lg border transition-all ${
                             student.paidTillNow > 0
-                              ? 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:border-emerald-500 cursor-pointer font-bold'
+                              ? 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:border-neutral-300 cursor-pointer font-bold'
                               : 'bg-white border-neutral-200 text-neutral-500 hover:border-neutral-200 cursor-pointer'
                           }`}
                         >
@@ -683,7 +671,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onRecordPayment(student)}
                             title="Collect Fee Payment"
-                            className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-neutral-900 font-semibold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
+                            className="px-2.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
                           >
                             Pay
                           </button>
@@ -692,7 +680,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onSendReminder(student)}
                             title="Send Fee Reminder / Notice"
-                            className="p-1.5 rounded-lg bg-neutral-100 hover:bg-amber-600 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer"
                           >
                             Notice
                           </button>
@@ -701,7 +689,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onGenerateReceipt(student)}
                             title="Generate Fee Receipt"
-                            className="px-2.5 py-1.5 rounded-lg bg-neutral-100 hover:bg-emerald-600 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
+                            className="px-2.5 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
                           >
                             <Receipt className="w-3.5 h-3.5" />
                             <span>Receipt</span>
@@ -710,7 +698,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                         <button
                           onClick={() => onViewStudent(student)}
                           title="View Full Profile & Fee Details"
-                          className="px-2.5 py-1.5 rounded-lg bg-neutral-100 hover:bg-violet-600 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
+                          className="px-2.5 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>View</span>
@@ -719,7 +707,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onEditStudent(student)}
                             title="Edit Full Profile Record"
-                            className="p-1.5 rounded-lg bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 border border-neutral-200 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 border border-neutral-200 transition-all cursor-pointer"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
@@ -746,7 +734,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           <button
             onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
             disabled={currentPage === 1}
-            className="p-2 rounded-lg bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            className="p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -758,7 +746,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           <button
             onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="p-2 rounded-lg bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            className="p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             <ChevronRight className="w-4 h-4" />
           </button>

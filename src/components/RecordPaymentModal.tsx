@@ -168,13 +168,15 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md"
+      onClick={onClose}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.96, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 12 }}
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className="bg-white backdrop-blur-xl border border-neutral-200 rounded-3xl max-w-xl w-full p-6 shadow-2xl shadow-neutral-900/10 overflow-hidden text-neutral-900 relative">
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white backdrop-blur-xl border border-neutral-200 rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto p-5 shadow-2xl shadow-neutral-900/10 text-neutral-900 relative">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-200 pb-4 mb-6">
           <div className="flex items-center gap-3">

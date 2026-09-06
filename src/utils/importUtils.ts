@@ -117,64 +117,6 @@ interface TextItem {
   w: number;
 }
 
-/**
- * Detect column boundaries from header row text items.
- * Returns array of { label, xMin, xMax } for each detected column.
- */
-function detectColumnsFromHeader(headerItems: TextItem[]): Array<{ label: string; xMin: number; xMax: number }> {
-  const columns: Array<{ label: string; xMin: number; xMax: number }> = [];
-  
-  // Sort by x position
-  const sorted = [...headerItems].sort((a, b) => a.x - b.x);
-  
-  for (const item of sorted) {
-    const trimmed = item.str.trim();
-    if (!trimmed) continue;
-    
-    // Check if this item overlaps with an existing column
-    let placed = false;
-    for (const col of columns) {
-      const gap = Math.abs(item.x - col.xMax);
-      if (gap < 30) {
-        // Same column — extend range
-        col.xMax = Math.max(col.xMax, item.x + item.w);
-        col.label += ' ' + trimmed;
-        placed = true;
-        break;
-      }
-    }
-    if (!placed) {
-      columns.push({
-        label: trimmed,
-        xMin: item.x,
-        xMax: item.x + item.w,
-      });
-    }
-  }
-  
-  return columns;
-}
-
-/**
- * Assign a data-row text item to a column based on x-coordinate.
- * Uses midpoint of each column's x-range for matching.
- */
-function assignToColumn(itemX: number, columns: Array<{ label: string; xMin: number; xMax: number }>): number {
-  let bestIdx = -1;
-  let bestDist = Infinity;
-  
-  for (let i = 0; i < columns.length; i++) {
-    const mid = (columns[i].xMin + columns[i].xMax) / 2;
-    const dist = Math.abs(itemX - mid);
-    if (dist < bestDist) {
-      bestDist = dist;
-      bestIdx = i;
-    }
-  }
-  
-  return bestIdx;
-}
-
 export async function parseAdmissionPDF(file: File): Promise<{ students: Student[]; detectedSession: string }> {
   const pdfjsLib = await import('pdfjs-dist');
 
@@ -199,40 +141,45 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
     const page = await pdf.getPage(pageNum);
     const textContent = await page.getTextContent();
 
-    // Extract items with positions, filtering out noise
-    const rawItems: TextItem[] = textContent.items
+    // Extract ALL items with positions
+    const allItems: TextItem[] = textContent.items
       .filter((it: any) => it.str && it.str.trim().length > 0)
       .map((it: any) => ({
         str: it.str.trim(),
         x: Math.round(it.transform[4]),
         y: Math.round(it.transform[5]),
         w: it.width || 0,
-      }))
-      .filter((it) => {
-        const s = it.str;
-        if (/^Page\s*\d+\s*of\s*\d+$/i.test(s)) return false;
-        if (/\d{2}\/\d{2}\/\d{4}$/.test(s)) return false;
-        if (/HIMACHAL\s*PRADESH/i.test(s)) return false;
-        if (/SHIMLA/i.test(s)) return false;
-        if (/B\.Ed\s*Admission/i.test(s)) return false;
-        if (/Online\s*Counselling/i.test(s)) return false;
-        if (/Shanti\s*College/i.test(s)) return false;
-        if (/Kailash\s*Nagar/i.test(s)) return false;
-        if (/Tehsil\s*Amb/i.test(s)) return false;
-        if (/^College\s*Name$/i.test(s)) return false;
-        if (/^Total$/i.test(s)) return false;
-        return true;
-      });
+      }));
 
-    // Group items into rows by y-position proximity
-    rawItems.sort((a, b) => b.y - a.y || a.x - b.x);
+    // Filter out noise items
+    const items = allItems.filter((it) => {
+      const s = it.str;
+      if (/^Page\s*\d+\s*of\s*\d+$/i.test(s)) return false;
+      if (/\d{2}\/\d{2}\/\d{4}$/.test(s)) return false;
+      if (/HIMACHAL\s*PRADESH/i.test(s)) return false;
+      if (/SHIMLA/i.test(s)) return false;
+      if (/B\.Ed\s*Admission/i.test(s)) return false;
+      if (/Online\s*Counselling/i.test(s)) return false;
+      if (/Shanti\s*College/i.test(s)) return false;
+      if (/Kailash\s*Nagar/i.test(s)) return false;
+      if (/Tehsil\s*Amb/i.test(s)) return false;
+      if (/^College\s*Name$/i.test(s)) return false;
+      if (/^Total$/i.test(s)) return false;
+      return true;
+    });
 
+    // ── Strategy: Find registration number items, then use x-position to extract name/father ──
+    
+    // Sort all items by y (top to bottom), then x (left to right)
+    items.sort((a, b) => b.y - a.y || a.x - b.x);
+
+    // Group items into visual rows using a generous y-tolerance
     const rows: TextItem[][] = [];
     let currentRow: TextItem[] = [];
     let lastY = -9999;
 
-    for (const item of rawItems) {
-      if (Math.abs(item.y - lastY) > 4) {
+    for (const item of items) {
+      if (Math.abs(item.y - lastY) > 6) {
         if (currentRow.length > 0) rows.push([...currentRow]);
         currentRow = [item];
         lastY = item.y;
@@ -242,116 +189,153 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
     }
     if (currentRow.length > 0) rows.push(currentRow);
 
-    // Find header row and detect column boundaries
-    let columns: Array<{ label: string; xMin: number; xMax: number }> = [];
-    let headerFound = false;
-
+    // For each row, sort items by x position
     for (const row of rows) {
-      const mergedText = row.map(it => it.str).join(' ').replace(/\s+/g, ' ').trim();
-      if (/S\s*No.*Roll.*Registration/i.test(mergedText) || /S\s*No.*Name.*Father/i.test(mergedText)) {
-        columns = detectColumnsFromHeader(row);
-        headerFound = true;
-        break;
+      row.sort((a, b) => a.x - b.x);
+    }
+
+    // Find the header row to detect column x-ranges
+    // The header might span multiple visual rows, so check consecutive pairs
+    let nameColRange = { min: 0, max: 0 };
+    let fatherColRange = { min: 0, max: 0 };
+    let headerDetected = false;
+
+    for (let i = 0; i < rows.length; i++) {
+      const text = rows[i].map(it => it.str).join(' ');
+      // Check single row
+      if (/Name.*Father|Father.*Name/i.test(text) && /Reg|Roll/i.test(text)) {
+        // Found header in single row — detect name/father columns
+        const nameItem = rows[i].find(it => /^Name$/i.test(it.str));
+        const fatherItem = rows[i].find(it => /Father/i.test(it.str));
+        if (nameItem && fatherItem) {
+          // Name column: from name item x to father item x
+          nameColRange = { min: nameItem.x - 10, max: fatherItem.x - 5 };
+          // Father column: from father item x to next column
+          const nextItem = rows[i].find(it => it.x > fatherItem.x + 20 && !/Father/i.test(it.str));
+          fatherColRange = { min: fatherItem.x - 10, max: nextItem ? nextItem.x - 5 : fatherItem.x + 200 };
+          headerDetected = true;
+          break;
+        }
+      }
+      // Check two consecutive rows merged (header might be split)
+      if (i + 1 < rows.length) {
+        const mergedText = [...rows[i], ...rows[i + 1]].map(it => it.str).join(' ');
+        if (/Name.*Father|Father.*Name/i.test(mergedText) && /Reg|Roll/i.test(mergedText)) {
+          const allHeaderItems = [...rows[i], ...rows[i + 1]].sort((a, b) => a.x - b.x);
+          const nameItem = allHeaderItems.find(it => /^Name$/i.test(it.str));
+          const fatherItem = allHeaderItems.find(it => /Father/i.test(it.str));
+          if (nameItem && fatherItem) {
+            nameColRange = { min: nameItem.x - 10, max: fatherItem.x - 5 };
+            const nextItem = allHeaderItems.find(it => it.x > fatherItem.x + 20 && !/Father/i.test(it.str));
+            fatherColRange = { min: fatherItem.x - 10, max: nextItem ? nextItem.x - 5 : fatherItem.x + 200 };
+            headerDetected = true;
+            break;
+          }
+        }
       }
     }
 
-    if (!headerFound || columns.length < 5) {
-      // Fallback: skip this page if we can't detect columns
-      continue;
-    }
-
-    // Merge multi-line rows: when text wraps, continuation rows lack a reg number.
-    // Merge them with the previous data row so all column content is together.
+    // Process data rows
+    // Merge continuation rows (rows without reg number) with previous data row
     const mergedRows: TextItem[][] = [];
     for (const row of rows) {
-      const mergedText = row.map(it => it.str).join(' ').replace(/\s+/g, ' ').trim();
-      if (/S\s*No.*Roll.*Registration/i.test(mergedText)) continue;
-      if (/S\s*No.*Name.*Father/i.test(mergedText)) continue;
-      if (/^Total\s*[\d,.]+$/i.test(mergedText)) continue;
+      const text = row.map(it => it.str).join(' ');
+      // Skip header rows
+      if (/S\s*No.*Roll.*Reg|Name.*Father/i.test(text)) continue;
+      if (/^Total\s*[\d,.]+$/i.test(text)) continue;
 
-      const hasRegNo = /[A-Z]\d{2}[A-Z]\d{5,8}/i.test(mergedText.replace(/\s+/g, ''));
+      const hasRegNo = row.some(it => /[A-Z]\d{2}[A-Z]\d{5,8}/i.test(it.str.replace(/\s+/g, '')));
       if (hasRegNo) {
         mergedRows.push([...row]);
       } else if (mergedRows.length > 0) {
-        // Continuation row — merge items into the previous row
+        // Continuation row — merge into previous
         mergedRows[mergedRows.length - 1].push(...row);
       }
     }
 
-    // Parse data rows using column positions
     for (const row of mergedRows) {
-      const mergedText = row.map(it => it.str).join(' ').replace(/\s+/g, ' ').trim();
-      if (!mergedText || mergedText.length < 5) continue;
+      // Sort by x
+      row.sort((a, b) => a.x - b.x);
 
-      // Must contain a registration number
-      if (!/[A-Z]\d{2}[A-Z]\d{5,8}/i.test(mergedText.replace(/\s+/g, ''))) continue;
+      // Find registration number item
+      const regItem = row.find(it => /[A-Z]\d{2}[A-Z]\d{5,8}/i.test(it.str.replace(/\s+/g, '')));
+      if (!regItem) continue;
 
-      // Build column content map: columnIndex -> concatenated text
-      const colContent: Record<number, string[]> = {};
-      for (const item of row) {
-        const colIdx = assignToColumn(item.x, columns);
-        if (colIdx >= 0) {
-          if (!colContent[colIdx]) colContent[colIdx] = [];
-          colContent[colIdx].push(item.str);
+      const regNo = regItem.str.replace(/\s+/g, '').toUpperCase();
+      if (regNo.length < 5) continue;
+
+      // Find roll number: item just before reg number (numeric)
+      const regIdx = row.indexOf(regItem);
+      let rollNo = '';
+      if (regIdx > 0) {
+        const prevItem = row[regIdx - 1];
+        if (/^\d{4,7}$/.test(prevItem.str)) {
+          rollNo = prevItem.str;
         }
       }
 
-      // Extract fields from column content
-      const getColText = (idx: number): string => (colContent[idx] || []).join(' ').trim();
+      // Extract name and father's name using column ranges
+      let name = '';
+      let fatherName = '';
 
-      // Column mapping (based on HP University admission report format):
-      // Col 0: S.No
-      // Col 1: Roll Number  
-      // Col 2: Registration No
-      // Col 3: Name
-      // Col 4: Father's Name
-      // Col 5: Total Marks
-      // Col 6: Stream
-      // Col 7: Total Admission Fee
-      // Col 8+: Student Category, Allotted seat category, Counselling Round, Seat Type
+      if (headerDetected && nameColRange.max > 0) {
+        // Use detected column ranges
+        const nameItems = row.filter(it => it.x >= nameColRange.min && it.x < nameColRange.max && it !== regItem);
+        const fatherItems = row.filter(it => it.x >= fatherColRange.min && it.x < fatherColRange.max);
+        name = nameItems.map(it => it.str).join(' ').trim();
+        fatherName = fatherItems.map(it => it.str).join(' ').trim();
+      } else {
+        // Fallback: use x-position heuristic relative to reg number
+        // Name is typically 50-200px to the right of reg number
+        // Father's name is typically 200-400px to the right of reg number
+        const itemsAfterReg = row.filter(it => it.x > regItem.x + regItem.w && it !== regItem);
+        
+        // Find stream/fee items to determine boundary
+        const streamItem = itemsAfterReg.find(it => /Medical|Non|Arts|Commer/i.test(it.str));
+        const feeItem = itemsAfterReg.find(it => /\d{4,5}\.?\d*$/i.test(it.str));
+        const boundaryX = streamItem ? streamItem.x : feeItem ? feeItem.x - 50 : regItem.x + 350;
 
-      const rollNo = getColText(1);
-      const regNoRaw = getColText(2);
-      const name = getColText(3);
-      const fatherName = getColText(4);
-      const streamRaw = getColText(6);
-      const feeRaw = getColText(7);
+        const nameFatherItems = itemsAfterReg.filter(it => it.x < boundaryX);
+        
+        // Split name/father: find the midpoint of ALL-CAPS word items
+        const capsItems = nameFatherItems.filter(it => /^[A-Z][A-Z\s]*$/.test(it.str) && it.str.length >= 2);
+        if (capsItems.length >= 2) {
+          const midX = (capsItems[0].x + capsItems[capsItems.length - 1].x) / 2;
+          const nameItems = capsItems.filter(it => it.x < midX);
+          const fatherItems = capsItems.filter(it => it.x >= midX);
+          name = nameItems.map(it => it.str).join(' ').trim();
+          fatherName = fatherItems.map(it => it.str).join(' ').trim();
+        } else if (capsItems.length === 1) {
+          name = capsItems[0].str;
+        }
+      }
 
-      // Clean registration number
-      const regNo = regNoRaw.replace(/\s+/g, '').toUpperCase();
-      if (regNo.length < 5) continue;
-
-      // Validate name
       if (!name || name.length < 2) continue;
 
-      // Parse fee
-      const feeMatch = feeRaw.match(/(\d{3,6}\.?\d*)/);
+      // Extract stream
+      const allText = row.map(it => it.str).join(' ');
+      let stream = 'Arts';
+      if (/Non-Medical/i.test(allText)) stream = 'Non-Medical';
+      else if (/Medical/i.test(allText)) stream = 'Medical';
+      else if (/Commer/i.test(allText)) stream = 'Commerce';
+      else if (/Arts/i.test(allText)) stream = 'Arts';
+
+      // Extract fee
+      const feeMatch = allText.match(/(\d{4,5}\.\d{2})/);
       const totalFees = feeMatch ? parseFloat(feeMatch[1]) : 7056;
 
-      // Determine stream
-      let stream = 'Arts';
-      if (/Non-Medical/i.test(streamRaw)) stream = 'Non-Medical';
-      else if (/Medical/i.test(streamRaw)) stream = 'Medical';
-      else if (/Commer/i.test(streamRaw)) stream = 'Commerce';
-      else if (/Arts/i.test(streamRaw)) stream = 'Arts';
-
-      // Determine category from remaining columns (8+)
-      const remainingCols = Object.entries(colContent)
-        .filter(([k]) => parseInt(k) >= 8)
-        .map(([, v]) => v.join(' '))
-        .join(' ');
-
+      // Determine category
       let category = 'General';
-      if (/SCHEDULED\s*CASTE|\(SC\)/i.test(remainingCols)) category = 'SC';
-      else if (/SCHEDULED\s*TRIBE|\(ST\)/i.test(remainingCols)) category = 'ST';
-      else if (/OTHER\s*BACKWARD|\(OBC\)/i.test(remainingCols)) category = 'OBC';
-      else if (/ECONOMICALLY\s*WEAKER|\(EWS\)/i.test(remainingCols)) category = 'General';
+      if (/SCHEDULED\s*CASTE|\(SC\)/i.test(allText)) category = 'SC';
+      else if (/SCHEDULED\s*TRIBE|\(ST\)/i.test(allText)) category = 'ST';
+      else if (/OTHER\s*BACKWARD|\(OBC\)/i.test(allText)) category = 'OBC';
+      else if (/ECONOMICALLY\s*WEAKER|\(EWS\)/i.test(allText)) category = 'General';
 
       // Determine seat type
       let seatType = '';
-      if (/Management\s*Quota/i.test(remainingCols)) seatType = 'Management Quota';
-      else if (/HP\s*Quota/i.test(remainingCols)) seatType = 'HP Quota';
-      else if (/Other\s*State/i.test(remainingCols)) seatType = 'Other State';
+      if (/Management\s*Quota/i.test(allText)) seatType = 'Management Quota';
+      else if (/HP\s*Quota/i.test(allText)) seatType = 'HP Quota';
+      else if (/Other\s*State/i.test(allText)) seatType = 'Other State';
 
       // Determine counselling round
       let counsellingRound = '';
@@ -361,7 +345,7 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
         /Mop[\s-]*Up/i,
       ];
       for (const pat of roundPatterns) {
-        const m = remainingCols.match(pat);
+        const m = allText.match(pat);
         if (m) { counsellingRound = m[0]; break; }
       }
 

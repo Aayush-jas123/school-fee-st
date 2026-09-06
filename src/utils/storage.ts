@@ -16,6 +16,11 @@ export const DEFAULT_FEE_RULES: CourseFeeRule[] = [
     developmentFee: 5000,
     labFee: 3000,
     lateFeePerDay: 50,
+    seatTypeFees: [
+      { seatType: 'Subsidised', additionalFee: 0 },
+      { seatType: 'Non-Subsidised', additionalFee: 15000 },
+      { seatType: 'Management', additionalFee: 30000 },
+    ],
     scholarshipDiscounts: {
       SC: 10000,
       ST: 10000,
@@ -33,6 +38,10 @@ export const DEFAULT_FEE_RULES: CourseFeeRule[] = [
     developmentFee: 5000,
     labFee: 3000,
     lateFeePerDay: 75,
+    seatTypeFees: [
+      { seatType: 'Normal', additionalFee: 0 },
+      { seatType: 'Management', additionalFee: 25000 },
+    ],
     scholarshipDiscounts: {
       SC: 12000,
       ST: 12000,

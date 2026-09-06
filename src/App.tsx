@@ -239,9 +239,15 @@ export function App() {
       const rule = rules.find((r) => r.course === student.course && r.session === student.session);
       if (!rule) return student;
 
-      const totalAnnualFee = rule.tuitionFee;
+      // Calculate seat type premium
+      const seatPremium = student.seatType
+        ? (rule.seatTypeFees?.find((sf) => sf.seatType === student.seatType)?.additionalFee || 0)
+        : 0;
+
+      const baseFee = rule.tuitionFee;
+      const effectiveFeeBeforeDiscount = baseFee + seatPremium;
       const discount = rule.scholarshipDiscounts[student.category] || 0;
-      const effectiveFee = totalAnnualFee - discount;
+      const effectiveFee = effectiveFeeBeforeDiscount - discount;
 
       let feeStatus: FeeStatusType = 'Unpaid';
       if (student.paidTillNow >= effectiveFee) {
@@ -252,7 +258,7 @@ export function App() {
 
       return {
         ...student,
-        totalFees: totalAnnualFee,
+        totalFees: effectiveFee,
         feeBreakdown: {
           tuitionFee: rule.tuitionFee,
           admissionFee: rule.admissionFee,
@@ -476,7 +482,7 @@ export function App() {
           {/* TAB 2: DIRECTORY ONLY */}
           {currentTab === 'students' && (
             <StudentTable
-              students={students}
+              students={dashboardStudents}
               onViewStudent={(s) => setViewingStudent(s)}
               onEditStudent={(s) => setEditingStudent(s)}
               onRecordPayment={(s) => setPaymentStudent(s)}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import type { CourseFeeRule, CourseType } from '../types/feeSystem';
-import { Settings2, Save, GraduationCap, BookOpen, CheckCircle2, Award, DollarSign, Users } from 'lucide-react';
+import type { CourseFeeRule, CourseType, SeatType, SeatTypeFees } from '../types/feeSystem';
+import { getSeatTypesForCourse } from '../types/feeSystem';
+import { Settings2, Save, GraduationCap, BookOpen, CheckCircle2, Award, DollarSign, Users, Armchair } from 'lucide-react';
 import { formatCurrencyINR } from '../utils/exportUtils';
 
 interface FeeStructureManagerProps {
@@ -21,6 +22,27 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
   const currentRule = localRules.find((r) => r.course === activeCourse && r.session === activeSession)
     || localRules.find((r) => r.course === activeCourse)
     || localRules[0];
+
+  // Ensure currentRule always has seatTypeFees populated
+  const seatTypesForCourse = getSeatTypesForCourse(activeCourse);
+  const currentSeatTypeFees: SeatTypeFees[] = seatTypesForCourse.map((st) => {
+    const existing = currentRule?.seatTypeFees?.find((sf) => sf.seatType === st);
+    return existing || { seatType: st, additionalFee: 0 };
+  });
+
+  const handleSeatTypeFeeChange = (seatType: SeatType, additionalFee: number) => {
+    if (isReadOnly || !currentRule) return;
+    setLocalRules((prev) =>
+      prev.map((r) => {
+        if (r.course !== activeCourse || r.session !== activeSession) return r;
+        const existing = r.seatTypeFees || [];
+        const updated = existing.some((sf) => sf.seatType === seatType)
+          ? existing.map((sf) => (sf.seatType === seatType ? { ...sf, additionalFee } : sf))
+          : [...existing, { seatType, additionalFee }];
+        return { ...r, seatTypeFees: updated };
+      })
+    );
+  };
 
   const handleFeeChange = (field: keyof Omit<CourseFeeRule, 'course' | 'session' | 'scholarshipDiscounts'>, val: number) => {
     if (isReadOnly) return;
@@ -186,11 +208,11 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-xs">
         <div className="lg:col-span-2 bg-neutral-50/60 p-5 rounded-2xl border border-neutral-200 space-y-4">
           <h3 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-neutral-700" /> Annual Fee — {currentRule.course} Program ({activeSession})
+            <DollarSign className="w-4 h-4 text-neutral-700" /> Base Annual Fee — {currentRule.course} Program ({activeSession})
           </h3>
 
           <div>
-            <label className="block text-neutral-500 mb-1">Total Annual Fee (₹)</label>
+            <label className="block text-neutral-500 mb-1">Base Total Annual Fee (₹) — applied to standard/normal seat</label>
             <input
               type="number"
               value={currentRule.tuitionFee}
@@ -202,7 +224,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           </div>
 
           <div className="pt-3 border-t border-neutral-200 flex items-center justify-between">
-            <span className="font-bold text-neutral-700">This fee will be applied to all {currentRule.course} students in session {activeSession}</span>
+            <span className="font-bold text-neutral-700">This is the base fee for {currentRule.course} students in session {activeSession}</span>
             <strong className="text-neutral-700 text-base font-extrabold">
               {formatCurrencyINR(currentRule.tuitionFee)}
             </strong>
@@ -266,6 +288,85 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Seat Type Premium Fee Configuration */}
+      <div className="bg-white border border-neutral-200 rounded-2xl p-5 space-y-5">
+        <div className="flex items-center gap-3 border-b border-neutral-200 pb-3">
+          <div className="w-9 h-9 rounded-xl bg-violet-500/20 text-neutral-700 flex items-center justify-center">
+            <Armchair className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-neutral-900">Seat Type Premium Fees — {activeCourse} Program</h3>
+            <p className="text-[11px] text-neutral-500">
+              {activeCourse === 'B.Ed'
+                ? 'Configure additional fee premium for Normal and Management seats'
+                : 'Configure additional fee premium for Subsidised, Non-Subsidised and Management seats'}
+            </p>
+          </div>
+        </div>
+
+        <div className={`grid gap-4 ${seatTypesForCourse.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+          {currentSeatTypeFees.map((stf) => {
+            const effectiveTotal = currentRule.tuitionFee + stf.additionalFee;
+            const isBase = stf.additionalFee === 0;
+            return (
+              <div
+                key={stf.seatType}
+                className={`rounded-2xl border p-4 space-y-3 transition-all ${
+                  stf.seatType === 'Management'
+                    ? 'bg-amber-50/50 border-amber-200'
+                    : stf.seatType === 'Subsidised'
+                    ? 'bg-emerald-50/50 border-emerald-200'
+                    : stf.seatType === 'Non-Subsidised'
+                    ? 'bg-sky-50/50 border-sky-200'
+                    : 'bg-neutral-50/60 border-neutral-200'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {stf.seatType === 'Management' && <span className="text-amber-500 text-sm">★</span>}
+                    <span className="text-sm font-bold text-neutral-900">{stf.seatType}</span>
+                  </div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    isBase
+                      ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
+                      : 'bg-violet-500/20 text-neutral-700 border border-neutral-200'
+                  }`}>
+                    {isBase ? 'BASE' : 'PREMIUM'}
+                  </span>
+                </div>
+
+                <div>
+                  <label className="block text-neutral-500 text-[10px] mb-1">
+                    Additional Premium over Base (₹)
+                  </label>
+                  <input
+                    type="number"
+                    value={stf.additionalFee}
+                    disabled={isReadOnly}
+                    onChange={(e) => handleSeatTypeFeeChange(stf.seatType, Number(e.target.value))}
+                    className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 text-sm font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                    min={0}
+                    placeholder="0"
+                  />
+                </div>
+
+                <div className="pt-2 border-t border-neutral-200/60 flex items-center justify-between">
+                  <span className="text-[10px] text-neutral-500 font-medium">Effective Total Fee</span>
+                  <span className="text-sm font-extrabold text-neutral-900">
+                    {formatCurrencyINR(effectiveTotal)}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="text-[10px] text-neutral-500 pt-1">
+          Total Fee = Base Annual Fee ({formatCurrencyINR(currentRule.tuitionFee)}) + Seat Premium. 
+          Category scholarships are applied on top of the effective total.
+        </p>
       </div>
     </div>
   );

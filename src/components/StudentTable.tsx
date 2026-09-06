@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import type { Student, CourseType, FeeStatusType, SemesterFeeSlot } from '../types/feeSystem';
+import type { Student, CourseType, FeeStatusType, SemesterFeeSlot, SeatType } from '../types/feeSystem';
+import { getSeatTypesForCourse } from '../types/feeSystem';
 import {
   Search,
   Filter,
@@ -56,6 +57,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   const [sortField, setSortField] = useState<SortField>('registrationNo');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedSeatFilter, setSelectedSeatFilter] = useState<SeatType | 'ALL'>('ALL');
   const itemsPerPage = 10;
 
   // Inline Roll Number Edit State
@@ -132,11 +134,15 @@ export const StudentTable: React.FC<StudentTableProps> = ({
     setEditingPaidId(null);
   };
 
-  // Filter students based on search, course, and status
+  // Filter students based on search, course, status, and seat type
   const filteredStudents = useMemo(() => {
     return students.filter((s) => {
       // Course Filter
       if (selectedCourseFilter !== 'ALL' && s.course !== selectedCourseFilter) {
+        return false;
+      }
+      // Seat Type Filter
+      if (selectedSeatFilter !== 'ALL' && s.seatType !== selectedSeatFilter) {
         return false;
       }
       // Status Filter
@@ -163,7 +169,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
       return true;
     });
-  }, [students, selectedCourseFilter, selectedStatusFilter, searchTerm]);
+  }, [students, selectedCourseFilter, selectedStatusFilter, selectedSeatFilter, searchTerm]);
 
   // Sort students
   const sortedStudents = useMemo(() => {
@@ -227,7 +233,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   };
 
   const exportCSV = () => {
-    const headers = ['Registration No', 'Student Name', 'Father Name', 'Phone', 'WhatsApp', 'Course', 'Stream', 'Current Sem', 'Roll No', 'Session', 'Total Fees', 'Paid', 'Remaining', 'Status', 'Next Due Date'];
+    const headers = ['Registration No', 'Student Name', 'Father Name', 'Phone', 'WhatsApp', 'Course', 'Seat Type', 'Stream', 'Current Sem', 'Roll No', 'Session', 'Total Fees', 'Paid', 'Remaining', 'Status', 'Next Due Date'];
     const rows = sortedStudents.map((s) => [
       s.registrationNo,
       s.name,
@@ -235,6 +241,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
       s.phone,
       s.whatsappNo || s.phone,
       s.course,
+      s.seatType || 'Normal',
       s.stream || 'Arts',
       s.currentSemester || 'Sem 1',
       s.rollNo,
@@ -327,6 +334,36 @@ export const StudentTable: React.FC<StudentTableProps> = ({
             ))}
           </div>
 
+          {/* Seat Type Filter */}
+          {selectedCourseFilter !== 'ALL' && (
+            <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-neutral-200 text-xs">
+              <span className="text-neutral-500 px-2 font-medium">Seat:</span>
+              <button
+                onClick={() => setSelectedSeatFilter('ALL')}
+                className={`px-3 py-1 rounded-lg font-semibold transition-all ${
+                  selectedSeatFilter === 'ALL'
+                    ? 'bg-violet-600 text-neutral-900 shadow-sm'
+                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-zinc-700/60/50'
+                }`}
+              >
+                All Seats
+              </button>
+              {getSeatTypesForCourse(selectedCourseFilter).map((st) => (
+                <button
+                  key={st}
+                  onClick={() => setSelectedSeatFilter(st)}
+                  className={`px-3 py-1 rounded-lg font-semibold transition-all ${
+                    selectedSeatFilter === st
+                      ? 'bg-violet-600 text-neutral-900 shadow-sm'
+                      : 'text-neutral-500 hover:text-neutral-800 hover:bg-zinc-700/60/50'
+                  }`}
+                >
+                  {st}
+                </button>
+              ))}
+            </div>
+          )}
+
           {/* Status Filter */}
           <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-neutral-200 text-xs">
             <span className="text-neutral-500 px-2 font-medium">Status:</span>
@@ -372,6 +409,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
               <th className="py-3.5 px-4">Father / Guardian</th>
               <th className="py-3.5 px-4">Phone & WhatsApp</th>
               <th className="py-3.5 px-4">Course & Stream</th>
+              <th className="py-3.5 px-4 text-center">Seat Type</th>
               <th className="py-3.5 px-4 cursor-pointer hover:text-neutral-900" onClick={() => handleSort('rollNo')}>
                 <div className="flex items-center gap-1">
                   Roll No (Editable) <ArrowUpDown className="w-3 h-3 text-neutral-600" />
@@ -405,7 +443,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           <tbody className="divide-y divide-zinc-800/40 font-medium">
             {paginatedStudents.length === 0 ? (
               <tr>
-                <td colSpan={11} className="py-12 text-center text-neutral-600">
+                <td colSpan={12} className="py-12 text-center text-neutral-600">
                   <div className="max-w-xs mx-auto space-y-2">
                     <Search className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
                     <p className="text-sm font-semibold text-neutral-500">No matching student records found</p>
@@ -481,6 +519,26 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           </span>
                         )}
                       </div>
+                    </td>
+
+                    {/* Seat Type Badge */}
+                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                      {student.seatType ? (
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border ${
+                          student.seatType === 'Management'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
+                            : student.seatType === 'Normal'
+                            ? 'bg-neutral-100 text-neutral-700 border-neutral-200'
+                            : student.seatType === 'Subsidised'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : 'bg-sky-50 text-sky-700 border-sky-200'
+                        }`}>
+                          {student.seatType === 'Management' && '★ '}
+                          {student.seatType}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-neutral-500 font-medium">—</span>
+                      )}
                     </td>
 
                     {/* Editable Roll No */}

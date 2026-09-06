@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import type { Student, CourseType, FeeStatusType, SemesterFeeSlot } from '../types/feeSystem';
-import { X, Save, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import type { Student, CourseType, FeeStatusType, SemesterFeeSlot, SeatType } from '../types/feeSystem';
+import { getSeatTypesForCourse } from '../types/feeSystem';
+import { X, Save, CheckCircle2, Armchair } from 'lucide-react';
+import { DEFAULT_FEE_RULES } from '../utils/storage';
 
 interface EditStudentModalProps {
   student: Student | null;
@@ -13,6 +15,13 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
 
   const [formData, setFormData] = useState<Student>({ ...student });
   const [showToast, setShowToast] = useState(false);
+
+  // Available seat types for current course
+  const availableSeatTypes = useMemo(() => getSeatTypesForCourse(formData.course), [formData.course]);
+  const currentFeeRule = useMemo(
+    () => DEFAULT_FEE_RULES.find((r) => r.course === formData.course) || DEFAULT_FEE_RULES[0],
+    [formData.course]
+  );
 
   useEffect(() => {
     setFormData({ ...student });
@@ -163,12 +172,49 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               <label className="block text-neutral-500 font-semibold mb-1">Course Program</label>
               <select
                 value={formData.course}
-                onChange={(e) => handleChange('course', e.target.value as CourseType)}
+                onChange={(e) => {
+                  const newCourse = e.target.value as CourseType;
+                  const defaultSeat = newCourse === 'B.Ed' ? 'Normal' : 'Subsidised';
+                  handleChange('course', newCourse);
+                  handleChange('seatType', defaultSeat);
+                }}
                 className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-violet-500/50 focus:outline-none cursor-pointer"
               >
                 <option value="JBT">JBT (Junior Basic Training)</option>
                 <option value="B.Ed">B.Ed (Bachelor of Education)</option>
               </select>
+            </div>
+
+            {/* Seat Type */}
+            <div>
+              <label className="block text-neutral-500 font-semibold mb-1 flex items-center gap-1.5">
+                <Armchair className="w-3.5 h-3.5" /> Seat Category
+              </label>
+              <div className="flex gap-2 flex-wrap">
+                {availableSeatTypes.map((st) => {
+                  const additional = currentFeeRule.seatTypeFees?.find((sf) => sf.seatType === st)?.additionalFee || 0;
+                  const isActive = formData.seatType === st;
+                  return (
+                    <button
+                      key={st}
+                      type="button"
+                      onClick={() => handleChange('seatType', st)}
+                      className={`px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                        isActive
+                          ? st === 'Management'
+                            ? 'bg-amber-50 border-amber-300 text-amber-700 ring-1 ring-amber-300'
+                            : st === 'Subsidised'
+                            ? 'bg-emerald-50 border-emerald-300 text-emerald-700 ring-1 ring-emerald-300'
+                            : 'bg-violet-600/20 border-neutral-200 text-neutral-900 ring-1 ring-neutral-200'
+                          : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
+                      }`}
+                    >
+                      {st === 'Management' && '★ '}{st}
+                      {additional > 0 && <span className="block text-[9px] font-normal mt-0.5">+₹{additional.toLocaleString('en-IN')}</span>}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Academic Stream */}

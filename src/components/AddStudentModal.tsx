@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import type { Student, CourseType } from '../types/feeSystem';
-import { X, UserPlus, GraduationCap, BookOpen, CheckCircle2 } from 'lucide-react';
+import type { Student, CourseType, SeatType } from '../types/feeSystem';
+import { getSeatTypesForCourse } from '../types/feeSystem';
+import { X, UserPlus, GraduationCap, BookOpen, CheckCircle2, Armchair } from 'lucide-react';
 import { DEFAULT_FEE_RULES } from '../utils/storage';
 
 interface AddStudentModalProps {
@@ -24,10 +25,15 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
   const [whatsappNo, setWhatsappNo] = useState('');
   const [stream, setStream] = useState<string>('Arts');
   const [rollNoInput, setRollNoInput] = useState('');
+  const [seatType, setSeatType] = useState<SeatType>('Normal');
 
-  // Derive total fee based on selected course
+  // Available seat types for selected course
+  const availableSeatTypes = useMemo(() => getSeatTypesForCourse(course), [course]);
+
+  // Derive total fee based on selected course + seat type
   const currentFeeRule = DEFAULT_FEE_RULES.find((r) => r.course === course) || DEFAULT_FEE_RULES[0];
-  const defaultTotalFee = course === 'JBT' ? 65000 : 78000;
+  const seatAdditional = currentFeeRule.seatTypeFees?.find((sf) => sf.seatType === seatType)?.additionalFee || 0;
+  const defaultTotalFee = (course === 'JBT' ? 65000 : 78000) + seatAdditional;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +58,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
       phone,
       whatsappNo: whatsappNo || phone,
       stream,
+      seatType,
       email: email || `${name.toLowerCase().replace(/\s+/g, '.')}@gmail.com`,
       course,
       semester,
@@ -128,7 +135,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
             <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
-                onClick={() => setCourse('JBT')}
+                onClick={() => { setCourse('JBT'); setSeatType('Subsidised'); }}
                 className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all ${
                   course === 'JBT'
                     ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 shadow-lg shadow-violet-500/15 ring-1 ring-neutral-200'
@@ -146,7 +153,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
 
               <button
                 type="button"
-                onClick={() => setCourse('B.Ed')}
+                onClick={() => { setCourse('B.Ed'); setSeatType('Normal'); }}
                 className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all ${
                   course === 'B.Ed'
                     ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 shadow-lg shadow-violet-500/15 ring-1 ring-neutral-200'
@@ -161,6 +168,52 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                   <p className="text-[11px] text-neutral-500">2 Years Degree • Annual Fee: ₹78,000</p>
                 </div>
               </button>
+            </div>
+          </div>
+
+          {/* Seat Type Selection */}
+          <div>
+            <label className="block text-neutral-700 font-medium mb-1.5 flex items-center gap-1.5">
+              <Armchair className="w-4 h-4 text-neutral-700" />
+              Select Seat Category
+              <span className="text-[10px] text-neutral-500 font-normal ml-1">
+                {course === 'JBT' ? '(Subsidised / Non-Subsidised / Management)' : '(Normal / Management)'}
+              </span>
+            </label>
+            <div className={`grid gap-3 ${availableSeatTypes.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+              {availableSeatTypes.map((st) => {
+                const additional = currentFeeRule.seatTypeFees?.find((sf) => sf.seatType === st)?.additionalFee || 0;
+                const isSelected = seatType === st;
+                return (
+                  <button
+                    key={st}
+                    type="button"
+                    onClick={() => setSeatType(st)}
+                    className={`relative p-4 rounded-2xl border text-center transition-all cursor-pointer ${
+                      isSelected
+                        ? st === 'Management'
+                          ? 'bg-amber-50 border-amber-300 shadow-lg shadow-amber-500/10 ring-1 ring-amber-300'
+                          : st === 'Subsidised'
+                          ? 'bg-emerald-50 border-emerald-300 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-300'
+                          : 'bg-violet-600/20 border-neutral-200 shadow-lg shadow-violet-500/15 ring-1 ring-neutral-200'
+                        : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
+                    }`}
+                  >
+                    {st === 'Management' && (
+                      <span className="absolute top-2 right-2 text-amber-500 text-xs">★</span>
+                    )}
+                    <div className={`text-sm font-bold ${isSelected ? 'text-neutral-900' : 'text-neutral-700'}`}>
+                      {st}
+                    </div>
+                    <div className="text-[10px] text-neutral-500 mt-1">
+                      {additional > 0 ? `Base + ₹${additional.toLocaleString('en-IN')}` : 'Base Fee'}
+                    </div>
+                    <div className="text-[11px] font-bold text-neutral-700 mt-1">
+                      ₹{(defaultTotalFee).toLocaleString('en-IN')}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

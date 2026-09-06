@@ -1,5 +1,5 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import type { Student, AuditLogEntry, CourseFeeRule, FeeBreakdown, PaymentRecord } from '../types/feeSystem';
+import type { Student, AuditLogEntry, CourseFeeRule, FeeBreakdown, PaymentRecord, SeatTypeFees } from '../types/feeSystem';
 import { INITIAL_STUDENTS } from '../data/mockStudents';
 import {
   getStoredStudents,
@@ -24,6 +24,7 @@ const mapRowToStudent = (row: any): Student => {
     email: row.email || '',
     course: row.course,
     stream: row.stream || 'Arts',
+    seatType: row.seat_type || undefined,
     semester: row.semester,
     currentSemester: row.current_semester || row.semester || 'Sem 1',
     rollNo: row.roll_no || '',
@@ -77,6 +78,7 @@ const mapStudentToRow = (student: Student) => {
     email: student.email,
     course: student.course,
     semester: student.semester,
+    seat_type: student.seatType || null,
     roll_no: student.rollNo,
     session: student.session,
     total_fees: student.totalFees,
@@ -228,6 +230,7 @@ export async function fetchFeeRulesFromDB(): Promise<CourseFeeRule[]> {
           developmentFee: Number(row.development_fee),
           labFee: Number(row.lab_fee),
           lateFeePerDay: Number(row.late_fee_per_day),
+          seatTypeFees: (typeof row.seat_type_fees === 'string' ? JSON.parse(row.seat_type_fees) : row.seat_type_fees) as SeatTypeFees[] || [],
           scholarshipDiscounts: row.scholarship_discounts,
         }));
       }
@@ -253,6 +256,7 @@ export async function saveFeeRulesToDB(rules: CourseFeeRule[]): Promise<void> {
         development_fee: r.developmentFee,
         lab_fee: r.labFee,
         late_fee_per_day: r.lateFeePerDay,
+        seat_type_fees: JSON.stringify(r.seatTypeFees || []),
         scholarship_discounts: r.scholarshipDiscounts,
         updated_at: new Date().toISOString(),
       }));

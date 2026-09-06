@@ -1,5 +1,22 @@
 export type CourseType = 'JBT' | 'B.Ed';
 
+// Seat types per course
+export type BEdSeatType = 'Normal' | 'Management';
+export type JBTSeatType = 'Subsidised' | 'Non-Subsidised' | 'Management';
+export type SeatType = BEdSeatType | JBTSeatType;
+
+export const BED_SEAT_TYPES: BEdSeatType[] = ['Normal', 'Management'];
+export const JBT_SEAT_TYPES: JBTSeatType[] = ['Subsidised', 'Non-Subsidised', 'Management'];
+
+export function getSeatTypesForCourse(course: CourseType): SeatType[] {
+  return course === 'B.Ed' ? [...BED_SEAT_TYPES] : [...JBT_SEAT_TYPES];
+}
+
+export interface SeatTypeFees {
+  seatType: SeatType;
+  additionalFee: number; // premium on top of base tuitionFee
+}
+
 export type FeeStatusType = 'Paid' | 'Partly Paid' | 'Unpaid' | 'Overdue';
 
 export type PaymentMode = 'UPI' | 'NEFT' | 'Cash' | 'Demand Draft' | 'Cheque';
@@ -49,6 +66,7 @@ export interface Student {
   email: string;
   course: CourseType;
   stream?: string;
+  seatType?: SeatType;
   semester: string;
   currentSemester?: SemesterName;
   rollNo: string;
@@ -102,6 +120,7 @@ export interface CourseFeeRule {
   developmentFee: number;
   labFee: number;
   lateFeePerDay: number;
+  seatTypeFees: SeatTypeFees[];
   scholarshipDiscounts: {
     SC: number;
     ST: number;

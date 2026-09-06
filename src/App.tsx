@@ -287,10 +287,8 @@ export function App() {
     setStudents(updatedStudents);
     saveStoredStudents(updatedStudents);
 
-    // Sync each new student to DB
-    for (const s of importedStudents) {
-      await saveStudentToDB(s);
-    }
+    // Bulk sync ALL students to Supabase to ensure persistence
+    await syncAllStudentsToDB(updatedStudents);
 
     await addAuditLogToDB({
       action: 'Bulk Student Import',

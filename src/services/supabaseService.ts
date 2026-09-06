@@ -96,9 +96,12 @@ const mapStudentToRow = (student: Student) => {
 export async function fetchStudentsFromDB(): Promise<Student[]> {
   if (isSupabaseConfigured() && supabase) {
     try {
-      // Sync fresh clean dataset to Supabase DB on initialization
-      const rowsToUpsert = INITIAL_STUDENTS.map(mapStudentToRow);
-      await supabase.from('students').upsert(rowsToUpsert);
+      // Only seed INITIAL_STUDENTS if the table is completely empty (first-time setup)
+      const { data: existing } = await supabase.from('students').select('id').limit(1);
+      if (!existing || existing.length === 0) {
+        const rowsToUpsert = INITIAL_STUDENTS.map(mapStudentToRow);
+        await supabase.from('students').upsert(rowsToUpsert);
+      }
 
       const { data, error } = await supabase
         .from('students')

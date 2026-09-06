@@ -288,9 +288,9 @@ export function App() {
     const newStudents = importedStudents.filter(s => !existingRegNos.has(s.registrationNo));
     const duplicates = importedStudents.filter(s => existingRegNos.has(s.registrationNo));
 
-    // Add all imported students (including duplicates with new IDs)
-    const updatedStudents = [...importedStudents, ...students];
-    console.log(`[Import] Total students after import: ${updatedStudents.length}`);
+    // Only add NEW students (not duplicates) to avoid UNIQUE constraint violation on registration_no
+    const updatedStudents = [...newStudents, ...students];
+    console.log(`[Import] Total students after import: ${updatedStudents.length} (${newStudents.length} new, ${duplicates.length} duplicates skipped)`);
     setStudents(updatedStudents);
     saveStoredStudents(updatedStudents);
 
@@ -300,13 +300,13 @@ export function App() {
 
     await addAuditLogToDB({
       action: 'Bulk Student Import',
-      details: `Imported ${importedStudents.length} students from file (${newStudents.length} new, ${duplicates.length} duplicates)`,
+      details: `Imported ${importedStudents.length} students from file (${newStudents.length} new, ${duplicates.length} duplicates skipped)`,
       staffName,
       type: 'STUDENT_ADD',
     });
     refreshAuditLogs();
     setShowImportModal(false);
-    showToast(`Successfully imported ${importedStudents.length} student records!`);
+    showToast(`Successfully imported ${newStudents.length} new student records! (${duplicates.length} duplicates skipped)`);
   };
 
   // Reset to default demo data

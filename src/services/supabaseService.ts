@@ -128,14 +128,19 @@ export async function fetchStudentsFromDB(): Promise<Student[]> {
 export async function syncAllStudentsToDB(studentsList: Student[] = INITIAL_STUDENTS): Promise<void> {
   if (isSupabaseConfigured() && supabase) {
     try {
+      console.log(`[Supabase] Syncing ${studentsList.length} students to Supabase...`);
       const rows = studentsList.map(mapStudentToRow);
       const { error } = await supabase.from('students').upsert(rows);
       if (error) {
-        console.error('Error syncing all students to Supabase:', error.message);
+        console.error('[Supabase] Error syncing all students:', error.message, error.details);
+      } else {
+        console.log(`[Supabase] Successfully synced ${studentsList.length} students`);
       }
     } catch (err) {
-      console.error('Failed to sync all students to Supabase:', err);
+      console.error('[Supabase] Failed to sync all students:', err);
     }
+  } else {
+    console.log('[Supabase] Not configured, skipping sync');
   }
 }
 

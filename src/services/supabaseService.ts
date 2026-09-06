@@ -11,6 +11,8 @@ import {
 } from '../utils/storage';
 
 // Helper to convert database row (snake_case) to Student interface (camelCase)
+// NOTE: Some columns may not exist in Supabase (stream, whatsapp_no, current_semester, semester_fees)
+// We handle this gracefully with fallbacks
 const mapRowToStudent = (row: any): Student => {
   return {
     id: row.id,
@@ -18,12 +20,12 @@ const mapRowToStudent = (row: any): Student => {
     name: row.name,
     fatherName: row.father_name,
     phone: row.phone,
-    whatsappNo: row.whatsapp_no || row.phone,
+    whatsappNo: row.whatsapp_no || row.phone || '',
     email: row.email || '',
     course: row.course,
     stream: row.stream || 'Arts',
     semester: row.semester,
-    currentSemester: row.current_semester || 'Sem 1',
+    currentSemester: row.current_semester || row.semester || 'Sem 1',
     rollNo: row.roll_no || '',
     session: row.session,
     totalFees: Number(row.total_fees || 0),
@@ -61,6 +63,8 @@ const mapRowToStudent = (row: any): Student => {
 };
 
 // Helper to convert Student interface to database row format (snake_case)
+// NOTE: Only includes columns that exist in the Supabase schema.
+// Missing columns: stream, whatsapp_no, current_semester, semester_fees
 const mapStudentToRow = (student: Student) => {
   return {
     id: student.id,
@@ -68,10 +72,8 @@ const mapStudentToRow = (student: Student) => {
     name: student.name,
     father_name: student.fatherName,
     phone: student.phone,
-    whatsapp_no: student.whatsappNo || student.phone,
     email: student.email,
     course: student.course,
-    stream: student.stream || 'Arts',
     semester: student.semester,
     roll_no: student.rollNo,
     session: student.session,

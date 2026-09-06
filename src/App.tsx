@@ -20,6 +20,7 @@ import { AuditLogModal } from './components/AuditLogModal';
 import { PrintableReceipt } from './components/PrintableReceipt';
 import { StudentReceiptModal } from './components/StudentReceiptModal';
 import { ImportDataModal } from './components/ImportDataModal';
+import { ReceiptCenterPanel } from './components/ReceiptCenterPanel';
 import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircle2, Upload } from 'lucide-react';
 
 import {
@@ -71,6 +72,8 @@ export function App() {
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [receiptSearch, setReceiptSearch] = useState('');
+  const [receiptFilter, setReceiptFilter] = useState<'ALL' | 'Paid' | 'Partly Paid' | 'Unpaid'>('ALL');
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -501,49 +504,19 @@ export function App() {
             </div>
           )}
 
-          {/* TAB 5: RECEIPT GENERATOR */}
+          {/* TAB 5: RECEIPT GENERATOR & FEE COLLECTION CENTER */}
           {currentTab === 'receipts' && (
-            <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-lg space-y-6 backdrop-blur-sm">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold border border-neutral-200">
-                    <Receipt className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-neutral-900">Official Fee Receipt Generator</h3>
-                    <p className="text-xs text-neutral-500">Generate, view, and print official fee payment receipts for JBT & B.Ed students</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                {students.slice(0, 8).map((st) => {
-                  const lastPayment = st.paymentHistory[0] || {
-                    id: `RCP-2024-${Math.floor(1000 + Math.random() * 9000)}`,
-                    amount: st.paidTillNow,
-                    date: '2024-07-15',
-                    mode: 'UPI' as const,
-                    transactionRef: 'UPI/409182736',
-                    remark: 'Tuition Fee Installment',
-                  };
-                  return (
-                    <div key={st.id} className="bg-neutral-50/60 p-4 rounded-2xl border border-neutral-200 flex items-center justify-between hover:border-neutral-300/60 transition-all duration-200 card-premium">
-                      <div>
-                        <p className="font-bold text-neutral-900 text-sm">{st.name}</p>
-                        <p className="text-neutral-500 font-mono text-[11px]">{st.registrationNo} ({st.course})</p>
-                        <p className="text-neutral-700 font-bold mt-1">Paid So Far: {formatCurrencyINR(st.paidTillNow)}</p>
-                      </div>
-                      <button
-                        onClick={() => setPrintableReceiptData({ student: st, payment: lastPayment })}
-                        className="px-3.5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-neutral-900 font-semibold flex items-center gap-1.5 cursor-pointer shadow-md shadow-neutral-900/10 transition-all duration-200"
-                      >
-                        <Printer className="w-3.5 h-3.5" /> View Receipt
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <ReceiptCenterPanel
+              students={students}
+              receiptSearch={receiptSearch}
+              setReceiptSearch={setReceiptSearch}
+              receiptFilter={receiptFilter}
+              setReceiptFilter={setReceiptFilter}
+              onCollectFee={(s) => setPaymentStudent(s)}
+              onGenerateReceipt={(s) => setReceiptStudent(s)}
+              onViewReceipt={(s, p) => setPrintableReceiptData({ student: s, payment: p })}
+              isReadOnly={isReadOnlyMode}
+            />
           )}
 
           {/* TAB 6: FEE STRUCTURES */}
@@ -588,6 +561,8 @@ export function App() {
         onClose={() => setViewingStudent(null)}
         onEdit={(s) => setEditingStudent(s)}
         onViewReceipt={(s, p) => setPrintableReceiptData({ student: s, payment: p })}
+        onCollectPayment={(s) => { setViewingStudent(null); setPaymentStudent(s); }}
+        onOpenReceiptCenter={(s) => { setViewingStudent(null); setReceiptStudent(s); }}
         isReadOnly={isReadOnlyMode}
       />
 

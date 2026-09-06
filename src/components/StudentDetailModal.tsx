@@ -9,6 +9,8 @@ import {
   Edit,
   Building,
   MessageSquare,
+  DollarSign,
+  Receipt,
 } from 'lucide-react';
 
 interface StudentDetailModalProps {
@@ -16,10 +18,12 @@ interface StudentDetailModalProps {
   onClose: () => void;
   onEdit: (student: Student) => void;
   onViewReceipt?: (student: Student, payment: PaymentRecord) => void;
+  onCollectPayment?: (student: Student) => void;
+  onOpenReceiptCenter?: (student: Student) => void;
   isReadOnly?: boolean;
 }
 
-export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, onClose, onEdit, onViewReceipt, isReadOnly = false }) => {
+export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, onClose, onEdit, onViewReceipt, onCollectPayment, onOpenReceiptCenter, isReadOnly = false }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'semesters' | 'breakdown' | 'history'>('overview');
 
   if (!student) return null;
@@ -32,8 +36,18 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
     }).format(val);
   };
 
-  const handlePrintReceipt = () => {
-    window.print();
+  const handleOpenReceiptCenter = () => {
+    if (onOpenReceiptCenter && student) {
+      onClose();
+      onOpenReceiptCenter(student);
+    }
+  };
+
+  const handleCollectFee = () => {
+    if (onCollectPayment && student) {
+      onClose();
+      onCollectPayment(student);
+    }
   };
 
   const cleanWhatsapp = (student.whatsappNo || student.phone || '').replace(/\D/g, '');
@@ -505,13 +519,26 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
 
         {/* Modal Footer Actions */}
         <div className="p-4 md:p-6 bg-neutral-50/60 border-t border-neutral-200 flex items-center justify-between gap-3 text-xs">
-          <button
-            onClick={handlePrintReceipt}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-800 font-semibold border border-neutral-200 transition-colors"
-          >
-            <Printer className="w-4 h-4 text-neutral-700" />
-            Print Fee Receipt
-          </button>
+          <div className="flex items-center gap-2">
+            {!isReadOnly && student.remainingFees > 0 && onCollectPayment && (
+              <button
+                onClick={handleCollectFee}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md transition-colors cursor-pointer"
+              >
+                <DollarSign className="w-4 h-4" />
+                Collect Fee
+              </button>
+            )}
+            {onOpenReceiptCenter && (
+              <button
+                onClick={handleOpenReceiptCenter}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold shadow-md transition-colors cursor-pointer"
+              >
+                <Receipt className="w-4 h-4" />
+                Generate Receipt
+              </button>
+            )}
+          </div>
 
           <div className="flex items-center gap-2">
             {!isReadOnly && (

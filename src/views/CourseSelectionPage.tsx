@@ -74,7 +74,7 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + idx * 0.15, duration: 0.5 }}
                 onClick={() => onSelectCourse(course.code)}
-                className="group relative bg-neutral-50 backdrop-blur-sm border border-neutral-200 hover:border-neutral-200 rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:shadow-violet-500/5 transition-all duration-500 cursor-pointer flex flex-col justify-between space-y-8 card-premium"
+                className="group relative bg-neutral-50 backdrop-blur-sm border border-neutral-200 hover:border-neutral-300 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col justify-between space-y-8 card-premium"
               >
                 {/* Hover gradient overlay */}
                 <div className={`absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${
@@ -88,8 +88,8 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
                   <div
                     className={`w-14 h-14 rounded-2xl flex items-center justify-center border shadow-inner transition-all duration-300 group-hover:scale-110 ${
                       isJBT
-                        ? 'bg-neutral-100 border-neutral-200 text-neutral-700 group-hover:shadow-emerald-500/10'
-                        : 'bg-neutral-100 border-neutral-200 text-neutral-700 group-hover:shadow-violet-500/10'
+                        ? 'bg-neutral-100 border-neutral-200 text-neutral-700 group-hover:shadow-neutral-900/10'
+                        : 'bg-neutral-100 border-neutral-200 text-neutral-700 group-hover:shadow-neutral-900/10'
                     }`}
                   >
                     {isJBT ? <GraduationCap className="w-7 h-7" /> : <BookOpen className="w-7 h-7" />}
@@ -108,7 +108,7 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
 
                 {/* Program Details */}
                 <div className="space-y-2 relative">
-                  <h3 className="text-2xl font-extrabold text-neutral-900 group-hover:text-violet-200 transition-colors duration-300">
+                  <h3 className="text-2xl font-extrabold text-neutral-900 group-hover:text-neutral-700 transition-colors duration-300">
                     {course.title} Program
                   </h3>
                   <p className="text-xs text-neutral-500 font-medium leading-relaxed">

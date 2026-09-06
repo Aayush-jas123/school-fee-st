@@ -3,8 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Lock, User, ShieldCheck, Building2, ArrowRight, HelpCircle } from 'lucide-react';
 
 interface LoginPageProps {
-  onLoginSuccess: (staffName: string) => void;
+  onLoginSuccess: (staffName: string, role: 'admin' | 'clerk') => void;
 }
+
+// Hardcoded credential store
+const CREDENTIALS = [
+  { id: 'admin', password: 'admin@123', name: 'Dr. Rajesh Sharma (Accounts Officer)', role: 'admin' as const },
+  { id: 'clerk', password: 'clerk@123', name: 'Staff Viewer (Clerk)', role: 'clerk' as const },
+];
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [loginId, setLoginId] = useState('');
@@ -24,8 +30,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     }
     setIsLoading(true);
     setTimeout(() => {
+      const match = CREDENTIALS.find(
+        (c) => c.id === loginId.trim().toLowerCase() && c.password === password
+      );
+      if (match) {
+        onLoginSuccess(match.name, match.role);
+      } else {
+        setErrorMessage('Invalid Login ID or Password. Please try again.');
+      }
       setIsLoading(false);
-      onLoginSuccess('Dr. Rajesh Sharma (Accounts Officer)');
     }, 800);
   };
 

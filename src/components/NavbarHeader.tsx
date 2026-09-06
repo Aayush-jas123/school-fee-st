@@ -1,6 +1,6 @@
 import React from 'react';
 import type { CourseType } from '../types/feeSystem';
-import { Building2, Search, Bell, LogOut, ChevronDown, UserCheck, Calendar, Database, Zap, X } from 'lucide-react';
+import { Building2, Search, Bell, LogOut, ChevronDown, Calendar, Database, Zap, X } from 'lucide-react';
 import { isSupabaseConfigured } from '../lib/supabase';
 
 interface NavbarHeaderProps {
@@ -20,7 +20,6 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
   onCourseChange,
   selectedSession,
   onSessionChange,
-  staffName,
   onLogout,
   searchTerm,
   onSearchChange,

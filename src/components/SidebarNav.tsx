@@ -101,7 +101,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             </p>
           )}
           <nav className={`${collapsed ? 'flex flex-col items-center gap-1' : 'space-y-0.5'}`}>
-            {navItems.map((item, i) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentTab === item.id;
               return (

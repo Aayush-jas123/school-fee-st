@@ -143,7 +143,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden"
+        className="bg-white border border-neutral-200 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
@@ -156,7 +156,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
               <p className="text-xs text-neutral-500">Import admission records from PDF or Excel files</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-800 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer">
+          <button onClick={onClose} className="p-2 rounded-xl hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -167,10 +167,10 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
             <div key={s} className="flex items-center gap-2">
               <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
                 step === s || (i === 0 && step === 'importing') || (i === 1 && step === 'preview')
-                  ? 'bg-violet-600 text-neutral-900'
+                  ? 'bg-neutral-900 text-white'
                   : ['upload', 'configure', 'preview'].indexOf(step) > i
-                    ? 'bg-emerald-600/20 text-neutral-700 border border-emerald-600/30'
-                    : 'bg-zinc-800 text-neutral-600 border border-neutral-200'
+                    ? 'bg-neutral-100 text-neutral-700 border border-neutral-300'
+                    : 'bg-white text-neutral-600 border border-neutral-200'
               }`}>
                 {['upload', 'configure', 'preview'].indexOf(step) > i || (i <= 1 && step === 'preview') ? (
                   <CheckCircle2 className="w-3.5 h-3.5" />
@@ -198,8 +198,8 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-200 ${
                   isDragging
-                    ? 'border-violet-500 bg-neutral-50'
-                    : 'border-zinc-700 hover:border-neutral-300 bg-zinc-900/30 hover:bg-neutral-50'
+                    ? 'border-neutral-400 bg-neutral-50'
+                    : 'border-neutral-300 hover:border-neutral-300 bg-white hover:bg-neutral-50'
                 }`}
               >
                 <input
@@ -218,7 +218,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                 </p>
                 <div className="flex items-center justify-center gap-4">
                   <div className="flex items-center gap-1.5 text-xs text-neutral-500 bg-neutral-100 px-3 py-1.5 rounded-lg">
-                    <FileText className="w-3.5 h-3.5 text-red-400" /> PDF
+                    <FileText className="w-3.5 h-3.5 text-neutral-700" /> PDF
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-neutral-500 bg-neutral-100 px-3 py-1.5 rounded-lg">
                     <FileSpreadsheet className="w-3.5 h-3.5 text-neutral-700" /> Excel
@@ -230,7 +230,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-sm">
+                <div className="flex items-center gap-2 text-neutral-600 bg-neutral-100 border border-neutral-200 rounded-xl px-4 py-3 text-sm">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   {error}
                 </div>
@@ -244,7 +244,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
               {/* File Info */}
               <div className="flex items-center gap-3 bg-neutral-50 border border-neutral-200 rounded-2xl p-4">
                 {fileType === 'pdf' ? (
-                  <FileText className="w-8 h-8 text-red-400" />
+                  <FileText className="w-8 h-8 text-neutral-700" />
                 ) : (
                   <FileSpreadsheet className="w-8 h-8 text-neutral-700" />
                 )}
@@ -257,7 +257,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                 </div>
                 <button
                   onClick={() => { setStep('upload'); setFile(null); setFileType(null); setError(null); }}
-                  className="text-xs text-neutral-500 hover:text-neutral-900 px-3 py-1.5 rounded-lg hover:bg-zinc-700 transition-colors cursor-pointer"
+                  className="text-xs text-neutral-500 hover:text-neutral-900 px-3 py-1.5 rounded-lg hover:bg-neutral-200 transition-colors cursor-pointer"
                 >
                   Change
                 </button>
@@ -273,7 +273,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                       onClick={() => setCourse(opt.value)}
                       className={`flex items-center gap-3 p-4 rounded-2xl border transition-all cursor-pointer ${
                         course === opt.value
-                          ? 'border-violet-500/50 bg-neutral-100 text-neutral-900'
+                          ? 'border-neutral-400 bg-neutral-100 text-neutral-900'
                           : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:border-neutral-300'
                       }`}
                     >
@@ -294,7 +294,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                       onClick={() => setSession(s)}
                       className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
                         session === s
-                          ? 'border-violet-500/50 bg-neutral-100 text-neutral-700'
+                          ? 'border-neutral-400 bg-neutral-100 text-neutral-700'
                           : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:border-neutral-300'
                       }`}
                     >
@@ -326,7 +326,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-sm">
+                <div className="flex items-center gap-2 text-neutral-600 bg-neutral-100 border border-neutral-200 rounded-xl px-4 py-3 text-sm">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   {error}
                 </div>
@@ -388,7 +388,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                       <button
                         onClick={() => setPreviewPage(p => Math.max(0, p - 1))}
                         disabled={previewPage === 0}
-                        className="p-1.5 rounded-lg hover:bg-zinc-700 text-neutral-500 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
+                        className="p-1.5 rounded-lg hover:bg-neutral-200 text-neutral-500 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
                       >
                         <ChevronLeft className="w-3.5 h-3.5" />
                       </button>
@@ -398,7 +398,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                       <button
                         onClick={() => setPreviewPage(p => Math.min(previewTotalPages - 1, p + 1))}
                         disabled={previewPage >= previewTotalPages - 1}
-                        className="p-1.5 rounded-lg hover:bg-zinc-700 text-neutral-500 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
+                        className="p-1.5 rounded-lg hover:bg-neutral-200 text-neutral-500 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
                       >
                         <ChevronRight className="w-3.5 h-3.5" />
                       </button>
@@ -427,7 +427,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                         return (
                           <tr
                             key={student.id}
-                            className={`border-t border-neutral-200 ${isDuplicate ? 'bg-amber-500/5' : 'hover:bg-zinc-800/20'}`}
+                            className={`border-t border-neutral-200 ${isDuplicate ? 'bg-neutral-50' : 'hover:bg-neutral-50'}`}
                           >
                             <td className="px-3 py-2 text-neutral-600 font-mono">{globalIdx + 1}</td>
                             <td className="px-3 py-2 text-neutral-700 font-mono font-semibold">{student.registrationNo}</td>
@@ -438,17 +438,17 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                                 student.stream === 'Non-Medical' ? 'bg-neutral-100 text-neutral-700' :
                                 student.stream === 'Medical' ? 'bg-neutral-100 text-neutral-700' :
                                 student.stream === 'Commerce' ? 'bg-neutral-100 text-neutral-700' :
-                                'bg-zinc-700/30 text-neutral-500'
+                                'bg-neutral-50 text-neutral-500'
                               }`}>
                                 {student.stream}
                               </span>
                             </td>
                             <td className="px-3 py-2">
                               <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
-                                student.category === 'SC' ? 'bg-purple-500/10 text-purple-400' :
-                                student.category === 'ST' ? 'bg-pink-500/10 text-pink-400' :
-                                student.category === 'OBC' ? 'bg-orange-500/10 text-orange-400' :
-                                'bg-zinc-700/30 text-neutral-500'
+                                student.category === 'SC' ? 'bg-neutral-100 text-neutral-700' :
+                                student.category === 'ST' ? 'bg-neutral-100 text-neutral-700' :
+                                student.category === 'OBC' ? 'bg-neutral-100 text-neutral-700' :
+                                'bg-neutral-50 text-neutral-500'
                               }`}>
                                 {student.category}
                               </span>
@@ -459,7 +459,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                             <td className="px-3 py-2 text-center">
                               <button
                                 onClick={() => handleRemoveStudent(globalIdx)}
-                                className="p-1 rounded-lg hover:bg-red-500/10 text-neutral-600 hover:text-red-400 transition-colors cursor-pointer"
+                                className="p-1 rounded-lg hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
                                 title="Remove this record"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -506,7 +506,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                 else if (step === 'preview') setStep('configure');
                 else onClose();
               }}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-neutral-500 hover:text-neutral-900 hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-neutral-500 hover:text-neutral-900 hover:bg-neutral-200 transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
               {step === 'upload' ? 'Cancel' : 'Back'}

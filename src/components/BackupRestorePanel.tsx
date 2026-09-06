@@ -222,8 +222,8 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
           {/* Online/Offline Status */}
           <div className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border ${
             isOnline
-              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-              : 'bg-amber-50 text-amber-700 border-amber-200'
+              ? 'bg-neutral-100 text-neutral-700 border-neutral-200'
+              : 'bg-neutral-50 text-neutral-600 border-neutral-200'
           }`}>
             {isOnline ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
             {isOnline ? 'Online — Syncing Active' : 'Offline — Using Local Data'}
@@ -271,7 +271,7 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
           className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center">
               <Download className="w-5 h-5" />
             </div>
             <div>
@@ -302,7 +302,7 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
           className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center">
               <Upload className="w-5 h-5" />
             </div>
             <div>
@@ -312,21 +312,21 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
           </div>
 
           {restoreStatus === 'success' && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium mb-3">
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-700 text-xs font-medium mb-3">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               {restoreMessage}
             </div>
           )}
 
           {restoreStatus === 'error' && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium mb-3">
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-700 text-xs font-medium mb-3">
               <AlertTriangle className="w-4 h-4 shrink-0" />
               {restoreMessage}
             </div>
           )}
 
           {previewData && (
-            <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-800 mb-3 space-y-1">
+            <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-neutral-700 mb-3 space-y-1">
               <p className="font-semibold">Preview: {previewData.students.length} students found</p>
               <p>Backup date: {new Date(previewData.exportedAt).toLocaleString()}</p>
               <p>Fee rules: {previewData.feeRules?.length || 0} rules</p>
@@ -334,7 +334,7 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
           )}
 
           <div className="space-y-2">
-            <label className="w-full px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-200">
+            <label className="w-full px-4 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-200">
               <Upload className="w-4 h-4" />
               {restoreFileName ? `File: ${restoreFileName}` : 'Select Backup File (.json)'}
               <input
@@ -349,7 +349,7 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
             {previewData && !isReadOnly && (
               <button
                 onClick={handleApplyRestore}
-                className="w-full px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all"
+                className="w-full px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all"
               >
                 <RefreshCw className="w-4 h-4" />
                 Apply Restored Data
@@ -400,9 +400,9 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
 
                   <div className="flex items-center gap-4">
                     <div className="hidden md:flex items-center gap-3 text-[11px]">
-                      <span className="text-emerald-600 font-semibold">{paidCount} Paid</span>
-                      <span className="text-amber-600 font-semibold">{partlyPaidCount} Partly</span>
-                      <span className="text-red-600 font-semibold">{unpaidCount} Unpaid</span>
+                      <span className="text-neutral-700 font-semibold">{paidCount} Paid</span>
+                      <span className="text-neutral-600 font-semibold">{partlyPaidCount} Partly</span>
+                      <span className="text-neutral-500 font-semibold">{unpaidCount} Unpaid</span>
                     </div>
                     <div className="text-right hidden sm:block">
                       <p className="text-xs font-bold text-neutral-900">{formatCurrencyINR(totalPaid)}</p>
@@ -426,11 +426,11 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
                       </div>
                       <div className="bg-white p-3 text-center">
                         <p className="text-[10px] text-neutral-400 font-semibold uppercase">Collected</p>
-                        <p className="text-sm font-bold text-emerald-600">{formatCurrencyINR(totalPaid)}</p>
+                        <p className="text-sm font-bold text-neutral-900">{formatCurrencyINR(totalPaid)}</p>
                       </div>
                       <div className="bg-white p-3 text-center">
                         <p className="text-[10px] text-neutral-400 font-semibold uppercase">Pending</p>
-                        <p className="text-sm font-bold text-red-600">{formatCurrencyINR(totalPending)}</p>
+                        <p className="text-sm font-bold text-neutral-700">{formatCurrencyINR(totalPending)}</p>
                       </div>
                     </div>
 
@@ -460,16 +460,16 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
                                 </span>
                               </td>
                               <td className="px-4 py-2.5 text-right text-neutral-700">{formatCurrencyINR(student.totalFees)}</td>
-                              <td className="px-4 py-2.5 text-right text-emerald-600 font-medium">{formatCurrencyINR(student.paidTillNow)}</td>
-                              <td className="px-4 py-2.5 text-right text-red-600 font-medium">{formatCurrencyINR(student.remainingFees)}</td>
+                              <td className="px-4 py-2.5 text-right text-neutral-700 font-medium">{formatCurrencyINR(student.paidTillNow)}</td>
+                              <td className="px-4 py-2.5 text-right text-neutral-600 font-medium">{formatCurrencyINR(student.remainingFees)}</td>
                               <td className="px-4 py-2.5 text-center">
                                 <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
                                   student.feeStatus === 'Paid'
-                                    ? 'bg-emerald-100 text-emerald-700'
+                                    ? 'bg-neutral-100 text-neutral-700'
                                     : student.feeStatus === 'Partly Paid'
-                                    ? 'bg-amber-100 text-amber-700'
+                                    ? 'bg-neutral-100 text-neutral-700'
                                     : student.feeStatus === 'Overdue'
-                                    ? 'bg-red-100 text-red-700'
+                                    ? 'bg-neutral-200 text-neutral-700'
                                     : 'bg-neutral-100 text-neutral-600'
                                 }`}>
                                   {student.feeStatus}

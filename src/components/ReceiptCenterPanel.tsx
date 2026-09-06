@@ -66,16 +66,16 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
 
   const getStatusIcon = (status: string) => {
-    if (status === 'Paid') return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />;
-    if (status === 'Partly Paid') return <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />;
-    return <XCircle className="w-3.5 h-3.5 text-rose-500" />;
+    if (status === 'Paid') return <CheckCircle2 className="w-3.5 h-3.5 text-neutral-700" />;
+    if (status === 'Partly Paid') return <AlertTriangle className="w-3.5 h-3.5 text-neutral-600" />;
+    return <XCircle className="w-3.5 h-3.5 text-neutral-500" />;
   };
 
   const getStatusBadge = (status: string) => {
     const base = 'px-2 py-0.5 rounded-full text-[10px] font-bold border';
-    if (status === 'Paid') return `${base} bg-emerald-50 text-emerald-700 border-emerald-200`;
-    if (status === 'Partly Paid') return `${base} bg-amber-50 text-amber-700 border-amber-200`;
-    return `${base} bg-rose-50 text-rose-700 border-rose-200`;
+    if (status === 'Paid') return `${base} bg-neutral-100 text-neutral-700 border-neutral-200`;
+    if (status === 'Partly Paid') return `${base} bg-neutral-100 text-neutral-700 border-neutral-200`;
+    return `${base} bg-neutral-200 text-neutral-700 border-neutral-300`;
   };
 
   return (
@@ -84,7 +84,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
       <div className="p-5 md:p-6 border-b border-neutral-200 bg-neutral-50/60">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-violet-600/10 text-violet-600 flex items-center justify-center font-bold border border-violet-200">
+            <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold border border-neutral-200">
               <Receipt className="w-6 h-6" />
             </div>
             <div>
@@ -104,11 +104,11 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
           </div>
           <div className="bg-white p-3 rounded-xl border border-neutral-200">
             <span className="text-[10px] text-neutral-500 block uppercase font-semibold">Total Collected</span>
-            <span className="text-lg font-extrabold text-emerald-700 block">{formatINR(totalCollected)}</span>
+            <span className="text-lg font-extrabold text-neutral-900 block">{formatINR(totalCollected)}</span>
           </div>
           <div className="bg-white p-3 rounded-xl border border-neutral-200">
             <span className="text-[10px] text-neutral-500 block uppercase font-semibold">Total Pending</span>
-            <span className="text-lg font-extrabold text-rose-700 block">{formatINR(totalPending)}</span>
+            <span className="text-lg font-extrabold text-neutral-700 block">{formatINR(totalPending)}</span>
           </div>
           <div className="bg-white p-3 rounded-xl border border-neutral-200">
             <span className="text-[10px] text-neutral-500 block uppercase font-semibold">Transactions</span>
@@ -125,7 +125,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
               value={receiptSearch}
               onChange={(e) => setReceiptSearch(e.target.value)}
               placeholder="Search student name, reg no, roll no..."
-              className="w-full pl-9 pr-8 py-2 bg-white border border-neutral-200 rounded-xl text-xs text-neutral-900 placeholder-zinc-500 focus:outline-none focus:border-violet-400 transition-all font-medium"
+              className="w-full pl-9 pr-8 py-2 bg-white border border-neutral-200 rounded-xl text-xs text-neutral-900 placeholder-neutral-500 focus:outline-none focus:border-neutral-400 transition-all font-medium"
             />
             {receiptSearch && (
               <button
@@ -144,12 +144,12 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                 className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
                   receiptFilter === st
                     ? st === 'Paid'
-                      ? 'bg-emerald-600 text-white shadow-sm'
+                      ? 'bg-neutral-900 text-white shadow-sm'
                       : st === 'Partly Paid'
-                      ? 'bg-amber-500 text-white shadow-sm'
+                      ? 'bg-neutral-700 text-white shadow-sm'
                       : st === 'Unpaid'
-                      ? 'bg-rose-600 text-white shadow-sm'
-                      : 'bg-violet-600 text-white shadow-sm'
+                      ? 'bg-neutral-600 text-white shadow-sm'
+                      : 'bg-neutral-900 text-white shadow-sm'
                     : 'text-neutral-500 hover:text-neutral-800 hover:bg-white/60'
                 }`}
               >
@@ -179,7 +179,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                 {/* Student Row */}
                 <div
                   className={`p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-3 cursor-pointer hover:bg-neutral-50/80 transition-colors ${
-                    isExpanded ? 'bg-violet-50/40' : ''
+                    isExpanded ? 'bg-neutral-100/60' : ''}
                   }`}
                   onClick={() => setExpandedId(isExpanded ? null : student.id)}
                 >
@@ -194,7 +194,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                         <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-neutral-100 text-neutral-600 border border-neutral-200">
                           {student.course}
                         </span>
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-violet-50 text-violet-700 border border-violet-200">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
                           {student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1')}
                         </span>
                         <span className={getStatusBadge(student.feeStatus)}>
@@ -220,11 +220,11 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                     </div>
                     <div className="text-center">
                       <span className="text-[10px] text-neutral-500 block">Paid</span>
-                      <span className="font-bold text-emerald-700">{formatINR(student.paidTillNow)}</span>
+                      <span className="font-bold text-neutral-700">{formatINR(student.paidTillNow)}</span>
                     </div>
                     <div className="text-center">
                       <span className="text-[10px] text-neutral-500 block">Pending</span>
-                      <span className="font-bold text-rose-700">{formatINR(student.remainingFees)}</span>
+                      <span className="font-bold text-neutral-700">{formatINR(student.remainingFees)}</span>
                     </div>
                     <div className="text-center">
                       <span className="text-[10px] text-neutral-500 block">Payments</span>
@@ -237,7 +237,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                     {!isReadOnly && student.remainingFees > 0 && (
                       <button
                         onClick={() => onCollectFee(student)}
-                        className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                        className="px-3 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
                       >
                         <DollarSign className="w-3.5 h-3.5" />
                         Collect Fee
@@ -245,7 +245,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                     )}
                     <button
                       onClick={() => onGenerateReceipt(student)}
-                      className="px-3 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                      className="px-3 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
                     >
                       <Printer className="w-3.5 h-3.5" />
                       Receipt
@@ -275,9 +275,9 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                               key={slot.semester}
                               className={`p-3 rounded-xl border text-xs ${
                                 slot.status === 'Paid'
-                                  ? 'bg-emerald-50 border-emerald-200'
+                                  ? 'bg-neutral-100 border-neutral-200'
                                   : slot.status === 'Partly Paid'
-                                  ? 'bg-amber-50 border-amber-200'
+                                  ? 'bg-neutral-50 border-neutral-200'
                                   : 'bg-white border-neutral-200'
                               }`}
                             >
@@ -292,18 +292,18 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                                 </div>
                                 <div className="flex justify-between">
                                   <span className="text-neutral-500">Paid:</span>
-                                  <span className="font-bold text-emerald-700">{formatINR(slot.paidAmount)}</span>
+                                  <span className="font-bold text-neutral-700">{formatINR(slot.paidAmount)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                   <span className="text-neutral-500">Due:</span>
-                                  <span className="font-bold text-rose-700">{formatINR(slot.remainingAmount)}</span>
+                                  <span className="font-bold text-neutral-700">{formatINR(slot.remainingAmount)}</span>
                                 </div>
                               </div>
                               {/* Progress bar */}
                               <div className="mt-2 w-full bg-white rounded-full h-1 overflow-hidden">
                                 <div
                                   className={`h-full rounded-full ${
-                                    slot.status === 'Paid' ? 'bg-emerald-500' : slot.status === 'Partly Paid' ? 'bg-amber-500' : 'bg-neutral-300'
+                                    slot.status === 'Paid' ? 'bg-neutral-900' : slot.status === 'Partly Paid' ? 'bg-neutral-500' : 'bg-neutral-300'
                                   }`}
                                   style={{ width: `${slot.totalFee > 0 ? Math.min(100, (slot.paidAmount / slot.totalFee) * 100) : 0}%` }}
                                 />
@@ -327,14 +327,14 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                               className="bg-white p-3 rounded-xl border border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
                             >
                               <div className="flex items-center gap-2 min-w-0">
-                                <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200">
+                                <div className="w-7 h-7 rounded-lg bg-neutral-100 text-neutral-700 flex items-center justify-center shrink-0 border border-neutral-200">
                                   <CheckCircle2 className="w-3.5 h-3.5" />
                                 </div>
                                 <div className="min-w-0">
                                   <div className="flex items-center gap-1.5 flex-wrap">
                                     <span className="font-mono font-bold text-neutral-700">{rec.id}</span>
                                     {rec.targetSemester && (
-                                      <span className="px-1.5 py-0.5 rounded bg-violet-50 text-violet-700 font-bold text-[10px] border border-violet-200">
+                                      <span className="px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-700 font-bold text-[10px] border border-neutral-200">
                                         {rec.targetSemester}
                                       </span>
                                     )}
@@ -353,10 +353,10 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                                 </div>
                               </div>
                               <div className="flex items-center gap-2 shrink-0">
-                                <span className="font-extrabold text-emerald-700 text-sm">{formatINR(rec.amount)}</span>
+                                <span className="font-extrabold text-neutral-700 text-sm">{formatINR(rec.amount)}</span>
                                 <button
                                   onClick={() => onViewReceipt(student, rec)}
-                                  className="px-2.5 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-[10px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                                  className="px-2.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-[10px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
                                 >
                                   <Printer className="w-3 h-3" />
                                   Receipt
@@ -386,7 +386,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                         {!isReadOnly && student.remainingFees > 0 && (
                           <button
                             onClick={() => onCollectFee(student)}
-                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                            className="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
                           >
                             <DollarSign className="w-3 h-3" />
                             Collect Fee
@@ -394,7 +394,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                         )}
                         <button
                           onClick={() => onGenerateReceipt(student)}
-                          className="px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                          className="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
                         >
                           <Printer className="w-3 h-3" />
                           Generate Receipt

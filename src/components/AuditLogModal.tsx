@@ -29,7 +29,7 @@ export const AuditLogModal: React.FC<AuditLogModalProps> = ({ logs, onClose }) =
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-200 pb-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-violet-500/20 text-neutral-700 flex items-center justify-center font-bold">
+            <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
@@ -91,7 +91,7 @@ export const AuditLogModal: React.FC<AuditLogModalProps> = ({ logs, onClose }) =
         <div className="pt-4 mt-4 border-t border-neutral-200 text-right">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-800 font-semibold text-xs cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-semibold text-xs cursor-pointer"
           >
             Close Audit Log
           </button>

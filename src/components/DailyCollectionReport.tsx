@@ -86,7 +86,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
       <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-lg space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-violet-600/20 text-neutral-700 border border-neutral-200 flex items-center justify-center font-bold shadow-inner">
+            <div className="w-12 h-12 rounded-2xl bg-neutral-100 text-neutral-700 border border-neutral-200 flex items-center justify-center font-bold shadow-inner">
               <Calendar className="w-6 h-6" />
             </div>
             <div>
@@ -106,7 +106,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={handlePrintDailyReport}
-              className="px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-neutral-900 font-bold text-xs flex items-center gap-2 shadow-lg shadow-violet-600/20 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-neutral-900/20 cursor-pointer"
             >
               <Printer className="w-4 h-4" /> Print Daily Statement
             </button>
@@ -120,7 +120,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
               <button
                 onClick={() => { setDateFilterMode('today'); setSelectedDate(todayStr); }}
                 className={`px-3 py-1.5 rounded-lg transition-all font-bold ${
-                  dateFilterMode === 'today' ? 'bg-violet-600 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
+                  dateFilterMode === 'today' ? 'bg-neutral-900 text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
                 }`}
               >
                 Today ({todayStr})
@@ -128,7 +128,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
               <button
                 onClick={() => setDateFilterMode('all')}
                 className={`px-3 py-1.5 rounded-lg transition-all font-bold ${
-                  dateFilterMode === 'all' ? 'bg-violet-600 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
+                  dateFilterMode === 'all' ? 'bg-neutral-900 text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
                 }`}
               >
                 All Records
@@ -136,7 +136,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
               <button
                 onClick={() => setDateFilterMode('custom')}
                 className={`px-3 py-1.5 rounded-lg transition-all font-bold ${
-                  dateFilterMode === 'custom' ? 'bg-violet-600 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
+                  dateFilterMode === 'custom' ? 'bg-neutral-900 text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
                 }`}
               >
                 Select Specific Date
@@ -160,7 +160,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
                   key={m}
                   onClick={() => setSelectedModeFilter(m)}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
-                    selectedModeFilter === m ? 'bg-emerald-600 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
+                    selectedModeFilter === m ? 'bg-neutral-900 text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
                   }`}
                 >
                   {m}
@@ -177,7 +177,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search Student, Reg No, Receipt No..."
-              className="w-full pl-9 pr-3 py-1.5 bg-neutral-50/60 border border-neutral-200 rounded-xl text-neutral-900 font-medium text-xs focus:outline-none focus:border-violet-500/50"
+              className="w-full pl-9 pr-3 py-1.5 bg-neutral-50/60 border border-neutral-200 rounded-xl text-neutral-900 font-medium text-xs focus:outline-none focus:border-neutral-400"
             />
           </div>
         </div>
@@ -188,7 +188,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
         <div className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-lg relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-neutral-500 font-semibold uppercase tracking-wider">Total Collection</span>
-            <div className="w-8 h-8 rounded-xl bg-violet-500/20 text-neutral-700 flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
@@ -283,7 +283,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
                       <span className="text-neutral-500 text-[11px]">{student.stream || 'Arts'}</span>
                     </td>
                     <td className="py-3 px-4 whitespace-nowrap">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-violet-500/20 text-neutral-700 border border-neutral-200">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
                         {payment.targetSemester || student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1')}
                       </span>
                     </td>
@@ -307,7 +307,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
                     <td className="py-3 px-4 text-center whitespace-nowrap">
                       <button
                         onClick={() => onViewReceipt(student, payment)}
-                        className="px-2.5 py-1 rounded-lg bg-violet-600 hover:bg-violet-500 text-neutral-900 font-semibold text-[11px] flex items-center gap-1 mx-auto cursor-pointer"
+                        className="px-2.5 py-1 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-[11px] flex items-center gap-1 mx-auto cursor-pointer"
                       >
                         <Printer className="w-3 h-3" /> Receipt
                       </button>

@@ -92,7 +92,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                 { name: 'WhatsApp', icon: MessageSquare, color: 'text-neutral-700' },
                 { name: 'Email', icon: Mail, color: 'text-neutral-700' },
                 { name: 'SMS', icon: Phone, color: 'text-neutral-700' },
-                { name: 'Printed Notice', icon: Printer, color: 'text-purple-400' },
+                { name: 'Printed Notice', icon: Printer, color: 'text-neutral-700' }
               ].map((c) => {
                 const IconComponent = c.icon;
                 return (
@@ -105,7 +105,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                     }}
                     className={`p-3 rounded-2xl border flex flex-col items-center gap-1.5 transition-all text-center ${
                       channel === c.name
-                        ? 'bg-violet-600 border-neutral-200 text-neutral-900 shadow-lg shadow-violet-600/20'
+                        ? 'bg-neutral-900 border-neutral-200 text-white shadow-lg shadow-neutral-900/20'
                         : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
                     }`}
                   >
@@ -126,7 +126,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                 min={0}
                 value={customLateFee}
                 onChange={(e) => setCustomLateFee(Number(e.target.value))}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold focus:outline-none focus:border-neutral-400"
               />
             </div>
             <div>
@@ -136,7 +136,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                 min={1}
                 value={graceDays}
                 onChange={(e) => setGraceDays(Number(e.target.value))}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold focus:outline-none focus:border-neutral-400"
               />
             </div>
           </div>
@@ -154,7 +154,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
             <button
               type="button"
               onClick={() => setShowPrintDemandNotice(true)}
-              className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-purple-300 font-semibold flex items-center gap-1.5 cursor-pointer text-xs"
+              className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold flex items-center gap-1.5 cursor-pointer text-xs"
             >
               <Printer className="w-4 h-4" /> Print Formal Demand Notice
             </button>
@@ -183,8 +183,8 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
               </button>
 
               {/* College Letterhead */}
-              <div className="text-center border-b-2 border-indigo-900 pb-4">
-                <h1 className="text-2xl font-black text-indigo-950 uppercase tracking-wide">
+              <div className="text-center border-b-2 border-neutral-900 pb-4">
+                <h1 className="text-2xl font-black text-neutral-900 uppercase tracking-wide">
                   SHANTI COLLEGE OF EDUCATION
                 </h1>
                 <p className="text-xs font-semibold text-neutral-600 uppercase tracking-wider">
@@ -200,8 +200,8 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                 <span>Date: {new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
               </div>
 
-              <div className="text-center py-2 bg-amber-50 rounded-xl border border-amber-200">
-                <h2 className="text-sm font-black text-amber-900 uppercase tracking-widest">
+              <div className="text-center py-2 bg-neutral-50 rounded-xl border border-neutral-200">
+                <h2 className="text-sm font-black text-neutral-900 uppercase tracking-widest">
                   FORMAL NOTICE: OUTSTANDING TUITION FEE DEMAND
                 </h2>
               </div>
@@ -231,18 +231,18 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                       <td className="border border-slate-300 p-2 text-right">{formatCurrencyINR(student.totalFees)}</td>
                     </tr>
                     <tr>
-                      <td className="border border-slate-300 p-2 text-emerald-700">Less: Amount Received Till Date</td>
-                      <td className="border border-slate-300 p-2 text-right text-emerald-700">({formatCurrencyINR(student.paidTillNow)})</td>
+                      <td className="border border-slate-300 p-2 text-neutral-700">Less: Amount Received Till Date</td>
+                      <td className="border border-slate-300 p-2 text-right text-neutral-700">({formatCurrencyINR(student.paidTillNow)})</td>
                     </tr>
                     <tr>
-                      <td className="border border-slate-300 p-2 font-bold text-amber-800">Net Outstanding Balance Fee</td>
-                      <td className="border border-slate-300 p-2 text-right font-bold text-amber-800">{formatCurrencyINR(student.remainingFees)}</td>
+                      <td className="border border-slate-300 p-2 font-bold text-neutral-900">Net Outstanding Balance Fee</td>
+                      <td className="border border-slate-300 p-2 text-right font-bold text-neutral-900">{formatCurrencyINR(student.remainingFees)}</td>
                     </tr>
                     <tr>
                       <td className="border border-slate-300 p-2">Late Fee Fine Penalty (Grace Period {graceDays} Days)</td>
                       <td className="border border-slate-300 p-2 text-right">{formatCurrencyINR(customLateFee)}</td>
                     </tr>
-                    <tr className="bg-indigo-50 font-black text-indigo-950 text-sm">
+                    <tr className="bg-neutral-100 font-black text-neutral-900 text-sm">
                       <td className="border border-slate-300 p-2">TOTAL PAYABLE DEMAND AMOUNT</td>
                       <td className="border border-slate-300 p-2 text-right">{formatCurrencyINR(totalPayableWithLateFee)}</td>
                     </tr>
@@ -276,7 +276,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
               <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 print:hidden">
                 <button
                   onClick={() => window.print()}
-                  className="px-6 py-2.5 bg-violet-600 hover:bg-indigo-700 text-neutral-900 rounded-xl font-bold text-xs flex items-center gap-2"
+                  className="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-bold text-xs flex items-center gap-2"
                 >
                   <Printer className="w-4 h-4" /> Print Demand Letter
                 </button>

@@ -37,14 +37,15 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
     }).format(val);
 
   // Build semester fee slots
+  const effectiveFee = student.totalFees - (student.discountAmount || 0);
   const semesterSlots: SemesterFeeSlot[] =
     student.semesterFees && student.semesterFees.length > 0
       ? student.semesterFees
       : [
-          { semester: 'Sem 1', year: '1st Year', totalFee: Math.round(student.totalFees / 4), paidAmount: 0, remainingAmount: Math.round(student.totalFees / 4), status: 'Unpaid' as const, dueDate: '2026-10-15' },
-          { semester: 'Sem 2', year: '1st Year', totalFee: Math.round(student.totalFees / 4), paidAmount: 0, remainingAmount: Math.round(student.totalFees / 4), status: 'Unpaid' as const, dueDate: '2027-03-15' },
-          { semester: 'Sem 3', year: '2nd Year', totalFee: Math.round(student.totalFees / 4), paidAmount: 0, remainingAmount: Math.round(student.totalFees / 4), status: 'Unpaid' as const, dueDate: '2027-10-15' },
-          { semester: 'Sem 4', year: '2nd Year', totalFee: Math.round(student.totalFees / 4), paidAmount: 0, remainingAmount: Math.round(student.totalFees / 4), status: 'Unpaid' as const, dueDate: '2028-03-15' },
+          { semester: 'Sem 1', year: '1st Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2026-10-15' },
+          { semester: 'Sem 2', year: '1st Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2027-03-15' },
+          { semester: 'Sem 3', year: '2nd Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2027-10-15' },
+          { semester: 'Sem 4', year: '2nd Year', totalFee: Math.round(effectiveFee / 4), paidAmount: 0, remainingAmount: Math.round(effectiveFee / 4), status: 'Unpaid' as const, dueDate: '2028-03-15' },
         ];
 
   // Generate a synthetic "full statement" payment record

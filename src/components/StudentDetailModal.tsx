@@ -255,7 +255,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                   Detailed 4-Semester Fee Window Ledger (2-Year B.Ed Degree Session 2026-2028):
                 </p>
                 <span className="text-neutral-700 font-bold">
-                  {student.totalFees > 0 ? `Sem Fee: ${formatINR(Math.round(student.totalFees / 4))} / Sem` : 'Sem Fee: NIL (TBD)'}
+                  {student.totalFees > 0 ? `Sem Fee: ${formatINR(Math.round((student.totalFees - (student.discountAmount || 0)) / 4))} / Sem` : 'Sem Fee: NIL (TBD)'}
                 </span>
               </div>
 

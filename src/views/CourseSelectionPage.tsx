@@ -18,9 +18,9 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
     <div className="min-h-screen bg-neutral-50 text-neutral-900 p-4 md:p-8 flex flex-col justify-center items-center relative overflow-hidden">
       {/* Ambient Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-violet-600/[0.06] rounded-full blur-[160px]" />
-        <div className="absolute bottom-1/4 right-1/3 w-[500px] h-[500px] bg-blue-600/[0.04] rounded-full blur-[160px]" />
-        <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: 'radial-gradient(circle, rgba(139,92,246,0.4) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
+        <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-neutral-200/[0.3] rounded-full blur-[160px]" />
+        <div className="absolute bottom-1/4 right-1/3 w-[500px] h-[500px] bg-neutral-200/[0.2] rounded-full blur-[160px]" />
+        <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.15) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
       </div>
 
       <motion.div

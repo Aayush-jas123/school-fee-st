@@ -236,10 +236,10 @@ export function App() {
 
       const totalAnnualFee = rule.tuitionFee;
       const discount = rule.scholarshipDiscounts[student.category] || 0;
-      const discountedFee = totalAnnualFee - discount;
+      const effectiveFee = totalAnnualFee - discount;
 
       let feeStatus: FeeStatusType = 'Unpaid';
-      if (student.paidTillNow >= discountedFee) {
+      if (student.paidTillNow >= effectiveFee) {
         feeStatus = 'Paid';
       } else if (student.paidTillNow > 0) {
         feeStatus = 'Partly Paid';
@@ -247,7 +247,7 @@ export function App() {
 
       return {
         ...student,
-        totalFees: discountedFee,
+        totalFees: totalAnnualFee,
         feeBreakdown: {
           tuitionFee: rule.tuitionFee,
           admissionFee: rule.admissionFee,
@@ -258,14 +258,14 @@ export function App() {
         },
         discountAmount: discount,
         scholarshipApplied: student.category !== 'General' ? `${student.category} Category` : undefined,
-        remainingFees: Math.max(0, discountedFee - student.paidTillNow),
+        remainingFees: Math.max(0, effectiveFee - student.paidTillNow),
         feeStatus,
       };
     });
 
     setStudents(updatedStudents);
     saveStoredStudents(updatedStudents);
-    await syncAllStudentsToDB();
+    await syncAllStudentsToDB(updatedStudents);
     await addAuditLogToDB({
       action: 'Fee Structure Applied to All Students',
       details: `Recalculated fees for ${updatedStudents.length} students based on updated fee rules`,
@@ -554,6 +554,7 @@ export function App() {
       </div>
 
       {/* Record Payment Modal */}
+      <AnimatePresence>
       {paymentStudent && !isReadOnlyMode && (
         <RecordPaymentModal
           student={paymentStudent}
@@ -562,6 +563,7 @@ export function App() {
           staffName={staffName}
         />
       )}
+      </AnimatePresence>
 
       {/* Add New Student Modal */}
       {showAddStudent && !isReadOnlyMode && (

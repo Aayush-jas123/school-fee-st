@@ -17,13 +17,11 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   onPaymentSuccess,
   staffName,
 }) => {
-  if (!student) return null;
-
   // Find default semester slot (first unpaid or current)
-  const defaultSem = student.currentSemester || 'Sem 1';
+  const defaultSem = student?.currentSemester || 'Sem 1';
   const [selectedSemester, setSelectedSemester] = useState<SemesterName>(defaultSem);
 
-  const currentSemSlot = (student.semesterFees || []).find(s => s.semester === selectedSemester) || {
+  const currentSemSlot = (student?.semesterFees || []).find(s => s.semester === selectedSemester) || {
     semester: selectedSemester,
     year: selectedSemester === 'Sem 1' || selectedSemester === 'Sem 2' ? ('1st Year' as const) : ('2nd Year' as const),
     totalFee: 19500,
@@ -41,6 +39,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   const [discount, setDiscount] = useState<number>(0);
   const [showQrModal, setShowQrModal] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  if (!student) return null;
 
   const handleSemesterChange = (sem: SemesterName) => {
     setSelectedSemester(sem);
@@ -123,7 +123,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
     });
 
     const newPaidTillNow = updatedSemesterFees.reduce((sum, s) => sum + s.paidAmount, 0);
-    const newRemaining = Math.max(0, student.totalFees - newPaidTillNow);
+    const totalDiscount = (student.discountAmount || 0) + discount;
+    const newRemaining = Math.max(0, student.totalFees - totalDiscount - newPaidTillNow);
 
     // Advance current semester if selected semester becomes fully paid and next semester exists
     let nextSemester = student.currentSemester;

@@ -90,11 +90,11 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
   ];
 
   const accentStyles: Record<string, { iconBg: string; border: string; tagBg: string; tagText: string; tagBorder: string }> = {
-    violet: { iconBg: 'bg-violet-600', border: 'hover:border-neutral-200', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
-    blue: { iconBg: 'bg-blue-600', border: 'hover:border-neutral-200', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
-    emerald: { iconBg: 'bg-emerald-600', border: 'hover:border-neutral-200', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
-    rose: { iconBg: 'bg-rose-600', border: 'hover:border-rose-500/30', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
-    amber: { iconBg: 'bg-amber-500', border: 'hover:border-neutral-200', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
+    violet: { iconBg: 'bg-neutral-900', border: 'hover:border-neutral-300', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
+    blue: { iconBg: 'bg-neutral-800', border: 'hover:border-neutral-300', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
+    emerald: { iconBg: 'bg-neutral-700', border: 'hover:border-neutral-300', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
+    rose: { iconBg: 'bg-neutral-600', border: 'hover:border-neutral-300', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
+    amber: { iconBg: 'bg-neutral-500', border: 'hover:border-neutral-300', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
   };
 
   return (
@@ -152,7 +152,7 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
                 <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
                   {card.title}
                 </span>
-                <div className={`w-9 h-9 rounded-xl ${style.iconBg} text-neutral-900 flex items-center justify-center shadow-md`}>
+                <div className={`w-9 h-9 rounded-xl ${style.iconBg} text-white flex items-center justify-center shadow-md`}>
                   <Icon className="w-4 h-4" />
                 </div>
               </div>

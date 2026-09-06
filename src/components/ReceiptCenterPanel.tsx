@@ -66,30 +66,30 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
 
   const getStatusIcon = (status: string) => {
-    if (status === 'Paid') return <CheckCircle2 className="w-3.5 h-3.5 text-neutral-700" />;
-    if (status === 'Partly Paid') return <AlertTriangle className="w-3.5 h-3.5 text-neutral-600" />;
-    return <XCircle className="w-3.5 h-3.5 text-neutral-500" />;
+    if (status === 'Paid') return <CheckCircle2 className="w-3.5 h-3.5 text-stone-700" />;
+    if (status === 'Partly Paid') return <AlertTriangle className="w-3.5 h-3.5 text-stone-600" />;
+    return <XCircle className="w-3.5 h-3.5 text-stone-500" />;
   };
 
   const getStatusBadge = (status: string) => {
     const base = 'px-2 py-0.5 rounded-full text-[10px] font-bold border';
-    if (status === 'Paid') return `${base} bg-neutral-100 text-neutral-700 border-neutral-200`;
-    if (status === 'Partly Paid') return `${base} bg-neutral-100 text-neutral-700 border-neutral-200`;
-    return `${base} bg-neutral-200 text-neutral-700 border-neutral-300`;
+    if (status === 'Paid') return `${base} bg-stone-100 text-stone-700 border-stone-200`;
+    if (status === 'Partly Paid') return `${base} bg-stone-100 text-stone-700 border-stone-200`;
+    return `${base} bg-stone-200 text-stone-700 border-stone-300`;
   };
 
   return (
-    <div className="bg-white border border-neutral-200 rounded-3xl shadow-lg overflow-hidden backdrop-blur-sm">
+    <div className="bg-white border border-stone-200 rounded-3xl shadow-lg overflow-hidden backdrop-blur-sm">
       {/* Header */}
-      <div className="p-5 md:p-6 border-b border-neutral-200 bg-neutral-50/60">
+      <div className="p-5 md:p-6 border-b border-stone-200 bg-stone-50/60">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold border border-neutral-200">
+            <div className="w-11 h-11 rounded-2xl bg-stone-100 text-stone-700 flex items-center justify-center font-bold border border-stone-200">
               <Receipt className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-extrabold text-neutral-900">Fee Collection & Receipt Center</h3>
-              <p className="text-xs text-neutral-500">
+              <h3 className="text-lg font-extrabold text-stone-900">Fee Collection & Receipt Center</h3>
+              <p className="text-xs text-stone-500">
                 Collect fees, generate receipts, and view payment history for each student
               </p>
             </div>
@@ -98,45 +98,45 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
 
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-          <div className="bg-white p-3 rounded-xl border border-neutral-200">
-            <span className="text-[10px] text-neutral-500 block uppercase font-semibold">Students</span>
-            <span className="text-lg font-extrabold text-neutral-900 block">{filteredStudents.length}</span>
+          <div className="bg-white p-3 rounded-xl border border-stone-200">
+            <span className="text-[10px] text-stone-500 block uppercase font-semibold">Students</span>
+            <span className="text-lg font-extrabold text-stone-900 block">{filteredStudents.length}</span>
           </div>
-          <div className="bg-white p-3 rounded-xl border border-neutral-200">
-            <span className="text-[10px] text-neutral-500 block uppercase font-semibold">Total Collected</span>
-            <span className="text-lg font-extrabold text-neutral-900 block">{formatINR(totalCollected)}</span>
+          <div className="bg-white p-3 rounded-xl border border-stone-200">
+            <span className="text-[10px] text-stone-500 block uppercase font-semibold">Total Collected</span>
+            <span className="text-lg font-extrabold text-stone-900 block">{formatINR(totalCollected)}</span>
           </div>
-          <div className="bg-white p-3 rounded-xl border border-neutral-200">
-            <span className="text-[10px] text-neutral-500 block uppercase font-semibold">Total Pending</span>
-            <span className="text-lg font-extrabold text-neutral-700 block">{formatINR(totalPending)}</span>
+          <div className="bg-white p-3 rounded-xl border border-stone-200">
+            <span className="text-[10px] text-stone-500 block uppercase font-semibold">Total Pending</span>
+            <span className="text-lg font-extrabold text-stone-700 block">{formatINR(totalPending)}</span>
           </div>
-          <div className="bg-white p-3 rounded-xl border border-neutral-200">
-            <span className="text-[10px] text-neutral-500 block uppercase font-semibold">Transactions</span>
-            <span className="text-lg font-extrabold text-neutral-900 block">{totalPayments}</span>
+          <div className="bg-white p-3 rounded-xl border border-stone-200">
+            <span className="text-[10px] text-stone-500 block uppercase font-semibold">Transactions</span>
+            <span className="text-lg font-extrabold text-stone-900 block">{totalPayments}</span>
           </div>
         </div>
 
         {/* Search & Filter Bar */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={receiptSearch}
               onChange={(e) => setReceiptSearch(e.target.value)}
               placeholder="Search student name, reg no, roll no..."
-              className="w-full pl-9 pr-8 py-2 bg-white border border-neutral-200 rounded-xl text-xs text-neutral-900 placeholder-neutral-500 focus:outline-none focus:border-neutral-400 transition-all font-medium"
+              className="w-full pl-9 pr-8 py-2 bg-white border border-stone-200 rounded-xl text-xs text-stone-900 placeholder-stone-500 focus:outline-none focus:border-rose-800/50 transition-all font-medium"
             />
             {receiptSearch && (
               <button
                 onClick={() => setReceiptSearch('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-900 p-0.5 rounded-full"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-900 p-0.5 rounded-full"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
-          <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200 text-xs">
+          <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl border border-stone-200 text-xs">
             {(['ALL', 'Paid', 'Partly Paid', 'Unpaid'] as const).map((st) => (
               <button
                 key={st}
@@ -144,13 +144,13 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                 className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
                   receiptFilter === st
                     ? st === 'Paid'
-                      ? 'bg-neutral-900 text-white shadow-sm'
+                      ? 'bg-rose-800 text-stone-50 shadow-sm'
                       : st === 'Partly Paid'
-                      ? 'bg-neutral-700 text-white shadow-sm'
+                      ? 'bg-stone-700 text-white shadow-sm'
                       : st === 'Unpaid'
-                      ? 'bg-neutral-600 text-white shadow-sm'
-                      : 'bg-neutral-900 text-white shadow-sm'
-                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-white/60'
+                      ? 'bg-stone-600 text-white shadow-sm'
+                      : 'bg-rose-800 text-stone-50 shadow-sm'
+                    : 'text-stone-500 hover:text-stone-800 hover:bg-white/60'
                 }`}
               >
                 {st === 'ALL' ? 'All' : st}
@@ -161,12 +161,12 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
       </div>
 
       {/* Student List */}
-      <div className="divide-y divide-neutral-200 max-h-[65vh] overflow-y-auto">
+      <div className="divide-y divide-stone-200 max-h-[65vh] overflow-y-auto">
         {filteredStudents.length === 0 ? (
-          <div className="py-16 text-center text-neutral-500 space-y-2">
-            <Search className="w-10 h-10 text-neutral-400 mx-auto" />
+          <div className="py-16 text-center text-stone-500 space-y-2">
+            <Search className="w-10 h-10 text-stone-400 mx-auto" />
             <p className="text-sm font-semibold">No students match your search</p>
-            <p className="text-xs text-neutral-400">Try adjusting filters or search terms</p>
+            <p className="text-xs text-stone-400">Try adjusting filters or search terms</p>
           </div>
         ) : (
           filteredStudents.map((student) => {
@@ -178,23 +178,23 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
               <div key={student.id} className="transition-colors">
                 {/* Student Row */}
                 <div
-                  className={`p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-3 cursor-pointer hover:bg-neutral-50/80 transition-colors ${
-                    isExpanded ? 'bg-neutral-100/60' : ''}
+                  className={`p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-3 cursor-pointer hover:bg-stone-50/80 transition-colors ${
+                    isExpanded ? 'bg-stone-100/60' : ''}
                   }`}
                   onClick={() => setExpandedId(isExpanded ? null : student.id)}
                 >
                   {/* Left: Student Info */}
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold text-sm shrink-0 border border-neutral-200">
+                    <div className="w-10 h-10 rounded-xl bg-stone-100 text-stone-700 flex items-center justify-center font-bold text-sm shrink-0 border border-stone-200">
                       {student.name.charAt(0)}
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-bold text-neutral-900 text-sm">{student.name}</span>
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-neutral-100 text-neutral-600 border border-neutral-200">
+                        <span className="font-bold text-stone-900 text-sm">{student.name}</span>
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-stone-100 text-stone-600 border border-stone-200">
                           {student.course}
                         </span>
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-stone-100 text-stone-700 border border-stone-200">
                           {student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1')}
                         </span>
                         <span className={getStatusBadge(student.feeStatus)}>
@@ -204,8 +204,8 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                           </span>
                         </span>
                       </div>
-                      <div className="flex items-center gap-3 mt-0.5 text-[11px] text-neutral-500">
-                        <span className="font-mono font-bold text-neutral-600">{student.registrationNo}</span>
+                      <div className="flex items-center gap-3 mt-0.5 text-[11px] text-stone-500">
+                        <span className="font-mono font-bold text-stone-600">{student.registrationNo}</span>
                         <span>Roll: {student.rollNo || 'Pending'}</span>
                         <span>{student.fatherName}</span>
                       </div>
@@ -215,20 +215,20 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                   {/* Center: Fee Summary */}
                   <div className="flex items-center gap-4 md:gap-6 text-xs shrink-0">
                     <div className="text-center">
-                      <span className="text-[10px] text-neutral-500 block">Total Fee</span>
-                      <span className="font-bold text-neutral-900">{formatINR(student.totalFees)}</span>
+                      <span className="text-[10px] text-stone-500 block">Total Fee</span>
+                      <span className="font-bold text-stone-900">{formatINR(student.totalFees)}</span>
                     </div>
                     <div className="text-center">
-                      <span className="text-[10px] text-neutral-500 block">Paid</span>
-                      <span className="font-bold text-neutral-700">{formatINR(student.paidTillNow)}</span>
+                      <span className="text-[10px] text-stone-500 block">Paid</span>
+                      <span className="font-bold text-stone-700">{formatINR(student.paidTillNow)}</span>
                     </div>
                     <div className="text-center">
-                      <span className="text-[10px] text-neutral-500 block">Pending</span>
-                      <span className="font-bold text-neutral-700">{formatINR(student.remainingFees)}</span>
+                      <span className="text-[10px] text-stone-500 block">Pending</span>
+                      <span className="font-bold text-stone-700">{formatINR(student.remainingFees)}</span>
                     </div>
                     <div className="text-center">
-                      <span className="text-[10px] text-neutral-500 block">Payments</span>
-                      <span className="font-bold text-neutral-900">{student.paymentHistory.length}</span>
+                      <span className="text-[10px] text-stone-500 block">Payments</span>
+                      <span className="font-bold text-stone-900">{student.paymentHistory.length}</span>
                     </div>
                   </div>
 
@@ -237,7 +237,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                     {!isReadOnly && student.remainingFees > 0 && (
                       <button
                         onClick={() => onCollectFee(student)}
-                        className="px-3 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                        className="px-3 py-1.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
                       >
                         <DollarSign className="w-3.5 h-3.5" />
                         Collect Fee
@@ -245,14 +245,14 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                     )}
                     <button
                       onClick={() => onGenerateReceipt(student)}
-                      className="px-3 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                      className="px-3 py-1.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
                     >
                       <Printer className="w-3.5 h-3.5" />
                       Receipt
                     </button>
                     <button
                       onClick={() => setExpandedId(isExpanded ? null : student.id)}
-                      className="p-1.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 border border-neutral-200 transition-all cursor-pointer"
+                      className="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 border border-stone-200 transition-all cursor-pointer"
                       title="Expand payment details"
                     >
                       <Eye className="w-3.5 h-3.5" />
@@ -262,11 +262,11 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
 
                 {/* Expanded Detail Panel */}
                 {isExpanded && (
-                  <div className="px-4 md:px-6 pb-5 bg-neutral-50/60 border-t border-neutral-200/60">
+                  <div className="px-4 md:px-6 pb-5 bg-stone-50/60 border-t border-stone-200/60">
                     {/* Semester-wise breakdown */}
                     {semSlots.length > 0 && (
                       <div className="mt-4 mb-4">
-                        <h4 className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <h4 className="text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                           <Calendar className="w-3.5 h-3.5" /> Semester-wise Fee Status
                         </h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -275,35 +275,35 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                               key={slot.semester}
                               className={`p-3 rounded-xl border text-xs ${
                                 slot.status === 'Paid'
-                                  ? 'bg-neutral-100 border-neutral-200'
+                                  ? 'bg-stone-100 border-stone-200'
                                   : slot.status === 'Partly Paid'
-                                  ? 'bg-neutral-50 border-neutral-200'
-                                  : 'bg-white border-neutral-200'
+                                  ? 'bg-stone-50 border-stone-200'
+                                  : 'bg-white border-stone-200'
                               }`}
                             >
                               <div className="flex items-center justify-between mb-1">
-                                <span className="font-bold text-neutral-900">{slot.semester}</span>
+                                <span className="font-bold text-stone-900">{slot.semester}</span>
                                 <span className={getStatusBadge(slot.status)}>{slot.status}</span>
                               </div>
                               <div className="space-y-0.5 text-[11px]">
                                 <div className="flex justify-between">
-                                  <span className="text-neutral-500">Fee:</span>
+                                  <span className="text-stone-500">Fee:</span>
                                   <span className="font-bold">{formatINR(slot.totalFee)}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                  <span className="text-neutral-500">Paid:</span>
-                                  <span className="font-bold text-neutral-700">{formatINR(slot.paidAmount)}</span>
+                                  <span className="text-stone-500">Paid:</span>
+                                  <span className="font-bold text-stone-700">{formatINR(slot.paidAmount)}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                  <span className="text-neutral-500">Due:</span>
-                                  <span className="font-bold text-neutral-700">{formatINR(slot.remainingAmount)}</span>
+                                  <span className="text-stone-500">Due:</span>
+                                  <span className="font-bold text-stone-700">{formatINR(slot.remainingAmount)}</span>
                                 </div>
                               </div>
                               {/* Progress bar */}
                               <div className="mt-2 w-full bg-white rounded-full h-1 overflow-hidden">
                                 <div
                                   className={`h-full rounded-full ${
-                                    slot.status === 'Paid' ? 'bg-neutral-900' : slot.status === 'Partly Paid' ? 'bg-neutral-500' : 'bg-neutral-300'
+                                    slot.status === 'Paid' ? 'bg-rose-800/70' : slot.status === 'Partly Paid' ? 'bg-amber-700/50' : 'bg-stone-300'
                                   }`}
                                   style={{ width: `${slot.totalFee > 0 ? Math.min(100, (slot.paidAmount / slot.totalFee) * 100) : 0}%` }}
                                 />
@@ -317,46 +317,46 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                     {/* Payment History */}
                     {student.paymentHistory.length > 0 ? (
                       <div>
-                        <h4 className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <h4 className="text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                           <CreditCard className="w-3.5 h-3.5" /> Payment History ({student.paymentHistory.length} transactions)
                         </h4>
                         <div className="space-y-2">
                           {[...student.paymentHistory].reverse().map((rec) => (
                             <div
                               key={rec.id}
-                              className="bg-white p-3 rounded-xl border border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
+                              className="bg-white p-3 rounded-xl border border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
                             >
                               <div className="flex items-center gap-2 min-w-0">
-                                <div className="w-7 h-7 rounded-lg bg-neutral-100 text-neutral-700 flex items-center justify-center shrink-0 border border-neutral-200">
+                                <div className="w-7 h-7 rounded-lg bg-stone-100 text-stone-700 flex items-center justify-center shrink-0 border border-stone-200">
                                   <CheckCircle2 className="w-3.5 h-3.5" />
                                 </div>
                                 <div className="min-w-0">
                                   <div className="flex items-center gap-1.5 flex-wrap">
-                                    <span className="font-mono font-bold text-neutral-700">{rec.id}</span>
+                                    <span className="font-mono font-bold text-stone-700">{rec.id}</span>
                                     {rec.targetSemester && (
-                                      <span className="px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-700 font-bold text-[10px] border border-neutral-200">
+                                      <span className="px-1.5 py-0.5 rounded bg-stone-100 text-stone-700 font-bold text-[10px] border border-stone-200">
                                         {rec.targetSemester}
                                       </span>
                                     )}
                                     {rec.installmentNo && (
-                                      <span className="px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-600 font-bold text-[10px] border border-neutral-200">
+                                      <span className="px-1.5 py-0.5 rounded bg-stone-100 text-stone-600 font-bold text-[10px] border border-stone-200">
                                         EMI #{rec.installmentNo}
                                       </span>
                                     )}
-                                    <span className="px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-600 text-[10px] border border-neutral-200">
+                                    <span className="px-1.5 py-0.5 rounded bg-stone-100 text-stone-600 text-[10px] border border-stone-200">
                                       {rec.mode}
                                     </span>
                                   </div>
-                                  <p className="text-[10px] text-neutral-500 mt-0.5 truncate">
+                                  <p className="text-[10px] text-stone-500 mt-0.5 truncate">
                                     {rec.remark} • Ref: {rec.transactionRef} • {rec.date}
                                   </p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-2 shrink-0">
-                                <span className="font-extrabold text-neutral-700 text-sm">{formatINR(rec.amount)}</span>
+                                <span className="font-extrabold text-stone-700 text-sm">{formatINR(rec.amount)}</span>
                                 <button
                                   onClick={() => onViewReceipt(student, rec)}
-                                  className="px-2.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-[10px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                                  className="px-2.5 py-1.5 rounded-lg bg-rose-800 hover:bg-rose-700 text-stone-50 font-semibold text-[10px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
                                 >
                                   <Printer className="w-3 h-3" />
                                   Receipt
@@ -367,18 +367,18 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center py-6 text-neutral-500 space-y-2">
-                        <FileText className="w-8 h-8 text-neutral-400 mx-auto" />
+                      <div className="text-center py-6 text-stone-500 space-y-2">
+                        <FileText className="w-8 h-8 text-stone-400 mx-auto" />
                         <p className="text-xs font-semibold">No payment records yet</p>
-                        <p className="text-[11px] text-neutral-400">
+                        <p className="text-[11px] text-stone-400">
                           {!isReadOnly ? 'Click "Collect Fee" to record the first payment for this student.' : 'Payments will appear here once recorded.'}
                         </p>
                       </div>
                     )}
 
                     {/* Quick Actions Footer */}
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-neutral-200">
-                      <div className="text-[11px] text-neutral-500">
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-stone-200">
+                      <div className="text-[11px] text-stone-500">
                         Last updated: {lastPayment ? lastPayment.date : 'No payments'} •{' '}
                         {student.paymentHistory.length} transaction{student.paymentHistory.length !== 1 ? 's' : ''} recorded
                       </div>
@@ -386,7 +386,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                         {!isReadOnly && student.remainingFees > 0 && (
                           <button
                             onClick={() => onCollectFee(student)}
-                            className="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                            className="px-3 py-1.5 rounded-lg bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
                           >
                             <DollarSign className="w-3 h-3" />
                             Collect Fee
@@ -394,7 +394,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                         )}
                         <button
                           onClick={() => onGenerateReceipt(student)}
-                          className="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                          className="px-3 py-1.5 rounded-lg bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
                         >
                           <Printer className="w-3 h-3" />
                           Generate Receipt

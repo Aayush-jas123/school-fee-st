@@ -102,34 +102,34 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
   };
 
   return (
-    <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-lg space-y-6">
+    <div className="bg-white border border-stone-200 rounded-3xl p-6 shadow-lg space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
+          <div className="w-11 h-11 rounded-2xl bg-stone-100 text-stone-700 flex items-center justify-center font-bold">
             <Settings2 className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Institutional Fee Structure Configurator</h2>
-            <p className="text-xs text-neutral-500">Configure prescribed fee rules, late penalties & scholarship discounts for JBT and B.Ed</p>
+            <h2 className="text-xl font-bold text-stone-900 tracking-tight">Institutional Fee Structure Configurator</h2>
+            <p className="text-xs text-stone-500">Configure prescribed fee rules, late penalties & scholarship discounts for JBT and B.Ed</p>
           </div>
         </div>
 
         {isReadOnly ? (
-          <span className="px-4 py-2 rounded-xl bg-neutral-100 text-neutral-700 border border-neutral-200 font-bold text-xs">
+          <span className="px-4 py-2 rounded-xl bg-stone-100 text-stone-700 border border-stone-200 font-bold text-xs">
             Read-Only Portal (Editing Locked)
           </span>
         ) : (
           <div className="flex gap-2">
             <button
               onClick={handleApplyToAll}
-              className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-neutral-900/20 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-xs flex items-center gap-2 shadow-lg shadow-rose-800/15 cursor-pointer"
             >
               <Users className="w-4 h-4" /> Apply to Students ({activeSession})
             </button>
             <button
               onClick={handleSave}
-              className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-neutral-900/20 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-xs flex items-center gap-2 shadow-lg shadow-rose-800/15 cursor-pointer"
             >
               <Save className="w-4 h-4" /> Save Fee Rules
             </button>
@@ -138,15 +138,15 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
       </div>
 
       {appliedSuccess && (
-        <div className="bg-neutral-50 border border-neutral-200 text-neutral-700 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
-          <CheckCircle2 className="w-4 h-4 text-neutral-700" />
+        <div className="bg-stone-50 border border-stone-200 text-stone-700 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
+          <CheckCircle2 className="w-4 h-4 text-stone-700" />
           <span>Fee structure applied to all students successfully! All balances have been recalculated.</span>
         </div>
       )}
 
       {savedSuccess && (
-        <div className="bg-neutral-50 border border-neutral-200 text-neutral-700 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
-          <CheckCircle2 className="w-4 h-4 text-neutral-700" />
+        <div className="bg-stone-50 border border-stone-200 text-stone-700 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
+          <CheckCircle2 className="w-4 h-4 text-stone-700" />
           <span>Fee structure rules updated successfully across the institution!</span>
         </div>
       )}
@@ -157,14 +157,14 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           onClick={() => setActiveCourse('JBT')}
           className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
             activeCourse === 'JBT'
-              ? 'bg-neutral-900 border-neutral-900 text-white shadow-lg ring-1 ring-neutral-900'
-              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
+              ? 'bg-rose-800 border-rose-800 text-stone-50 shadow-lg ring-1 ring-rose-800'
+              : 'bg-stone-50/60 border-stone-200 text-stone-500 hover:border-stone-300'
           }`}
         >
-          <GraduationCap className="w-6 h-6 text-neutral-700" />
+          <GraduationCap className="w-6 h-6 text-stone-700" />
           <div>
-            <h4 className="font-bold text-sm text-neutral-900">JBT Program</h4>
-            <p className="text-[11px] text-neutral-500">2 Years Diploma</p>
+            <h4 className="font-bold text-sm text-stone-900">JBT Program</h4>
+            <p className="text-[11px] text-stone-500">2 Years Diploma</p>
           </div>
         </button>
 
@@ -172,21 +172,21 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           onClick={() => setActiveCourse('B.Ed')}
           className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
             activeCourse === 'B.Ed'
-              ? 'bg-neutral-900 border-neutral-900 text-white shadow-lg ring-1 ring-neutral-900'
-              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
+              ? 'bg-rose-800 border-rose-800 text-stone-50 shadow-lg ring-1 ring-rose-800'
+              : 'bg-stone-50/60 border-stone-200 text-stone-500 hover:border-stone-300'
           }`}
         >
-          <BookOpen className="w-6 h-6 text-neutral-700" />
+          <BookOpen className="w-6 h-6 text-stone-700" />
           <div>
-            <h4 className="font-bold text-sm text-neutral-900">B.Ed Program</h4>
-            <p className="text-[11px] text-neutral-500">2 Years Degree</p>
+            <h4 className="font-bold text-sm text-stone-900">B.Ed Program</h4>
+            <p className="text-[11px] text-stone-500">2 Years Degree</p>
           </div>
         </button>
       </div>
 
       {/* Session Selector */}
       <div className="flex items-center gap-3 flex-wrap">
-        <span className="text-xs font-bold text-neutral-500 uppercase">Session:</span>
+        <span className="text-xs font-bold text-stone-500 uppercase">Session:</span>
         {sessions.map((sess) => {
           const hasRule = localRules.some((r) => r.course === activeCourse && r.session === sess);
           return (
@@ -195,8 +195,8 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
               onClick={() => setActiveSession(sess)}
               className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                 activeSession === sess
-                  ? 'bg-neutral-900 text-white border-neutral-900 shadow-md'
-                  : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
+                  ? 'bg-rose-800 text-stone-50 border-stone-900 shadow-md'
+                  : 'bg-stone-50/60 border-stone-200 text-stone-500 hover:border-stone-300'
               }`}
             >
               {sess}
@@ -209,7 +209,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
         {activeSession && !localRules.some((r) => r.course === activeCourse && r.session === activeSession) && (
           <button
             onClick={handleAddSessionRule}
-            className="px-3 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold cursor-pointer transition-colors"
+            className="px-3 py-2 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 text-xs font-bold cursor-pointer transition-colors"
           >
             + Create Rule for this Session
           </button>
@@ -218,26 +218,26 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
 
       {/* Total Fee Editor */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-xs">
-        <div className="lg:col-span-2 bg-neutral-50/60 p-5 rounded-2xl border border-neutral-200 space-y-4">
-          <h3 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-neutral-700" /> Base Annual Fee — {currentRule.course} Program ({activeSession})
+        <div className="lg:col-span-2 bg-stone-50/60 p-5 rounded-2xl border border-stone-200 space-y-4">
+          <h3 className="text-sm font-bold text-stone-900 flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-stone-700" /> Base Annual Fee — {currentRule.course} Program ({activeSession})
           </h3>
 
           <div>
-            <label className="block text-neutral-500 mb-1">Base Total Annual Fee (₹) — applied to standard/normal seat</label>
+            <label className="block text-stone-500 mb-1">Base Total Annual Fee (₹) — applied to standard/normal seat</label>
             <input
               type="number"
               value={currentRule.tuitionFee}
               disabled={isReadOnly}
               onChange={(e) => handleFeeChange('tuitionFee', Number(e.target.value))}
-              className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-neutral-900 text-lg font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-stone-900 text-lg font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               placeholder="Enter total annual fee"
             />
           </div>
 
-          <div className="pt-3 border-t border-neutral-200 flex items-center justify-between">
-            <span className="font-bold text-neutral-700">This is the base fee for {currentRule.course} students in session {activeSession}</span>
-            <strong className="text-neutral-700 text-base font-extrabold">
+          <div className="pt-3 border-t border-stone-200 flex items-center justify-between">
+            <span className="font-bold text-stone-700">This is the base fee for {currentRule.course} students in session {activeSession}</span>
+            <strong className="text-stone-700 text-base font-extrabold">
               {formatCurrencyINR(currentRule.tuitionFee)}
             </strong>
           </div>
@@ -245,57 +245,57 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
 
         {/* Scholarship & Penalty Rules */}
         <div className="space-y-4">
-          <div className="bg-neutral-50/60 p-5 rounded-2xl border border-neutral-200 space-y-4">
-            <h3 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
-              <Award className="w-4 h-4 text-neutral-700" /> Category Scholarship Concessions
+          <div className="bg-stone-50/60 p-5 rounded-2xl border border-stone-200 space-y-4">
+            <h3 className="text-sm font-bold text-stone-900 flex items-center gap-2">
+              <Award className="w-4 h-4 text-stone-700" /> Category Scholarship Concessions
             </h3>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-neutral-500 mb-1">SC Category Discount (₹)</label>
+                <label className="block text-stone-500 mb-1">SC Category Discount (₹)</label>
                 <input
                   type="number"
                   value={currentRule.scholarshipDiscounts.SC}
                   disabled={isReadOnly}
                   onChange={(e) => handleScholarshipChange('SC', Number(e.target.value))}
-                  className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-500 mb-1">ST Category Discount (₹)</label>
+                <label className="block text-stone-500 mb-1">ST Category Discount (₹)</label>
                 <input
                   type="number"
                   value={currentRule.scholarshipDiscounts.ST}
                   disabled={isReadOnly}
                   onChange={(e) => handleScholarshipChange('ST', Number(e.target.value))}
-                  className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-500 mb-1">OBC Category Discount (₹)</label>
+                <label className="block text-stone-500 mb-1">OBC Category Discount (₹)</label>
                 <input
                   type="number"
                   value={currentRule.scholarshipDiscounts.OBC}
                   disabled={isReadOnly}
                   onChange={(e) => handleScholarshipChange('OBC', Number(e.target.value))}
-                  className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-neutral-50/60 p-5 rounded-2xl border border-neutral-200 space-y-3">
-            <h3 className="text-sm font-bold text-neutral-900">Daily Late Penalty Rule</h3>
+          <div className="bg-stone-50/60 p-5 rounded-2xl border border-stone-200 space-y-3">
+            <h3 className="text-sm font-bold text-stone-900">Daily Late Penalty Rule</h3>
             <div>
-              <label className="block text-neutral-500 mb-1">Fine Amount per Day Overdue (₹)</label>
+              <label className="block text-stone-500 mb-1">Fine Amount per Day Overdue (₹)</label>
               <input
                 type="number"
                 value={currentRule.lateFeePerDay}
                 disabled={isReadOnly}
                 onChange={(e) => handleFeeChange('lateFeePerDay', Number(e.target.value))}
-                className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -303,16 +303,16 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
       </div>
 
       {/* Per-Period Fee Configuration */}
-      <div className="bg-white border border-neutral-200 rounded-2xl p-5 space-y-5">
-        <div className="flex items-center gap-3 border-b border-neutral-200 pb-3">
-          <div className="w-9 h-9 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center">
+      <div className="bg-white border border-stone-200 rounded-2xl p-5 space-y-5">
+        <div className="flex items-center gap-3 border-b border-stone-200 pb-3">
+          <div className="w-9 h-9 rounded-xl bg-stone-100 text-stone-700 flex items-center justify-center">
             <DollarSign className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-neutral-900">
+            <h3 className="text-sm font-bold text-stone-900">
               {activeCourse === 'JBT' ? 'Session-wise' : 'Semester-wise'} Fee Breakdown — {activeCourse} Program
             </h3>
-            <p className="text-[11px] text-neutral-500">
+            <p className="text-[11px] text-stone-500">
               Set individual fee for each {activeCourse === 'JBT' ? 'session' : 'semester'} (total program fee: {formatCurrencyINR(currentRule.tuitionFee)})
             </p>
           </div>
@@ -323,15 +323,15 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
             const defaultPerPeriod = periodsForCourse.length > 0 ? Math.round(currentRule.tuitionFee / periodsForCourse.length) : 0;
             const currentPeriodFee = currentRule.periodFees?.[period] ?? defaultPerPeriod;
             return (
-              <div key={period} className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 space-y-3">
+              <div key={period} className="rounded-2xl border border-stone-200 bg-stone-50 p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-neutral-900">{period}</span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-700 border border-neutral-300">
+                  <span className="text-sm font-bold text-stone-900">{period}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 border border-stone-300">
                     {getPeriodYear(period)}
                   </span>
                 </div>
                 <div>
-                  <label className="block text-neutral-500 text-[10px] mb-1">
+                  <label className="block text-stone-500 text-[10px] mb-1">
                     Fee for {period} (₹)
                   </label>
                   <input
@@ -339,46 +339,46 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
                     value={currentPeriodFee}
                     disabled={isReadOnly}
                     onChange={(e) => handlePeriodFeeChange(period, Number(e.target.value))}
-                    className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 text-sm font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 text-sm font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                     min={0}
                     placeholder={`${defaultPerPeriod}`}
                   />
                 </div>
-                <div className="pt-2 border-t border-neutral-200/60 flex items-center justify-between">
-                  <span className="text-[10px] text-neutral-500 font-medium">Default (equal split)</span>
-                  <span className="text-xs font-bold text-neutral-700">{formatCurrencyINR(defaultPerPeriod)}</span>
+                <div className="pt-2 border-t border-stone-200/60 flex items-center justify-between">
+                  <span className="text-[10px] text-stone-500 font-medium">Default (equal split)</span>
+                  <span className="text-xs font-bold text-stone-700">{formatCurrencyINR(defaultPerPeriod)}</span>
                 </div>
               </div>
             );
           })}
         </div>
 
-        <div className="flex items-center justify-between pt-2 border-t border-neutral-200 text-xs">
-          <span className="text-neutral-500">
+        <div className="flex items-center justify-between pt-2 border-t border-stone-200 text-xs">
+          <span className="text-stone-500">
             Sum of {activeCourse === 'JBT' ? 'session' : 'semester'} fees:
           </span>
-          <span className="font-bold text-neutral-900 text-sm">
+          <span className="font-bold text-stone-900 text-sm">
             {formatCurrencyINR(periodsForCourse.reduce((sum, p) => sum + (currentRule.periodFees?.[p] ?? Math.round(currentRule.tuitionFee / periodsForCourse.length)), 0))}
             {periodsForCourse.reduce((sum, p) => sum + (currentRule.periodFees?.[p] ?? Math.round(currentRule.tuitionFee / periodsForCourse.length)), 0) !== currentRule.tuitionFee && (
-              <span className="text-neutral-500 font-normal ml-2">(Program total: {formatCurrencyINR(currentRule.tuitionFee)})</span>
+              <span className="text-stone-500 font-normal ml-2">(Program total: {formatCurrencyINR(currentRule.tuitionFee)})</span>
             )}
           </span>
         </div>
 
-        <p className="text-[10px] text-neutral-500">
+        <p className="text-[10px] text-stone-500">
           Leave any {activeCourse === 'JBT' ? 'session' : 'semester'} at its default value to split the total fee equally. Custom values override the equal split for that specific period.
         </p>
       </div>
 
       {/* Seat Type Premium Fee Configuration */}
-      <div className="bg-white border border-neutral-200 rounded-2xl p-5 space-y-5">
-        <div className="flex items-center gap-3 border-b border-neutral-200 pb-3">
-          <div className="w-9 h-9 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center">
+      <div className="bg-white border border-stone-200 rounded-2xl p-5 space-y-5">
+        <div className="flex items-center gap-3 border-b border-stone-200 pb-3">
+          <div className="w-9 h-9 rounded-xl bg-stone-100 text-stone-700 flex items-center justify-center">
             <Armchair className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-neutral-900">Seat Type Premium Fees — {activeCourse} Program</h3>
-            <p className="text-[11px] text-neutral-500">
+            <h3 className="text-sm font-bold text-stone-900">Seat Type Premium Fees — {activeCourse} Program</h3>
+            <p className="text-[11px] text-stone-500">
               {activeCourse === 'B.Ed'
                 ? 'Configure additional fee premium for Normal and Management seats'
                 : 'Configure additional fee premium for Subsidised, Non-Subsidised and Management seats'}
@@ -395,30 +395,30 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
                 key={stf.seatType}
                 className={`rounded-2xl border p-4 space-y-3 transition-all ${
                   stf.seatType === 'Management'
-                    ? 'bg-neutral-50 border-neutral-200'
+                    ? 'bg-stone-50 border-stone-200'
                     : stf.seatType === 'Subsidised'
-                    ? 'bg-neutral-50 border-neutral-200'
+                    ? 'bg-stone-50 border-stone-200'
                     : stf.seatType === 'Non-Subsidised'
-                    ? 'bg-neutral-50 border-neutral-200'
-                    : 'bg-neutral-50/60 border-neutral-200'
+                    ? 'bg-stone-50 border-stone-200'
+                    : 'bg-stone-50/60 border-stone-200'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    {stf.seatType === 'Management' && <span className="text-neutral-500 text-sm">★</span>}
-                    <span className="text-sm font-bold text-neutral-900">{stf.seatType}</span>
+                    {stf.seatType === 'Management' && <span className="text-stone-500 text-sm">★</span>}
+                    <span className="text-sm font-bold text-stone-900">{stf.seatType}</span>
                   </div>
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                     isBase
-                      ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
-                      : 'bg-neutral-200 text-neutral-700 border border-neutral-200'
+                      ? 'bg-stone-100 text-stone-700 border border-stone-200'
+                      : 'bg-stone-200 text-stone-700 border border-stone-200'
                   }`}>
                     {isBase ? 'BASE' : 'PREMIUM'}
                   </span>
                 </div>
 
                 <div>
-                  <label className="block text-neutral-500 text-[10px] mb-1">
+                  <label className="block text-stone-500 text-[10px] mb-1">
                     Additional Premium over Base (₹)
                   </label>
                   <input
@@ -426,15 +426,15 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
                     value={stf.additionalFee}
                     disabled={isReadOnly}
                     onChange={(e) => handleSeatTypeFeeChange(stf.seatType, Number(e.target.value))}
-                    className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 text-sm font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 text-sm font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                     min={0}
                     placeholder="0"
                   />
                 </div>
 
-                <div className="pt-2 border-t border-neutral-200/60 flex items-center justify-between">
-                  <span className="text-[10px] text-neutral-500 font-medium">Effective Total Fee</span>
-                  <span className="text-sm font-extrabold text-neutral-900">
+                <div className="pt-2 border-t border-stone-200/60 flex items-center justify-between">
+                  <span className="text-[10px] text-stone-500 font-medium">Effective Total Fee</span>
+                  <span className="text-sm font-extrabold text-stone-900">
                     {formatCurrencyINR(effectiveTotal)}
                   </span>
                 </div>
@@ -443,7 +443,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           })}
         </div>
 
-        <p className="text-[10px] text-neutral-500 pt-1">
+        <p className="text-[10px] text-stone-500 pt-1">
           Total Fee = Base Annual Fee ({formatCurrencyINR(currentRule.tuitionFee)}) + Seat Premium. 
           Category scholarships are applied on top of the effective total.
         </p>

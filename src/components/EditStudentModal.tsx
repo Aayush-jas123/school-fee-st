@@ -62,18 +62,18 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white border border-neutral-200 rounded-3xl w-full max-w-2xl shadow-2xl text-neutral-900 overflow-hidden my-auto animate-in fade-in zoom-in duration-200">
+      <div className="bg-white border border-stone-200 rounded-3xl w-full max-w-2xl shadow-2xl text-stone-900 overflow-hidden my-auto animate-in fade-in zoom-in duration-200">
         {/* Header */}
-        <div className="p-5 bg-neutral-50/60 border-b border-neutral-200 flex items-center justify-between">
+        <div className="p-5 bg-stone-50/60 border-b border-stone-200 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-extrabold text-neutral-900">Edit Student Fee Record</h3>
-            <p className="text-xs text-neutral-500 font-mono mt-0.5">
-              Registration No: <strong className="text-neutral-700">{student.registrationNo}</strong>
+            <h3 className="text-lg font-extrabold text-stone-900">Edit Student Fee Record</h3>
+            <p className="text-xs text-stone-500 font-mono mt-0.5">
+              Registration No: <strong className="text-stone-700">{student.registrationNo}</strong>
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 transition-colors"
+            className="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-900 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -81,7 +81,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
 
         {/* Toast Alert */}
         {showToast && (
-          <div className="bg-neutral-100 border-b border-neutral-300 p-3 text-center text-neutral-700 text-xs font-semibold flex items-center justify-center gap-2">
+          <div className="bg-stone-100 border-b border-stone-300 p-3 text-center text-stone-700 text-xs font-semibold flex items-center justify-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
             Record updated in prototype state successfully!
           </div>
@@ -92,77 +92,77 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Student Name */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Student Name</label>
+              <label className="block text-stone-500 font-semibold mb-1">Student Name</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleChange('name', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none"
                 required
               />
             </div>
 
             {/* Father Name */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Father / Guardian Name</label>
+              <label className="block text-stone-500 font-semibold mb-1">Father / Guardian Name</label>
               <input
                 type="text"
                 value={formData.fatherName}
                 onChange={(e) => handleChange('fatherName', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none"
                 required
               />
             </div>
 
             {/* Phone */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Phone Number</label>
+              <label className="block text-stone-500 font-semibold mb-1">Phone Number</label>
               <input
                 type="text"
                 value={formData.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-mono focus:border-rose-800/50 focus:outline-none"
                 required
               />
             </div>
 
             {/* WhatsApp Number */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">WhatsApp Number</label>
+              <label className="block text-stone-500 font-semibold mb-1">WhatsApp Number</label>
               <input
                 type="text"
                 value={formData.whatsappNo || formData.phone}
                 onChange={(e) => handleChange('whatsappNo', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-700 font-mono focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-700 font-mono focus:border-rose-800/50 focus:outline-none"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Email Address</label>
+              <label className="block text-stone-500 font-semibold mb-1">Email Address</label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-mono focus:border-rose-800/50 focus:outline-none"
               />
             </div>
 
             {/* Roll Number (Editable Live) */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Class Roll Number (Editable)</label>
+              <label className="block text-stone-500 font-semibold mb-1">Class Roll Number (Editable)</label>
               <input
                 type="text"
                 value={formData.rollNo}
                 onChange={(e) => handleChange('rollNo', e.target.value)}
                 placeholder="e.g. 11643"
-                className="w-full bg-neutral-50/60 border border-neutral-200/50 rounded-xl px-3 py-2 text-neutral-700 font-mono font-bold focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200/50 rounded-xl px-3 py-2 text-stone-700 font-mono font-bold focus:border-rose-800/50 focus:outline-none"
               />
             </div>
 
             {/* Course Program */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Course Program</label>
+              <label className="block text-stone-500 font-semibold mb-1">Course Program</label>
               <select
                 value={formData.course}
                 onChange={(e) => {
@@ -171,7 +171,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                   handleChange('course', newCourse);
                   handleChange('seatType', defaultSeat);
                 }}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none cursor-pointer"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none cursor-pointer"
               >
                 <option value="JBT">JBT (Junior Basic Training)</option>
                 <option value="B.Ed">B.Ed (Bachelor of Education)</option>
@@ -180,7 +180,7 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
 
             {/* Seat Type */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1 flex items-center gap-1.5">
+              <label className="block text-stone-500 font-semibold mb-1 flex items-center gap-1.5">
                 <Armchair className="w-3.5 h-3.5" /> Seat Category
               </label>
               <div className="flex gap-2 flex-wrap">
@@ -195,11 +195,11 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
                       className={`px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                         isActive
                           ? st === 'Management'
-                            ? 'bg-neutral-100 border-neutral-300 text-neutral-700 ring-1 ring-neutral-300'
+                            ? 'bg-stone-100 border-stone-300 text-stone-700 ring-1 ring-stone-300'
                             : st === 'Subsidised'
-                            ? 'bg-neutral-100 border-neutral-300 text-neutral-700 ring-1 ring-neutral-300'
-                            : 'bg-neutral-900 border-neutral-900 text-white ring-1 ring-neutral-900'
-                          : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
+                            ? 'bg-stone-100 border-stone-300 text-stone-700 ring-1 ring-stone-300'
+                            : 'bg-rose-800 border-rose-800 text-stone-50 ring-1 ring-rose-800'
+                          : 'bg-stone-50/60 border-stone-200 text-stone-500 hover:border-stone-300'
                       }`}
                     >
                       {st === 'Management' && '★ '}{st}
@@ -212,11 +212,11 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
 
             {/* Academic Stream */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Academic Stream</label>
+              <label className="block text-stone-500 font-semibold mb-1">Academic Stream</label>
               <select
                 value={formData.stream || 'Arts'}
                 onChange={(e) => handleChange('stream', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none cursor-pointer"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none cursor-pointer"
               >
                 <option value="Arts">Arts</option>
                 <option value="Non-Medical">Non-Medical</option>
@@ -227,57 +227,57 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
 
             {/* Semester / Year */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Semester / Year</label>
+              <label className="block text-stone-500 font-semibold mb-1">Semester / Year</label>
               <input
                 type="text"
                 value={formData.semester}
                 onChange={(e) => handleChange('semester', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none"
               />
             </div>
 
             {/* Total Fees */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Total Fee Amount (₹)</label>
+              <label className="block text-stone-500 font-semibold mb-1">Total Fee Amount (₹)</label>
               <input
                 type="number"
                 value={formData.totalFees}
                 onChange={(e) => handleChange('totalFees', Number(e.target.value))}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono font-bold focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-mono font-bold focus:border-rose-800/50 focus:outline-none"
                 required
               />
             </div>
 
             {/* Paid Till Now */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Paid Till Now (₹)</label>
+              <label className="block text-stone-500 font-semibold mb-1">Paid Till Now (₹)</label>
               <input
                 type="number"
                 value={formData.paidTillNow}
                 onChange={(e) => handleChange('paidTillNow', Number(e.target.value))}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-700 font-mono font-bold focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-700 font-mono font-bold focus:border-rose-800/50 focus:outline-none"
                 required
               />
             </div>
 
             {/* Remaining Balance (Calculated) */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Remaining Balance (₹)</label>
+              <label className="block text-stone-500 font-semibold mb-1">Remaining Balance (₹)</label>
               <input
                 type="number"
                 value={formData.remainingFees}
                 disabled
-                className="w-full bg-neutral-100 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-700 font-mono font-bold cursor-not-allowed"
+                className="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-stone-700 font-mono font-bold cursor-not-allowed"
               />
             </div>
 
             {/* Fee Status */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Fee Status</label>
+              <label className="block text-stone-500 font-semibold mb-1">Fee Status</label>
               <select
                 value={formData.feeStatus}
                 onChange={(e) => handleChange('feeStatus', e.target.value as FeeStatusType)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-semibold focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-semibold focus:border-rose-800/50 focus:outline-none"
               >
                 <option value="Paid">Paid (Green)</option>
                 <option value="Partly Paid">Partly Paid (Yellow)</option>
@@ -288,22 +288,22 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
 
             {/* Next Due Date */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Next Payment Due Date</label>
+              <label className="block text-stone-500 font-semibold mb-1">Next Payment Due Date</label>
               <input
                 type="date"
                 value={formData.nextDueDate}
                 onChange={(e) => handleChange('nextDueDate', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-mono focus:border-rose-800/50 focus:outline-none"
               />
             </div>
 
             {/* Session */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Academic Session</label>
+              <label className="block text-stone-500 font-semibold mb-1">Academic Session</label>
               <select
                 value={formData.session}
                 onChange={(e) => handleChange('session', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none"
               >
                 <option value="2026-2027">2026-2027</option>
                 <option value="2024-2026">2024-2026</option>
@@ -313,11 +313,11 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
 
             {/* Category */}
             <div>
-              <label className="block text-neutral-500 font-semibold mb-1">Student Category</label>
+              <label className="block text-stone-500 font-semibold mb-1">Student Category</label>
               <select
                 value={formData.category}
                 onChange={(e) => handleChange('category', e.target.value)}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none"
               >
                 <option value="General">General</option>
                 <option value="OBC">OBC</option>
@@ -329,27 +329,27 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
 
           {/* Address */}
           <div>
-            <label className="block text-neutral-500 font-semibold mb-1">Permanent Address</label>
+            <label className="block text-stone-500 font-semibold mb-1">Permanent Address</label>
             <textarea
               rows={2}
               value={formData.address}
               onChange={(e) => handleChange('address', e.target.value)}
-              className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-medium focus:border-neutral-400 focus:outline-none resize-none"
+              className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none resize-none"
             />
           </div>
 
           {/* Form Actions */}
-          <div className="pt-4 border-t border-neutral-200 flex items-center justify-end gap-3">
+          <div className="pt-4 border-t border-stone-200 flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold shadow-lg shadow-neutral-900/20 transition-all cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold shadow-lg shadow-rose-800/15 transition-all cursor-pointer"
             >
               <Save className="w-4 h-4" />
               Save Changes (Prototype)

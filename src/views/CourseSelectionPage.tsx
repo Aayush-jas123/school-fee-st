@@ -15,11 +15,11 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
   staffName,
 }) => {
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900 p-4 md:p-8 flex flex-col justify-center items-center relative overflow-hidden">
+    <div className="min-h-screen bg-stone-50 text-stone-900 p-4 md:p-8 flex flex-col justify-center items-center relative overflow-hidden">
       {/* Ambient Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-neutral-200/[0.3] rounded-full blur-[160px]" />
-        <div className="absolute bottom-1/4 right-1/3 w-[500px] h-[500px] bg-neutral-200/[0.2] rounded-full blur-[160px]" />
+        <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-stone-200/[0.3] rounded-full blur-[160px]" />
+        <div className="absolute bottom-1/4 right-1/3 w-[500px] h-[500px] bg-stone-200/[0.2] rounded-full blur-[160px]" />
         <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.15) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
       </div>
 
@@ -35,12 +35,12 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1, duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-neutral-200 text-xs text-neutral-500 font-medium shadow-lg backdrop-blur-sm"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-stone-200 text-xs text-stone-500 font-medium shadow-lg backdrop-blur-sm"
           >
-            <Building2 className="w-4 h-4 text-neutral-700" />
-            <span className="font-bold text-neutral-900">Shanti College of Education</span>
-            <span className="text-neutral-600">•</span>
-            <span className="text-neutral-700 flex items-center gap-1">
+            <Building2 className="w-4 h-4 text-stone-700" />
+            <span className="font-bold text-stone-900">Shanti College of Education</span>
+            <span className="text-stone-600">•</span>
+            <span className="text-stone-700 flex items-center gap-1">
               <UserCheck className="w-3.5 h-3.5" /> {staffName}
             </span>
           </motion.div>
@@ -49,7 +49,7 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-3xl md:text-5xl font-extrabold tracking-tight text-neutral-900"
+            className="text-3xl md:text-5xl font-extrabold tracking-tight text-stone-900"
           >
             Select Course Program
           </motion.h1>
@@ -57,7 +57,7 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.4 }}
-            className="text-sm md:text-base text-neutral-500 max-w-xl mx-auto font-medium"
+            className="text-sm md:text-base text-stone-500 max-w-xl mx-auto font-medium"
           >
             Choose a course program below to access fee management, payment collection, and student records.
           </motion.p>
@@ -74,13 +74,13 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + idx * 0.15, duration: 0.5 }}
                 onClick={() => onSelectCourse(course.code)}
-                className="group relative bg-neutral-50 backdrop-blur-sm border border-neutral-200 hover:border-neutral-300 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col justify-between space-y-8 card-premium"
+                className="group relative bg-stone-50 backdrop-blur-sm border border-stone-200 hover:border-stone-300 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col justify-between space-y-8 card-premium"
               >
                 {/* Hover gradient overlay */}
                 <div className={`absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${
                   isJBT
-                    ? 'bg-neutral-50'
-                    : 'bg-neutral-50'
+                    ? 'bg-stone-50'
+                    : 'bg-stone-50'
                 }`} />
 
                 {/* Header Icon & Program Badge */}
@@ -88,8 +88,8 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
                   <div
                     className={`w-14 h-14 rounded-2xl flex items-center justify-center border shadow-inner transition-all duration-300 group-hover:scale-110 ${
                       isJBT
-                        ? 'bg-neutral-100 border-neutral-200 text-neutral-700 group-hover:shadow-neutral-900/10'
-                        : 'bg-neutral-100 border-neutral-200 text-neutral-700 group-hover:shadow-neutral-900/10'
+                        ? 'bg-stone-100 border-stone-200 text-stone-700 group-hover:shadow-rose-800/10'
+                        : 'bg-stone-100 border-stone-200 text-stone-700 group-hover:shadow-rose-800/10'
                     }`}
                   >
                     {isJBT ? <GraduationCap className="w-7 h-7" /> : <BookOpen className="w-7 h-7" />}
@@ -98,8 +98,8 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-bold border ${
                       isJBT
-                        ? 'bg-neutral-100 text-neutral-700 border-neutral-200'
-                        : 'bg-neutral-100 text-neutral-700 border-neutral-200'
+                        ? 'bg-stone-100 text-stone-700 border-stone-200'
+                        : 'bg-stone-100 text-stone-700 border-stone-200'
                     }`}
                   >
                     {course.duration}
@@ -108,10 +108,10 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
 
                 {/* Program Details */}
                 <div className="space-y-2 relative">
-                  <h3 className="text-2xl font-extrabold text-neutral-900 group-hover:text-neutral-700 transition-colors duration-300">
+                  <h3 className="text-2xl font-extrabold text-stone-900 group-hover:text-stone-700 transition-colors duration-300">
                     {course.title} Program
                   </h3>
-                  <p className="text-xs text-neutral-500 font-medium leading-relaxed">
+                  <p className="text-xs text-stone-500 font-medium leading-relaxed">
                     {isJBT
                       ? 'Junior Basic Training (Primary Teacher Education)'
                       : 'Bachelor of Education (Secondary Teacher Education)'}
@@ -122,8 +122,8 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
                 <div
                   className={`w-full py-3.5 px-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all duration-300 shadow-lg ${
                     isJBT
-                      ? 'bg-neutral-900 group-hover:bg-neutral-800 text-white shadow-neutral-900/20'
-                      : 'bg-neutral-900 group-hover:bg-neutral-800 text-white shadow-neutral-900/20'
+                      ? 'bg-rose-800 group-hover:bg-rose-700 text-stone-50 shadow-rose-800/15'
+                      : 'bg-rose-800 group-hover:bg-rose-700 text-stone-50 shadow-rose-800/15'
                   }`}
                 >
                   <span>Access {course.title} Portal</span>
@@ -143,11 +143,11 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
         >
           <button
             onClick={() => onSelectCourse('ALL')}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-neutral-700 hover:text-neutral-900 text-xs font-semibold transition-all cursor-pointer shadow-md hover:shadow-neutral-900/10 hover:border-neutral-300"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-stone-100 hover:bg-stone-200 border border-stone-200 text-stone-700 hover:text-stone-900 text-xs font-semibold transition-all cursor-pointer shadow-md hover:shadow-rose-800/10 hover:border-stone-300"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>View All Programs Overview (Read-Only)</span>
-            <ChevronRight className="w-4 h-4 text-neutral-700" />
+            <ChevronRight className="w-4 h-4 text-stone-700" />
           </button>
         </motion.div>
       </motion.div>

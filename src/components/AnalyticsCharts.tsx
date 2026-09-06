@@ -39,8 +39,8 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white border border-neutral-200 p-3 rounded-xl shadow-lg text-xs text-neutral-800">
-          <p className="font-bold text-neutral-900 mb-1">{label || payload[0].name}</p>
+        <div className="bg-white border border-stone-200 p-3 rounded-xl shadow-lg text-xs text-stone-800">
+          <p className="font-bold text-stone-900 mb-1">{label || payload[0].name}</p>
           {payload.map((entry: any, index: number) => (
             <p key={`item-${index}`} className="flex items-center gap-2" style={{ color: entry.color }}>
               <span>{entry.name || 'Count'}:</span>
@@ -60,18 +60,18 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Payment Status Distribution Chart (Donut Chart) */}
-      <div className="lg:col-span-5 bg-white border border-neutral-200 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+      <div className="lg:col-span-5 bg-white border border-stone-200 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-base font-bold text-neutral-900 flex items-center gap-2">
-              <PieIcon className="w-4 h-4 text-neutral-700" />
+            <h3 className="text-base font-bold text-stone-900 flex items-center gap-2">
+              <PieIcon className="w-4 h-4 text-stone-700" />
               Student Payment Status Ratio
             </h3>
-            <span className="px-2.5 py-1 rounded-md bg-neutral-100 border border-neutral-200 text-[10px] font-semibold text-neutral-700">
+            <span className="px-2.5 py-1 rounded-md bg-stone-100 border border-stone-200 text-[10px] font-semibold text-stone-700">
               Live Distribution
             </span>
           </div>
-          <p className="text-xs text-neutral-500 mb-4">
+          <p className="text-xs text-stone-500 mb-4">
             Proportion of Fully Paid, Partly Paid, and Unpaid student records.
           </p>
 
@@ -95,30 +95,30 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
                 <Legend
                   verticalAlign="bottom"
                   height={36}
-                  formatter={(value) => <span className="text-xs font-semibold text-neutral-700">{value}</span>}
+                  formatter={(value) => <span className="text-xs font-semibold text-stone-700">{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
 
             {/* Inner Ring Text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pb-8">
-              <span className="text-2xl font-extrabold text-neutral-900">{students.length}</span>
-              <span className="text-[10px] font-semibold text-neutral-500 uppercase">Students</span>
+              <span className="text-2xl font-extrabold text-stone-900">{students.length}</span>
+              <span className="text-[10px] font-semibold text-stone-500 uppercase">Students</span>
             </div>
           </div>
         </div>
 
         {/* Legend Summary Pills */}
-        <div className="grid grid-cols-3 gap-2 pt-3 border-t border-neutral-200 text-center text-xs">
-          <div className="p-2 rounded-xl bg-neutral-100 border border-neutral-200 text-neutral-700">
+        <div className="grid grid-cols-3 gap-2 pt-3 border-t border-stone-200 text-center text-xs">
+          <div className="p-2 rounded-xl bg-stone-100 border border-stone-200 text-stone-700">
             <span className="block font-bold text-sm">{paidCount}</span>
             <span className="text-[10px]">Paid</span>
           </div>
-          <div className="p-2 rounded-xl bg-neutral-100 border border-neutral-200 text-neutral-700">
+          <div className="p-2 rounded-xl bg-stone-100 border border-stone-200 text-stone-700">
             <span className="block font-bold text-sm">{partlyPaidCount}</span>
             <span className="text-[10px]">Partly Paid</span>
           </div>
-          <div className="p-2 rounded-xl bg-neutral-100 border border-neutral-200 text-neutral-700">
+          <div className="p-2 rounded-xl bg-stone-100 border border-stone-200 text-stone-700">
             <span className="block font-bold text-sm">{unpaidCount}</span>
             <span className="text-[10px]">Unpaid</span>
           </div>
@@ -126,18 +126,18 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
       </div>
 
       {/* Monthly Collection Trend Chart */}
-      <div className="lg:col-span-7 bg-white border border-neutral-200 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+      <div className="lg:col-span-7 bg-white border border-stone-200 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-base font-bold text-neutral-900 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-neutral-700" />
+            <h3 className="text-base font-bold text-stone-900 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-stone-700" />
               Monthly Fee Collection Trend (₹)
             </h3>
-            <span className="px-2.5 py-1 rounded-md bg-neutral-100 border border-neutral-200 text-[10px] font-semibold text-neutral-700">
+            <span className="px-2.5 py-1 rounded-md bg-stone-100 border border-stone-200 text-[10px] font-semibold text-stone-700">
               FY 2024-2025
             </span>
           </div>
-          <p className="text-xs text-neutral-500 mb-4">
+          <p className="text-xs text-stone-500 mb-4">
             Comparison of monthly fee collections across JBT and B.Ed programs.
           </p>
 
@@ -152,7 +152,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
                   verticalAlign="top"
                   align="right"
                   height={30}
-                  formatter={(value) => <span className="text-xs font-semibold text-neutral-700">{value}</span>}
+                  formatter={(value) => <span className="text-xs font-semibold text-stone-700">{value}</span>}
                 />
                 <Bar dataKey="JBT" fill="#10b981" radius={[4, 4, 0, 0]} name="JBT Program" />
                 <Bar dataKey="BEd" fill="#6366f1" radius={[4, 4, 0, 0]} name="B.Ed Program" />
@@ -162,12 +162,12 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
         </div>
 
         {/* Footer Insight */}
-        <div className="flex items-center justify-between pt-3 border-t border-neutral-200 text-xs text-neutral-500">
+        <div className="flex items-center justify-between pt-3 border-t border-stone-200 text-xs text-stone-500">
           <div className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-neutral-700" />
-            <span>Peak Collection Month: <strong className="text-neutral-800">July (₹5.6 Lakhs)</strong></span>
+            <TrendingUp className="w-4 h-4 text-stone-700" />
+            <span>Peak Collection Month: <strong className="text-stone-800">July (₹5.6 Lakhs)</strong></span>
           </div>
-          <span className="text-[11px] text-neutral-600 font-medium">Updated as of today</span>
+          <span className="text-[11px] text-stone-600 font-medium">Updated as of today</span>
         </div>
       </div>
     </div>

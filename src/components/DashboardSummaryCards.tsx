@@ -90,11 +90,11 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
   ];
 
   const accentStyles: Record<string, { iconBg: string; border: string; tagBg: string; tagText: string; tagBorder: string }> = {
-    violet: { iconBg: 'bg-neutral-900', border: 'hover:border-neutral-300', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
-    blue: { iconBg: 'bg-neutral-800', border: 'hover:border-neutral-300', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
-    emerald: { iconBg: 'bg-neutral-700', border: 'hover:border-neutral-300', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
-    rose: { iconBg: 'bg-neutral-600', border: 'hover:border-neutral-300', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
-    amber: { iconBg: 'bg-neutral-500', border: 'hover:border-neutral-300', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
+    violet: { iconBg: 'bg-rose-800', border: 'hover:border-stone-300', tagBg: 'bg-rose-800/10', tagText: 'text-rose-800', tagBorder: 'border-rose-800/20' },
+    blue: { iconBg: 'bg-teal-700', border: 'hover:border-stone-300', tagBg: 'bg-teal-700/10', tagText: 'text-teal-700', tagBorder: 'border-teal-700/20' },
+    emerald: { iconBg: 'bg-amber-700', border: 'hover:border-stone-300', tagBg: 'bg-amber-700/10', tagText: 'text-amber-700', tagBorder: 'border-amber-700/20' },
+    rose: { iconBg: 'bg-rose-800', border: 'hover:border-stone-300', tagBg: 'bg-rose-800/10', tagText: 'text-rose-800', tagBorder: 'border-rose-800/20' },
+    amber: { iconBg: 'bg-amber-700', border: 'hover:border-stone-300', tagBg: 'bg-amber-700/10', tagText: 'text-amber-700', tagBorder: 'border-amber-700/20' },
   };
 
   return (
@@ -104,29 +104,29 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-neutral-200 rounded-2xl p-4 md:px-6 shadow-lg backdrop-blur-sm"
+        className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-stone-200 rounded-2xl p-4 md:px-6 shadow-lg backdrop-blur-sm"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold border border-neutral-200">
+          <div className="w-10 h-10 rounded-xl bg-rose-800/10 text-rose-800 flex items-center justify-center font-bold border border-rose-800/20">
             <TrendingUp className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-neutral-900">Overall Fee Collection Progress</h3>
-            <p className="text-xs text-neutral-500">Real-time breakdown based on current active filters</p>
+            <h3 className="text-sm font-bold text-stone-900">Overall Fee Collection Progress</h3>
+            <p className="text-xs text-stone-500">Real-time breakdown based on current active filters</p>
           </div>
         </div>
 
         <div className="flex items-center gap-4 text-xs">
           <div className="text-right">
-            <span className="text-neutral-500 block text-[11px]">Collection Target</span>
-            <span className="text-neutral-700 font-extrabold text-sm">{collectionPercentage}% Achieved</span>
+            <span className="text-stone-500 block text-[11px]">Collection Target</span>
+            <span className="text-stone-700 font-extrabold text-sm">{collectionPercentage}% Achieved</span>
           </div>
-          <div className="w-32 bg-neutral-100 h-2.5 rounded-full overflow-hidden border border-neutral-200">
+          <div className="w-32 bg-stone-100 h-2.5 rounded-full overflow-hidden border border-stone-200">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${collectionPercentage}%` }}
-              transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
-              className="bg-neutral-900 h-full rounded-full"
+              transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
+              className="bg-rose-800 h-full rounded-full"
             />
           </div>
         </div>
@@ -143,13 +143,13 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.06, duration: 0.4 }}
-              className={`bg-white border border-neutral-200 rounded-2xl p-4 md:p-5 shadow-lg transition-all duration-300 relative overflow-hidden group card-premium ${style.border}`}
+              className={`bg-white border border-stone-200 rounded-2xl p-4 md:p-5 shadow-lg transition-all duration-300 relative overflow-hidden group card-premium ${style.border}`}
             >
               {/* Subtle gradient on hover */}
-              <div className="absolute inset-0 bg-neutral-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="absolute inset-0 bg-stone-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
               <div className="flex items-center justify-between mb-3 relative">
-                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
                   {card.title}
                 </span>
                 <div className={`w-9 h-9 rounded-xl ${style.iconBg} text-white flex items-center justify-center shadow-md`}>
@@ -158,12 +158,12 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
               </div>
 
               <div className="mb-2 relative">
-                <span className="text-2xl md:text-3xl font-extrabold text-neutral-900 tracking-tight">
+                <span className="text-2xl md:text-3xl font-extrabold text-stone-900 tracking-tight">
                   {card.value}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] text-neutral-500 relative">
+              <div className="flex items-center justify-between text-[11px] text-stone-500 relative">
                 <span>{card.subtext}</span>
                 {card.statusTag && (
                   <span className={`px-2 py-0.5 rounded-md border text-[10px] font-bold ${style.tagBg} ${style.tagText} ${style.tagBorder}`}>

@@ -177,57 +177,57 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         exit={{ opacity: 0, scale: 0.96, y: 12 }}
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white backdrop-blur-xl border border-neutral-200 rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto p-5 shadow-2xl shadow-neutral-900/10 text-neutral-900 relative">
+        className="bg-white backdrop-blur-xl border border-stone-200 rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto p-5 shadow-2xl shadow-rose-800/10 text-stone-900 relative">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-neutral-200 pb-4 mb-6">
+        <div className="flex items-center justify-between border-b border-stone-200 pb-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
+            <div className="w-11 h-11 rounded-2xl bg-stone-100 text-stone-700 flex items-center justify-center font-bold">
               <DollarSign className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Record Fee Payment</h2>
-              <p className="text-xs text-neutral-500">Collect Semester Fee & Issue Official Digital Receipt</p>
+              <h2 className="text-xl font-bold text-stone-900 tracking-tight">Record Fee Payment</h2>
+              <p className="text-xs text-stone-500">Collect Semester Fee & Issue Official Digital Receipt</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-colors"
+            className="p-2 rounded-xl text-stone-500 hover:text-stone-900 hover:bg-stone-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Student Summary Pill */}
-        <div className="bg-neutral-50/70 rounded-2xl p-4 border border-neutral-200 mb-5 space-y-2">
+        <div className="bg-stone-50/70 rounded-2xl p-4 border border-stone-200 mb-5 space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-neutral-500">Student:</span>
-            <span className="font-bold text-neutral-900 text-sm">{student.name} ({student.course})</span>
+            <span className="text-stone-500">Student:</span>
+            <span className="font-bold text-stone-900 text-sm">{student.name} ({student.course})</span>
           </div>
           <div className="flex items-center justify-between text-xs">
-            <span className="text-neutral-500">Father's Name / Reg No:</span>
-            <span className="font-mono text-neutral-700 font-semibold">{student.fatherName} | {student.registrationNo}</span>
+            <span className="text-stone-500">Father's Name / Reg No:</span>
+            <span className="font-mono text-stone-700 font-semibold">{student.fatherName} | {student.registrationNo}</span>
           </div>
-          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-neutral-200 text-center">
-            <div className="bg-white p-2 rounded-xl border border-neutral-200">
-              <span className="text-[10px] text-neutral-500 block">Total Degree Fee</span>
-              <span className="text-xs font-bold text-neutral-900">{student.totalFees > 0 ? formatCurrencyINR(student.totalFees) : 'NIL (TBD)'}</span>
+          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-stone-200 text-center">
+            <div className="bg-white p-2 rounded-xl border border-stone-200">
+              <span className="text-[10px] text-stone-500 block">Total Degree Fee</span>
+              <span className="text-xs font-bold text-stone-900">{student.totalFees > 0 ? formatCurrencyINR(student.totalFees) : 'NIL (TBD)'}</span>
             </div>
-            <div className="bg-white p-2 rounded-xl border border-neutral-200">
-              <span className="text-[10px] text-neutral-500 block">Total Paid So Far</span>
-              <span className="text-xs font-bold text-neutral-700">{formatCurrencyINR(student.paidTillNow)}</span>
+            <div className="bg-white p-2 rounded-xl border border-stone-200">
+              <span className="text-[10px] text-stone-500 block">Total Paid So Far</span>
+              <span className="text-xs font-bold text-stone-700">{formatCurrencyINR(student.paidTillNow)}</span>
             </div>
-            <div className="bg-white p-2 rounded-xl border border-neutral-200">
-              <span className="text-[10px] text-neutral-500 block">Overall Balance</span>
-              <span className="text-xs font-bold text-neutral-700">{student.totalFees > 0 ? formatCurrencyINR(student.remainingFees) : 'TBD'}</span>
+            <div className="bg-white p-2 rounded-xl border border-stone-200">
+              <span className="text-[10px] text-stone-500 block">Overall Balance</span>
+              <span className="text-xs font-bold text-stone-700">{student.totalFees > 0 ? formatCurrencyINR(student.remainingFees) : 'TBD'}</span>
             </div>
           </div>
         </div>
 
         {/* Target Period Window Selector */}
         <div className="mb-5">
-          <label className="block text-neutral-700 font-semibold text-xs mb-1.5 flex items-center gap-1.5">
-            <Layers className="w-4 h-4 text-neutral-700" /> Select Target {student.course === 'JBT' ? 'Session' : 'Semester'} Payment Window:
+          <label className="block text-stone-700 font-semibold text-xs mb-1.5 flex items-center gap-1.5">
+            <Layers className="w-4 h-4 text-stone-700" /> Select Target {student.course === 'JBT' ? 'Session' : 'Semester'} Payment Window:
           </label>
           <div className={`grid gap-2 ${coursePeriods.length === 2 ? 'grid-cols-2' : 'grid-cols-4'}`}>
             {coursePeriods.map((period) => {
@@ -243,24 +243,24 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   onClick={() => handleSemesterChange(period)}
                   className={`p-2.5 rounded-xl border text-left transition-all relative ${
                     isSelected
-                      ? 'bg-neutral-900 border-neutral-900 text-white ring-2 ring-neutral-900'
-                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
+                      ? 'bg-rose-800 border-rose-800 text-stone-50 ring-2 ring-rose-800'
+                      : 'bg-stone-50/60 border-stone-200 text-stone-500 hover:border-stone-300'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-xs">{period}</span>
                     <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${
                       isPaid
-                        ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
+                        ? 'bg-stone-100 text-stone-700 border border-stone-200'
                         : isPartly
-                        ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
-                        : 'bg-neutral-200 text-neutral-700 border border-neutral-300'
+                        ? 'bg-stone-100 text-stone-700 border border-stone-200'
+                        : 'bg-stone-200 text-stone-700 border border-stone-300'
                     }`}>
                       {slot?.status || 'Unpaid'}
                     </span>
                   </div>
-                  <div className="text-[10px] text-neutral-500 mt-1">
-                    Due: <span className="text-neutral-900 font-mono font-medium">{slot && slot.totalFee > 0 ? formatCurrencyINR(slot.remainingAmount) : 'TBD'}</span>
+                  <div className="text-[10px] text-stone-500 mt-1">
+                    Due: <span className="text-stone-900 font-mono font-medium">{slot && slot.totalFee > 0 ? formatCurrencyINR(slot.remainingAmount) : 'TBD'}</span>
                   </div>
                 </button>
               );
@@ -270,26 +270,26 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
         {/* EMI History for Selected Semester */}
         {emiCount > 0 && (
-          <div className="mb-5 bg-neutral-50/50 p-3 rounded-xl border border-neutral-200 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-bold text-neutral-700">
-              <Receipt className="w-4 h-4 text-neutral-700" />
+          <div className="mb-5 bg-stone-50/50 p-3 rounded-xl border border-stone-200 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-stone-700">
+              <Receipt className="w-4 h-4 text-stone-700" />
               Previous EMI Installments for {selectedSemester} ({emiCount} paid):
             </div>
             <div className="space-y-1.5">
               {semesterEmiHistory.map((inst, idx) => (
-                <div key={inst.id || idx} className="flex items-center justify-between bg-white p-2 rounded-lg border border-neutral-200 text-[11px]">
+                <div key={inst.id || idx} className="flex items-center justify-between bg-white p-2 rounded-lg border border-stone-200 text-[11px]">
                   <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-700 font-bold text-[10px]">EMI #{inst.installmentNo || idx + 1}</span>
-                    <span className="text-neutral-500 font-mono">{inst.date}</span>
-                    <span className="text-neutral-600">{inst.mode}</span>
+                    <span className="px-1.5 py-0.5 rounded bg-stone-100 text-stone-700 font-bold text-[10px]">EMI #{inst.installmentNo || idx + 1}</span>
+                    <span className="text-stone-500 font-mono">{inst.date}</span>
+                    <span className="text-stone-600">{inst.mode}</span>
                   </div>
-                  <span className="font-bold text-neutral-700">{formatCurrencyINR(inst.amount)}</span>
+                  <span className="font-bold text-stone-700">{formatCurrencyINR(inst.amount)}</span>
                 </div>
               ))}
             </div>
-            <div className="flex items-center justify-between pt-1.5 border-t border-neutral-200 text-[11px]">
-              <span className="text-neutral-500">Total Paid via EMIs so far:</span>
-              <span className="font-bold text-neutral-700">{formatCurrencyINR(emiTotalPaid)} of {formatCurrencyINR(currentSemSlot.totalFee)}</span>
+            <div className="flex items-center justify-between pt-1.5 border-t border-stone-200 text-[11px]">
+              <span className="text-stone-500">Total Paid via EMIs so far:</span>
+              <span className="font-bold text-stone-700">{formatCurrencyINR(emiTotalPaid)} of {formatCurrencyINR(currentSemSlot.totalFee)}</span>
             </div>
           </div>
         )}
@@ -297,17 +297,17 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         {/* Payment Form */}
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {/* Quick Option: Full Sem vs Custom Installment */}
-          <div className="bg-neutral-50/50 p-3 rounded-xl border border-neutral-200 flex items-center justify-between gap-2">
+          <div className="bg-stone-50/50 p-3 rounded-xl border border-stone-200 flex items-center justify-between gap-2">
             <div>
-              <div className="font-semibold text-neutral-900">{selectedSemester} Fee: {currentSemSlot.totalFee > 0 ? formatCurrencyINR(currentSemSlot.totalFee) : 'NIL / TBD'}</div>
-              <div className="text-[11px] text-neutral-500">Current Semester Remaining: <span className="text-neutral-700 font-bold">{currentSemSlot.totalFee > 0 ? formatCurrencyINR(currentSemSlot.remainingAmount) : 'TBD'}</span></div>
+              <div className="font-semibold text-stone-900">{selectedSemester} Fee: {currentSemSlot.totalFee > 0 ? formatCurrencyINR(currentSemSlot.totalFee) : 'NIL / TBD'}</div>
+              <div className="text-[11px] text-stone-500">Current Semester Remaining: <span className="text-stone-700 font-bold">{currentSemSlot.totalFee > 0 ? formatCurrencyINR(currentSemSlot.remainingAmount) : 'TBD'}</span></div>
             </div>
             {currentSemSlot.remainingAmount > 0 && (
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => setAmount(currentSemSlot.remainingAmount)}
-                  className="px-3 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 border border-neutral-200 text-xs font-bold"
+                  className="px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 text-xs font-bold"
                 >
                   1-Click Full Sem Payment ({formatCurrencyINR(currentSemSlot.remainingAmount)})
                 </button>
@@ -317,7 +317,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Payment Mode Selector */}
           <div>
-            <label className="block text-neutral-700 font-medium mb-1.5">Payment Method</label>
+            <label className="block text-stone-700 font-medium mb-1.5">Payment Method</label>
             <div className="grid grid-cols-5 gap-2">
               {(['UPI', 'Cash', 'NEFT', 'Cheque', 'Demand Draft'] as PaymentMode[]).map((mode) => (
                 <button
@@ -326,8 +326,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   onClick={() => handleModeChange(mode)}
                   className={`py-2 px-2 rounded-xl font-semibold border transition-all text-center ${
                     paymentMode === mode
-                      ? 'bg-neutral-900 border-neutral-900 text-white shadow-lg shadow-neutral-900/20'
-                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300 hover:text-neutral-900'
+                      ? 'bg-rose-800 border-rose-800 text-stone-50 shadow-lg shadow-rose-800/15'
+                      : 'bg-stone-50/60 border-stone-200 text-stone-500 hover:border-stone-300 hover:text-stone-900'
                   }`}
                 >
                   {mode}
@@ -339,7 +339,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {/* Amount & Discount Inputs */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-neutral-700 font-medium mb-1">Amount to Collect (₹)</label>
+              <label className="block text-stone-700 font-medium mb-1">Amount to Collect (₹)</label>
               <div className="relative">
                 <input
                   type="number"
@@ -348,12 +348,12 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
                   required
-                  className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold text-sm focus:outline-none focus:border-neutral-400"
+                  className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-bold text-sm focus:outline-none focus:border-rose-800/50"
                 />
                 <button
                   type="button"
                   onClick={() => setAmount(currentSemSlot.remainingAmount)}
-                  className="absolute right-2 top-1.5 px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 hover:bg-neutral-200 text-[10px] font-bold border border-neutral-200"
+                  className="absolute right-2 top-1.5 px-2 py-0.5 rounded bg-stone-100 text-stone-700 hover:bg-stone-200 text-[10px] font-bold border border-stone-200"
                 >
                   Full Sem
                 </button>
@@ -361,14 +361,14 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-neutral-700 font-medium mb-1">Scholarship / Concession (₹)</label>
+              <label className="block text-stone-700 font-medium mb-1">Scholarship / Concession (₹)</label>
               <input
                 type="number"
                 min={0}
                 value={discount}
                 onChange={(e) => setDiscount(Number(e.target.value))}
                 placeholder="0"
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold text-sm focus:outline-none focus:border-neutral-400"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-bold text-sm focus:outline-none focus:border-rose-800/50"
               />
             </div>
           </div>
@@ -376,40 +376,40 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {/* Reference & Remarks */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-neutral-700 font-medium mb-1">Transaction Ref / Cheque No.</label>
+              <label className="block text-stone-700 font-medium mb-1">Transaction Ref / Cheque No.</label>
               <input
                 type="text"
                 value={transactionRef}
                 onChange={(e) => setTransactionRef(e.target.value)}
                 required
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:outline-none focus:border-neutral-400"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-mono focus:outline-none focus:border-rose-800/50"
               />
             </div>
 
             <div>
-              <label className="block text-neutral-700 font-medium mb-1">Remark / Purpose</label>
+              <label className="block text-stone-700 font-medium mb-1">Remark / Purpose</label>
               <input
                 type="text"
                 value={remark}
                 onChange={(e) => setRemark(e.target.value)}
                 required
                 placeholder={`e.g. ${selectedSemester} Installment Fee`}
-                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-neutral-400"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 focus:outline-none focus:border-rose-800/50"
               />
             </div>
           </div>
 
           {/* UPI Live QR Button if UPI Mode selected */}
           {paymentMode === 'UPI' && (
-            <div className="bg-neutral-100 border border-neutral-200 rounded-xl p-3 flex items-center justify-between">
+            <div className="bg-stone-100 border border-stone-200 rounded-xl p-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <QrCode className="w-5 h-5 text-neutral-700" />
-                <span className="text-neutral-700 font-medium">Generate Dynamic Payment QR ({selectedSemester})</span>
+                <QrCode className="w-5 h-5 text-stone-700" />
+                <span className="text-stone-700 font-medium">Generate Dynamic Payment QR ({selectedSemester})</span>
               </div>
               <button
                 type="button"
                 onClick={() => setShowQrModal(true)}
-                className="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs flex items-center gap-1 cursor-pointer"
+                className="px-3 py-1.5 rounded-lg bg-rose-800 hover:bg-rose-700 text-stone-50 font-semibold text-xs flex items-center gap-1 cursor-pointer"
               >
                 <QrCode className="w-3.5 h-3.5" /> Show QR
               </button>
@@ -417,45 +417,45 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           )}
 
           {/* Next EMI Number Preview */}
-          <div className="bg-neutral-50 p-2.5 rounded-xl border border-neutral-200 flex items-center justify-between text-xs">
+          <div className="bg-stone-50 p-2.5 rounded-xl border border-stone-200 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-neutral-700" />
-              <span className="text-neutral-700">This will be recorded as <strong className="text-neutral-700">EMI #{emiCount + 1}</strong> for {selectedSemester}</span>
+              <Clock className="w-4 h-4 text-stone-700" />
+              <span className="text-stone-700">This will be recorded as <strong className="text-stone-700">EMI #{emiCount + 1}</strong> for {selectedSemester}</span>
             </div>
-            <span className="text-neutral-500">
-              After payment: <strong className={calculatedSemRemainingAfterPayment === 0 ? 'text-neutral-700' : 'text-neutral-700'}>{formatCurrencyINR(calculatedSemRemainingAfterPayment)} pending</strong>
+            <span className="text-stone-500">
+              After payment: <strong className={calculatedSemRemainingAfterPayment === 0 ? 'text-stone-700' : 'text-stone-700'}>{formatCurrencyINR(calculatedSemRemainingAfterPayment)} pending</strong>
             </span>
           </div>
 
           {/* Post-Payment Calculated Preview */}
-          <div className="bg-neutral-50/60 p-3 rounded-xl border border-neutral-200 flex items-center justify-between text-xs">
+          <div className="bg-stone-50/60 p-3 rounded-xl border border-stone-200 flex items-center justify-between text-xs">
             <div>
-              <span className="text-neutral-500 block font-medium">{selectedSemester} Balance After Payment:</span>
-              <span className={`font-bold text-sm ${calculatedSemRemainingAfterPayment === 0 ? 'text-neutral-700' : 'text-neutral-700'}`}>
+              <span className="text-stone-500 block font-medium">{selectedSemester} Balance After Payment:</span>
+              <span className={`font-bold text-sm ${calculatedSemRemainingAfterPayment === 0 ? 'text-stone-700' : 'text-stone-700'}`}>
                 {formatCurrencyINR(calculatedSemRemainingAfterPayment)}
               </span>
             </div>
             <div className="text-right">
-              <span className="text-neutral-500 block font-medium">Overall 2-Yr Balance:</span>
-              <span className={`font-bold text-sm ${calculatedTotalRemainingAfterPayment === 0 ? 'text-neutral-700' : 'text-neutral-800'}`}>
+              <span className="text-stone-500 block font-medium">Overall 2-Yr Balance:</span>
+              <span className={`font-bold text-sm ${calculatedTotalRemainingAfterPayment === 0 ? 'text-stone-700' : 'text-stone-800'}`}>
                 {formatCurrencyINR(calculatedTotalRemainingAfterPayment)}
               </span>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-stone-200">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold shadow-lg shadow-neutral-900/10 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold shadow-lg shadow-rose-800/10 flex items-center gap-2 cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4" />
               {isSubmitting ? 'Processing...' : 'Confirm & Print Receipt'}
@@ -466,17 +466,17 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         {/* Dynamic UPI QR Modal overlay */}
         {showQrModal && (
           <div className="fixed inset-0 z-60 bg-black/80 flex items-center justify-center p-4">
-            <div className="bg-white border border-neutral-200 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 relative">
+            <div className="bg-white border border-stone-200 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 relative">
               <button
                 onClick={() => setShowQrModal(false)}
-                className="absolute right-4 top-4 p-1.5 rounded-full bg-neutral-100 text-neutral-500 hover:text-neutral-900"
+                className="absolute right-4 top-4 p-1.5 rounded-full bg-stone-100 text-stone-500 hover:text-stone-900"
               >
                 <X className="w-4 h-4" />
               </button>
-              <h3 className="text-lg font-bold text-neutral-900">Scan & Pay via UPI</h3>
-              <p className="text-xs text-neutral-500">GPay, PhonePe, Paytm, BHIM</p>
+              <h3 className="text-lg font-bold text-stone-900">Scan & Pay via UPI</h3>
+              <p className="text-xs text-stone-500">GPay, PhonePe, Paytm, BHIM</p>
 
-              <div className="bg-white p-4 rounded-2xl inline-block border-4 border-neutral-200 shadow-lg">
+              <div className="bg-white p-4 rounded-2xl inline-block border-4 border-stone-200 shadow-lg">
                 {/* SVG QR Code Simulation */}
                 <svg className="w-48 h-48 mx-auto" viewBox="0 0 100 100">
                   <rect width="100" height="100" fill="white" />
@@ -505,13 +505,13 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               </div>
 
               <div className="space-y-1 text-xs">
-                <p className="font-bold text-neutral-700 text-sm">{formatCurrencyINR(amount)}</p>
-                <p className="text-neutral-500 font-mono text-[11px]">{student.name} ({student.registrationNo})</p>
+                <p className="font-bold text-stone-700 text-sm">{formatCurrencyINR(amount)}</p>
+                <p className="text-stone-500 font-mono text-[11px]">{student.name} ({student.registrationNo})</p>
               </div>
 
               <button
                 onClick={() => setShowQrModal(false)}
-                className="w-full py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold"
+                className="w-full py-2 bg-rose-800 hover:bg-rose-700 text-stone-50 rounded-xl text-xs font-semibold"
               >
                 Close QR Code
               </button>

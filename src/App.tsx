@@ -72,6 +72,16 @@ export function App() {
   const [printableReceiptData, setPrintableReceiptData] = useState<{ student: Student; payment: PaymentRecord } | null>(null);
   const [showImportModal, setShowImportModal] = useState<boolean>(false);
 
+  // Sidebar collapse state
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try { return localStorage.getItem('sidebar-collapsed') === 'true'; } catch { return false; }
+  });
+  const toggleSidebar = () => {
+    const next = !sidebarCollapsed;
+    setSidebarCollapsed(next);
+    try { localStorage.setItem('sidebar-collapsed', String(next)); } catch {}
+  };
+
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [receiptSearch, setReceiptSearch] = useState('');
@@ -351,7 +361,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900 flex flex-col font-sans antialiased selection:bg-neutral-300 selection:text-neutral-900">
+    <div className="min-h-screen bg-stone-50 text-stone-900 flex flex-col font-sans antialiased selection:bg-rose-800/10 selection:text-stone-900">
       {/* Top Header Navbar */}
       <NavbarHeader
         selectedCourse={selectedCourse}
@@ -373,7 +383,7 @@ export function App() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-neutral-900 px-5 py-3 rounded-2xl shadow-2xl shadow-neutral-900/10 flex items-center gap-3 font-semibold text-xs"
+            className="fixed bottom-6 right-6 z-50 bg-rose-800 text-stone-50 px-5 py-3 rounded-2xl shadow-2xl shadow-rose-800/10 flex items-center gap-3 font-semibold text-xs"
           >
             <CheckCircle2 className="w-5 h-5" />
             <span>{toastMessage}</span>
@@ -386,6 +396,8 @@ export function App() {
         {/* Collapsible Sidebar */}
         <SidebarNav
           currentTab={currentTab}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={toggleSidebar}
           onTabChange={(tab) => {
             if (tab === 'audit') setShowAuditModal(true);
             else setCurrentTab(tab);
@@ -401,27 +413,27 @@ export function App() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white border border-neutral-200 rounded-3xl p-6 shadow-lg relative overflow-hidden backdrop-blur-sm"
+            className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white border border-stone-200 rounded-3xl p-6 shadow-lg relative overflow-hidden backdrop-blur-sm"
           >
             {/* Subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-neutral-200/[0.3] via-transparent to-neutral-200/[0.2] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-rose-800/[0.03] via-transparent to-amber-700/[0.03] pointer-events-none" />
 
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[11px] font-bold text-neutral-700 uppercase tracking-widest bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200">
+                <span className="text-[11px] font-bold text-stone-700 uppercase tracking-widest bg-stone-100 px-2.5 py-0.5 rounded-full border border-stone-200">
                   {isReadOnlyMode ? 'Read-Only Overview Portal' : 'Institutional Fee Portal'}
                 </span>
-                <span className="text-neutral-700">•</span>
-                <span className={`text-xs font-semibold ${isReadOnlyMode ? 'text-neutral-700' : 'text-neutral-700'}`}>
+                <span className="text-stone-500">•</span>
+                <span className={`text-xs font-semibold ${isReadOnlyMode ? 'text-stone-500' : 'text-stone-700'}`}>
                   {isReadOnlyMode ? 'Viewing Live Data (Editing Locked)' : `${selectedCourse} Program Selected`}
                 </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-neutral-900 tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-extrabold text-stone-900 tracking-tight">
                 {isReadOnlyMode
                   ? 'All Programs Overview Portal'
                   : `${selectedCourse} Program Fee Management`}
               </h1>
-              <p className="text-xs text-neutral-500 mt-1 max-w-xl">
+              <p className="text-xs text-stone-500 mt-1 max-w-xl">
                 {isReadOnlyMode
                   ? 'Viewing live statistical fee records & analytics for JBT & B.Ed programs in Read-Only mode. Access specific program portals to manage student records.'
                   : 'Track student fee collections, issue instant digital receipts, manage JBT & B.Ed program dues, and broadcast fee reminders.'}
@@ -434,45 +446,53 @@ export function App() {
                 <>
                   <button
                     onClick={() => setShowImportModal(true)}
-                    className="px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold shadow-lg shadow-neutral-900/10 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+                    className="px-4 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 text-xs font-bold shadow-lg shadow-rose-800/10 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
                   >
                     <Upload className="w-4 h-4" /> Import Data
                   </button>
 
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => setShowAddStudent(true)}
-                    className="px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold shadow-lg shadow-neutral-900/10 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+                    className="px-4 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 text-xs font-bold shadow-lg shadow-rose-800/10 flex items-center gap-1.5 cursor-pointer transition-all duration-200"
                   >
                     <UserPlus className="w-4 h-4" /> New Admission
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => {
                       const pending = dashboardStudents.find((s) => s.remainingFees > 0) || students[0];
                       setPaymentStudent(pending);
                     }}
-                    className="px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold shadow-lg shadow-neutral-900/10 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+                    className="px-4 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 text-xs font-bold shadow-lg shadow-rose-800/10 flex items-center gap-1.5 cursor-pointer transition-all duration-200"
                   >
                     <DollarSign className="w-4 h-4" /> Collect Fee
-                  </button>
+                  </motion.button>
                 </>
               )}
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => exportStudentsToCSV(dashboardStudents)}
-                className="px-3.5 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-semibold border border-neutral-200 transition-all duration-200 flex items-center gap-1.5 hover:border-neutral-300"
+                className="px-3.5 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold border border-stone-200 transition-all duration-200 flex items-center gap-1.5 hover:border-stone-300"
               >
-                <Download className="w-3.5 h-3.5 text-neutral-700" /> Export CSV
-              </button>
+                <Download className="w-3.5 h-3.5 text-stone-600" /> Export CSV
+              </motion.button>
 
               {!isReadOnlyMode && (
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.05, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
                   onClick={handleResetData}
                   title="Reset to default demo data"
-                  className="p-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 border border-neutral-200 transition-all duration-200 cursor-pointer"
+                  className="p-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-900 border border-stone-200 transition-all duration-200 cursor-pointer"
                 >
                   <RefreshCw className="w-4 h-4" />
-                </button>
+                </motion.button>
               )}
             </div>
           </motion.div>

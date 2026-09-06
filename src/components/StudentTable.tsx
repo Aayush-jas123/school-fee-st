@@ -195,14 +195,14 @@ export const StudentTable: React.FC<StudentTableProps> = ({
     switch (status) {
       case 'Paid':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-200">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Paid
           </span>
         );
       case 'Partly Paid':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-200">
             <AlertTriangle className="w-3.5 h-3.5" />
             Partly Paid
           </span>
@@ -210,7 +210,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
       case 'Unpaid':
       case 'Overdue':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-300">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-300">
             <XCircle className="w-3.5 h-3.5" />
             {status}
           </span>
@@ -252,15 +252,15 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   };
 
   return (
-    <div className="bg-white border border-neutral-200 rounded-2xl shadow-lg overflow-hidden backdrop-blur-sm">
+    <div className="bg-white border border-stone-200 rounded-2xl shadow-lg overflow-hidden backdrop-blur-sm">
       {/* Table Top Controls & Filters */}
-      <div className="p-4 md:p-6 border-b border-neutral-200 space-y-4">
+      <div className="p-4 md:p-6 border-b border-stone-200 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h3 className="text-lg font-bold text-neutral-900 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-stone-900 flex items-center gap-2">
               Student Fee Management Directory
             </h3>
-            <p className="text-xs text-neutral-500 mt-0.5">
+            <p className="text-xs text-stone-500 mt-0.5">
               Showing {sortedStudents.length} of {students.length} student records
             </p>
           </div>
@@ -269,18 +269,18 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
             {/* Direct Table Search Bar */}
             <div className="relative flex-1 md:w-64 min-w-[200px]">
-              <Search className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search Name, Reg No, Roll No, Sem..."
-                className="w-full pl-9 pr-8 py-2 bg-neutral-50/60 border border-neutral-200 rounded-xl text-xs text-neutral-900 placeholder-neutral-500 focus:outline-none focus:border-neutral-400 transition-all shadow-inner font-medium"
+                className="w-full pl-9 pr-8 py-2 bg-stone-50/60 border border-stone-200 rounded-xl text-xs text-stone-900 placeholder-stone-500 focus:outline-none focus:border-rose-800/50 transition-all shadow-inner font-medium"
               />
               {searchTerm && (
                 <button
                   onClick={() => onSearchChange('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-900 p-0.5 rounded-full"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-900 p-0.5 rounded-full"
                   title="Clear search"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -290,31 +290,31 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
             <button
               onClick={exportCSV}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-xs font-semibold text-neutral-800 transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 border border-stone-200 text-xs font-semibold text-stone-800 transition-all"
             >
-              <Download className="w-4 h-4 text-neutral-700" />
+              <Download className="w-4 h-4 text-stone-700" />
               Export CSV
             </button>
           </div>
         </div>
 
         {/* Filter Pills Bar */}
-        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-neutral-200/60">
-          <div className="flex items-center gap-1.5 text-xs text-neutral-500 font-semibold mr-1">
-            <Filter className="w-3.5 h-3.5 text-neutral-700" /> Filter By:
+        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-stone-200/60">
+          <div className="flex items-center gap-1.5 text-xs text-stone-500 font-semibold mr-1">
+            <Filter className="w-3.5 h-3.5 text-stone-700" /> Filter By:
           </div>
 
           {/* Course Filter */}
-          <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200 text-xs">
-            <span className="text-neutral-500 px-2 font-medium">Course:</span>
+          <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl border border-stone-200 text-xs">
+            <span className="text-stone-500 px-2 font-medium">Course:</span>
             {(['ALL', 'JBT', 'B.Ed'] as const).map((c) => (
               <button
                 key={c}
                 onClick={() => onCourseFilterChange(c)}
                 className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
                   selectedCourseFilter === c
-                    ? 'bg-neutral-900 text-white shadow-sm'
-                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-200/50'
+                    ? 'bg-rose-800 text-stone-50 shadow-sm'
+                    : 'text-stone-500 hover:text-stone-800 hover:bg-stone-200/50'
                 }`}
               >
                 {c === 'ALL' ? 'All Courses' : c}
@@ -324,14 +324,14 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
           {/* Seat Type Filter */}
           {selectedCourseFilter !== 'ALL' && (
-            <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200 text-xs">
-              <span className="text-neutral-500 px-2 font-medium">Seat:</span>
+            <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl border border-stone-200 text-xs">
+              <span className="text-stone-500 px-2 font-medium">Seat:</span>
               <button
                 onClick={() => setSelectedSeatFilter('ALL')}
                 className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                   selectedSeatFilter === 'ALL'
-                    ? 'bg-neutral-900 text-white shadow-sm'
-                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-200/50'
+                    ? 'bg-rose-800 text-stone-50 shadow-sm'
+                    : 'text-stone-500 hover:text-stone-800 hover:bg-stone-200/50'
                 }`}
               >
                 All Seats
@@ -342,8 +342,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                   onClick={() => setSelectedSeatFilter(st)}
                   className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                     selectedSeatFilter === st
-                      ? 'bg-neutral-900 text-white shadow-sm'
-                      : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-200/50'
+                      ? 'bg-rose-800 text-stone-50 shadow-sm'
+                      : 'text-stone-500 hover:text-stone-800 hover:bg-stone-200/50'
                   }`}
                 >
                   {st}
@@ -353,8 +353,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           )}
 
           {/* Status Filter */}
-          <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200 text-xs">
-            <span className="text-neutral-500 px-2 font-medium">Status:</span>
+          <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl border border-stone-200 text-xs">
+            <span className="text-stone-500 px-2 font-medium">Status:</span>
             {(['ALL', 'Paid', 'Partly Paid', 'Unpaid'] as const).map((st) => (
               <button
                 key={st}
@@ -362,13 +362,13 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                   selectedStatusFilter === st
                     ? st === 'Paid'
-                      ? 'bg-neutral-900 text-white shadow-sm'
+                      ? 'bg-rose-800 text-stone-50 shadow-sm'
                       : st === 'Partly Paid'
-                      ? 'bg-neutral-800 text-white shadow-sm'
+                      ? 'bg-stone-800 text-white shadow-sm'
                       : st === 'Unpaid'
-                      ? 'bg-neutral-700 text-white shadow-sm'
-                      : 'bg-neutral-900 text-white shadow-sm'
-                    : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-200/50'
+                      ? 'bg-stone-700 text-white shadow-sm'
+                      : 'bg-rose-800 text-stone-50 shadow-sm'
+                    : 'text-stone-500 hover:text-stone-800 hover:bg-stone-200/50'
                 }`}
               >
                 {st === 'ALL' ? 'All Status' : st}
@@ -380,47 +380,47 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
       {/* Main Table View */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs text-neutral-700">
+        <table className="w-full text-left text-xs text-stone-700">
           {/* Table Header */}
-          <thead className="bg-neutral-50/80 text-neutral-500 font-bold uppercase tracking-wider border-b border-neutral-200">
+          <thead className="bg-stone-50/80 text-stone-500 font-bold uppercase tracking-wider border-b border-stone-200">
             <tr>
-              <th className="py-3.5 px-4 cursor-pointer hover:text-neutral-900" onClick={() => handleSort('registrationNo')}>
+              <th className="py-3.5 px-4 cursor-pointer hover:text-stone-900" onClick={() => handleSort('registrationNo')}>
                 <div className="flex items-center gap-1">
-                  Reg Number <ArrowUpDown className="w-3 h-3 text-neutral-600" />
+                  Reg Number <ArrowUpDown className="w-3 h-3 text-stone-600" />
                 </div>
               </th>
-              <th className="py-3.5 px-4 cursor-pointer hover:text-neutral-900" onClick={() => handleSort('name')}>
+              <th className="py-3.5 px-4 cursor-pointer hover:text-stone-900" onClick={() => handleSort('name')}>
                 <div className="flex items-center gap-1">
-                  Student Name <ArrowUpDown className="w-3 h-3 text-neutral-600" />
+                  Student Name <ArrowUpDown className="w-3 h-3 text-stone-600" />
                 </div>
               </th>
               <th className="py-3.5 px-4">Father / Guardian</th>
               <th className="py-3.5 px-4">Phone & WhatsApp</th>
               <th className="py-3.5 px-4">Course & Stream</th>
               <th className="py-3.5 px-4 text-center">Seat Type</th>
-              <th className="py-3.5 px-4 cursor-pointer hover:text-neutral-900" onClick={() => handleSort('rollNo')}>
+              <th className="py-3.5 px-4 cursor-pointer hover:text-stone-900" onClick={() => handleSort('rollNo')}>
                 <div className="flex items-center gap-1">
-                  Roll No (Editable) <ArrowUpDown className="w-3 h-3 text-neutral-600" />
+                  Roll No (Editable) <ArrowUpDown className="w-3 h-3 text-stone-600" />
                 </div>
               </th>
-              <th className="py-3.5 px-4 text-right cursor-pointer hover:text-neutral-900" onClick={() => handleSort('totalFees')}>
+              <th className="py-3.5 px-4 text-right cursor-pointer hover:text-stone-900" onClick={() => handleSort('totalFees')}>
                 <div className="flex items-center justify-end gap-1">
-                  Total Fees (Editable) <ArrowUpDown className="w-3 h-3 text-neutral-600" />
+                  Total Fees (Editable) <ArrowUpDown className="w-3 h-3 text-stone-600" />
                 </div>
               </th>
-              <th className="py-3.5 px-4 text-right cursor-pointer hover:text-neutral-900" onClick={() => handleSort('paidTillNow')}>
+              <th className="py-3.5 px-4 text-right cursor-pointer hover:text-stone-900" onClick={() => handleSort('paidTillNow')}>
                 <div className="flex items-center justify-end gap-1">
-                  Paid Till Now (Editable) <ArrowUpDown className="w-3 h-3 text-neutral-600" />
+                  Paid Till Now (Editable) <ArrowUpDown className="w-3 h-3 text-stone-600" />
                 </div>
               </th>
-              <th className="py-3.5 px-4 text-right cursor-pointer hover:text-neutral-900" onClick={() => handleSort('remainingFees')}>
+              <th className="py-3.5 px-4 text-right cursor-pointer hover:text-stone-900" onClick={() => handleSort('remainingFees')}>
                 <div className="flex items-center justify-end gap-1">
-                  Remaining <ArrowUpDown className="w-3 h-3 text-neutral-600" />
+                  Remaining <ArrowUpDown className="w-3 h-3 text-stone-600" />
                 </div>
               </th>
-              <th className="py-3.5 px-4 text-center cursor-pointer hover:text-neutral-900" onClick={() => handleSort('feeStatus')}>
+              <th className="py-3.5 px-4 text-center cursor-pointer hover:text-stone-900" onClick={() => handleSort('feeStatus')}>
                 <div className="flex items-center justify-center gap-1">
-                  Fee Status <ArrowUpDown className="w-3 h-3 text-neutral-600" />
+                  Fee Status <ArrowUpDown className="w-3 h-3 text-stone-600" />
                 </div>
               </th>
               <th className="py-3.5 px-4 text-center">Actions</th>
@@ -428,14 +428,14 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           </thead>
 
           {/* Table Body */}
-          <tbody className="divide-y divide-neutral-200 font-medium">
+          <tbody className="divide-y divide-stone-200 font-medium">
             {paginatedStudents.length === 0 ? (
               <tr>
-                <td colSpan={12} className="py-12 text-center text-neutral-600">
+                <td colSpan={12} className="py-12 text-center text-stone-600">
                   <div className="max-w-xs mx-auto space-y-2">
-                    <Search className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
-                    <p className="text-sm font-semibold text-neutral-500">No matching student records found</p>
-                    <p className="text-xs text-neutral-600">Try clearing search filters or selecting another course.</p>
+                    <Search className="w-8 h-8 text-stone-600 mx-auto mb-2" />
+                    <p className="text-sm font-semibold text-stone-500">No matching student records found</p>
+                    <p className="text-xs text-stone-600">Try clearing search filters or selecting another course.</p>
                   </div>
                 </td>
               </tr>
@@ -448,35 +448,35 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 )}`;
 
                 return (
-                  <tr key={student.id} className="hover:bg-neutral-50 transition-colors group">
+                  <tr key={student.id} className="hover:bg-stone-50 transition-colors group">
                     {/* Registration No */}
-                    <td className="py-3.5 px-4 font-mono font-bold text-neutral-700">
+                    <td className="py-3.5 px-4 font-mono font-bold text-stone-700">
                       {student.registrationNo}
                     </td>
 
                     {/* Student Name */}
-                    <td className="py-3.5 px-4 text-neutral-900 font-bold whitespace-nowrap">
+                    <td className="py-3.5 px-4 text-stone-900 font-bold whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-neutral-100 text-neutral-700 border border-neutral-200 flex items-center justify-center font-bold text-xs shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-stone-100 text-stone-700 border border-stone-200 flex items-center justify-center font-bold text-xs shrink-0">
                           {student.name.charAt(0)}
                         </div>
                         <div>
                           <span>{student.name}</span>
-                          <span className="block text-[10px] text-neutral-500 font-normal">{student.category} Category</span>
+                          <span className="block text-[10px] text-stone-500 font-normal">{student.category} Category</span>
                         </div>
                       </div>
                     </td>
 
                     {/* Father / Guardian */}
-                    <td className="py-3.5 px-4 text-neutral-700 whitespace-nowrap">
+                    <td className="py-3.5 px-4 text-stone-700 whitespace-nowrap">
                       {student.fatherName}
                     </td>
 
                     {/* Phone & WhatsApp Direct Chat */}
-                    <td className="py-3.5 px-4 text-neutral-700 whitespace-nowrap">
+                    <td className="py-3.5 px-4 text-stone-700 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-[11px] flex items-center gap-1 text-neutral-700">
-                          <Phone className="w-3 h-3 text-neutral-600" />
+                        <span className="font-mono text-[11px] flex items-center gap-1 text-stone-700">
+                          <Phone className="w-3 h-3 text-stone-600" />
                           {student.phone}
                         </span>
                         <a
@@ -484,7 +484,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           target="_blank"
                           rel="noopener noreferrer"
                           title={`Chat on WhatsApp with ${student.name}`}
-                          className="px-2 py-0.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 border border-neutral-200 flex items-center gap-1 text-[10px] font-bold transition-all"
+                          className="px-2 py-0.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 flex items-center gap-1 text-[10px] font-bold transition-all"
                         >
                           <MessageSquare className="w-3 h-3" />
                           <span>WhatsApp</span>
@@ -495,14 +495,14 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                     {/* Course, Stream & Semester */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="flex items-center gap-1.5">
-                        <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-stone-100 text-stone-700 border border-stone-200">
                           {student.course}
                         </span>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-stone-100 text-stone-700 border border-stone-200">
                           {student.currentSemester || (student.course === 'JBT' ? 'Session 1' : 'Sem 1')}
                         </span>
                         {student.stream && (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 text-neutral-700 border border-neutral-200">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-stone-100 text-stone-700 border border-stone-200">
                             {student.stream}
                           </span>
                         )}
@@ -514,18 +514,18 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                       {student.seatType ? (
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border ${
                           student.seatType === 'Management'
-                            ? 'bg-neutral-100 text-neutral-700 border-neutral-200'
+                            ? 'bg-stone-100 text-stone-700 border-stone-200'
                             : student.seatType === 'Normal'
-                            ? 'bg-neutral-50 text-neutral-700 border-neutral-200'
+                            ? 'bg-stone-50 text-stone-700 border-stone-200'
                             : student.seatType === 'Subsidised'
-                            ? 'bg-neutral-100 text-neutral-700 border-neutral-200'
-                            : 'bg-neutral-50 text-neutral-700 border-neutral-200'
+                            ? 'bg-stone-100 text-stone-700 border-stone-200'
+                            : 'bg-stone-50 text-stone-700 border-stone-200'
                         }`}>
                           {student.seatType === 'Management' && '★ '}
                           {student.seatType}
                         </span>
                       ) : (
-                        <span className="text-[10px] text-neutral-500 font-medium">—</span>
+                        <span className="text-[10px] text-stone-500 font-medium">—</span>
                       )}
                     </td>
 
@@ -538,13 +538,13 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                             value={tempRollVal}
                             onChange={(e) => setTempRollVal(e.target.value)}
                             placeholder="Enter Roll No"
-                            className="w-24 bg-neutral-50/60 border border-neutral-200 rounded px-2 py-0.5 text-xs text-neutral-900 font-mono"
+                            className="w-24 bg-stone-50/60 border border-stone-200 rounded px-2 py-0.5 text-xs text-stone-900 font-mono"
                             autoFocus
                           />
                           <button
                             onClick={() => handleSaveRollNumber(student)}
                             title="Save Roll No"
-                            className="p-1 rounded bg-neutral-900 text-white hover:bg-neutral-800"
+                            className="p-1 rounded bg-rose-800 text-stone-50 hover:bg-rose-700"
                           >
                             <Check className="w-3 h-3" />
                           </button>
@@ -560,12 +560,12 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           title={isReadOnly ? 'Roll Number' : 'Click to Edit Roll Number'}
                           className={`inline-flex items-center gap-1.5 font-mono text-[11px] px-2 py-1 rounded-lg border transition-all ${
                             student.rollNo
-                              ? 'bg-neutral-100 border-neutral-200 text-neutral-900 hover:border-neutral-200 cursor-pointer'
-                              : 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:bg-neutral-100 cursor-pointer'
+                              ? 'bg-stone-100 border-stone-200 text-stone-900 hover:border-stone-200 cursor-pointer'
+                              : 'bg-stone-100 border-stone-200 text-stone-700 hover:bg-stone-100 cursor-pointer'
                           }`}
                         >
                           <span>{student.rollNo || '+ Set Roll No'}</span>
-                          {!isReadOnly && <Edit2 className="w-3 h-3 text-neutral-500 group-hover:text-neutral-700" />}
+                          {!isReadOnly && <Edit2 className="w-3 h-3 text-stone-500 group-hover:text-stone-700" />}
                         </div>
                       )}
                     </td>
@@ -579,13 +579,13 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                             value={tempFeeVal}
                             onChange={(e) => setTempFeeVal(Number(e.target.value))}
                             placeholder="Enter Fee"
-                            className="w-24 bg-neutral-50/60 border border-neutral-200 rounded px-2 py-0.5 text-xs text-neutral-900 font-mono text-right font-bold"
+                            className="w-24 bg-stone-50/60 border border-stone-200 rounded px-2 py-0.5 text-xs text-stone-900 font-mono text-right font-bold"
                             autoFocus
                           />
                           <button
                             onClick={() => handleSaveTotalFee(student)}
                             title="Save Total Fee"
-                            className="p-1 rounded bg-neutral-900 text-white hover:bg-neutral-800"
+                            className="p-1 rounded bg-rose-800 text-stone-50 hover:bg-rose-700"
                           >
                             <Check className="w-3 h-3" />
                           </button>
@@ -601,12 +601,12 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           title={isReadOnly ? 'Total Fee' : 'Click to Set Total Fee'}
                           className={`inline-flex items-center gap-1.5 font-mono text-xs px-2 py-1 rounded-lg border transition-all ${
                             student.totalFees > 0
-                              ? 'bg-neutral-100 border-neutral-200 text-neutral-900 hover:border-neutral-200 cursor-pointer font-bold'
-                              : 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:bg-neutral-100 cursor-pointer font-bold'
+                              ? 'bg-stone-100 border-stone-200 text-stone-900 hover:border-stone-200 cursor-pointer font-bold'
+                              : 'bg-stone-100 border-stone-200 text-stone-700 hover:bg-stone-100 cursor-pointer font-bold'
                           }`}
                         >
                           <span>{student.totalFees > 0 ? formatINR(student.totalFees) : 'NIL / TBD (+Set Fee)'}</span>
-                          {!isReadOnly && <Edit2 className="w-3 h-3 text-neutral-500 group-hover:text-neutral-700" />}
+                          {!isReadOnly && <Edit2 className="w-3 h-3 text-stone-500 group-hover:text-stone-700" />}
                         </div>
                       )}
                     </td>
@@ -620,13 +620,13 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                             value={tempPaidVal}
                             onChange={(e) => setTempPaidVal(Number(e.target.value))}
                             placeholder="Enter Paid"
-                            className="w-24 bg-neutral-50/60 border border-neutral-200 rounded px-2 py-0.5 text-xs text-neutral-700 font-mono text-right font-bold"
+                            className="w-24 bg-stone-50/60 border border-stone-200 rounded px-2 py-0.5 text-xs text-stone-700 font-mono text-right font-bold"
                             autoFocus
                           />
                           <button
                             onClick={() => handleSavePaidAmount(student)}
                             title="Save Paid Amount"
-                            className="p-1 rounded bg-neutral-900 text-white hover:bg-neutral-800"
+                            className="p-1 rounded bg-rose-800 text-stone-50 hover:bg-rose-700"
                           >
                             <Check className="w-3 h-3" />
                           </button>
@@ -642,19 +642,19 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           title={isReadOnly ? 'Paid Till Now' : 'Click to Edit / Update Amount Paid'}
                           className={`inline-flex items-center gap-1.5 font-mono text-xs px-2 py-1 rounded-lg border transition-all ${
                             student.paidTillNow > 0
-                              ? 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:border-neutral-300 cursor-pointer font-bold'
-                              : 'bg-white border-neutral-200 text-neutral-500 hover:border-neutral-200 cursor-pointer'
+                              ? 'bg-stone-100 border-stone-200 text-stone-700 hover:border-stone-300 cursor-pointer font-bold'
+                              : 'bg-white border-stone-200 text-stone-500 hover:border-stone-200 cursor-pointer'
                           }`}
                         >
                           <span>{formatINR(student.paidTillNow)}</span>
-                          {!isReadOnly && <Edit2 className="w-3 h-3 text-neutral-600 group-hover:text-neutral-700" />}
+                          {!isReadOnly && <Edit2 className="w-3 h-3 text-stone-600 group-hover:text-stone-700" />}
                         </div>
                       )}
                     </td>
 
                     {/* Remaining Fees */}
                     <td className="py-3.5 px-4 text-right font-bold whitespace-nowrap">
-                      <span className={student.remainingFees > 0 ? 'text-neutral-700' : 'text-neutral-500'}>
+                      <span className={student.remainingFees > 0 ? 'text-stone-700' : 'text-stone-500'}>
                         {formatINR(student.remainingFees)}
                       </span>
                     </td>
@@ -671,7 +671,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onRecordPayment(student)}
                             title="Collect Fee Payment"
-                            className="px-2.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
+                            className="px-2.5 py-1.5 rounded-lg bg-rose-800 hover:bg-rose-700 text-stone-50 font-semibold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
                           >
                             Pay
                           </button>
@@ -680,7 +680,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onSendReminder(student)}
                             title="Send Fee Reminder / Notice"
-                            className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 hover:text-stone-900 border border-stone-200 transition-all cursor-pointer"
                           >
                             Notice
                           </button>
@@ -689,7 +689,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onGenerateReceipt(student)}
                             title="Generate Fee Receipt"
-                            className="px-2.5 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
+                            className="px-2.5 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 hover:text-stone-900 border border-stone-200 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
                           >
                             <Receipt className="w-3.5 h-3.5" />
                             <span>Receipt</span>
@@ -698,7 +698,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                         <button
                           onClick={() => onViewStudent(student)}
                           title="View Full Profile & Fee Details"
-                          className="px-2.5 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
+                          className="px-2.5 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 hover:text-stone-900 border border-stone-200 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>View</span>
@@ -707,7 +707,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onEditStudent(student)}
                             title="Edit Full Profile Record"
-                            className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 border border-neutral-200 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 transition-all cursor-pointer"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
@@ -723,30 +723,30 @@ export const StudentTable: React.FC<StudentTableProps> = ({
       </div>
 
       {/* Pagination Controls */}
-      <div className="p-4 border-t border-neutral-200 bg-neutral-50/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-500">
+      <div className="p-4 border-t border-stone-200 bg-stone-50/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
         <div>
-          Showing <strong className="text-neutral-900">{(currentPage - 1) * itemsPerPage + 1}</strong> to{' '}
-          <strong className="text-neutral-900">{Math.min(currentPage * itemsPerPage, sortedStudents.length)}</strong> of{' '}
-          <strong className="text-neutral-900">{sortedStudents.length}</strong> records
+          Showing <strong className="text-stone-900">{(currentPage - 1) * itemsPerPage + 1}</strong> to{' '}
+          <strong className="text-stone-900">{Math.min(currentPage * itemsPerPage, sortedStudents.length)}</strong> of{' '}
+          <strong className="text-stone-900">{sortedStudents.length}</strong> records
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
             disabled={currentPage === 1}
-            className="p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            className="p-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
 
-          <span className="px-3 py-1 rounded-lg bg-neutral-100 border border-neutral-200 text-neutral-900 font-semibold">
+          <span className="px-3 py-1 rounded-lg bg-stone-100 border border-stone-200 text-stone-900 font-semibold">
             Page {currentPage} of {totalPages}
           </span>
 
           <button
             onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            className="p-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             <ChevronRight className="w-4 h-4" />
           </button>

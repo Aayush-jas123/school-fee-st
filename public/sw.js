@@ -1,26 +1,7 @@
-const CACHE_NAME = 'school-fee-system-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/src/main.tsx',
-  '/src/App.tsx',
-  '/src/index.css',
-  '/favicon.svg',
-  '/icons.svg'
-];
+const CACHE_NAME = 'school-fee-system-v2';
 
-// Install event - cache essential assets
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('[SW] Opened cache');
-        return cache.addAll(urlsToCache);
-      })
-      .catch((err) => {
-        console.log('[SW] Cache failed:', err);
-      })
-  );
+// Install event - skip waiting to activate new SW immediately
+self.addEventListener('install', (_event) => {
   self.skipWaiting();
 });
 
@@ -41,41 +22,36 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - network-first for HTML, cache-first for static assets
 self.addEventListener('fetch', (event) => {
+  // Always fetch HTML/navigation requests from network to get latest JS hashes
+  if (event.request.destination === 'document') {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Cache hit - return response
         if (response) {
           return response;
         }
-
-        // Not in cache - fetch from network
         return fetch(event.request).then((response) => {
-          // Check if valid response
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
-
-          // Clone the response
           const responseToCache = response.clone();
-
-          // Cache the fetched resource
           caches.open(CACHE_NAME)
             .then((cache) => {
               cache.put(event.request, responseToCache);
             });
-
           return response;
         });
       })
       .catch((err) => {
         console.log('[SW] Fetch failed:', err);
-        // Return offline fallback if needed
-        if (event.request.destination === 'document') {
-          return caches.match('/index.html');
-        }
       })
   );
 });

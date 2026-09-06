@@ -66,10 +66,13 @@ export function getStoredStudents(): Student[] {
   try {
     const raw = localStorage.getItem(STUDENTS_STORAGE_KEY);
     if (!raw) {
+      console.log('[Storage] No data in localStorage, initializing with INITIAL_STUDENTS');
       localStorage.setItem(STUDENTS_STORAGE_KEY, JSON.stringify(INITIAL_STUDENTS));
       return INITIAL_STUDENTS;
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    console.log(`[Storage] Loaded ${parsed.length} students from localStorage`);
+    return parsed;
   } catch (err) {
     console.error('Error loading students from localStorage:', err);
     return INITIAL_STUDENTS;
@@ -79,6 +82,7 @@ export function getStoredStudents(): Student[] {
 export function saveStoredStudents(students: Student[]): void {
   try {
     localStorage.setItem(STUDENTS_STORAGE_KEY, JSON.stringify(students));
+    console.log(`[Storage] Saved ${students.length} students to localStorage`);
   } catch (err) {
     console.error('Error saving students to localStorage:', err);
   }

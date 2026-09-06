@@ -84,11 +84,13 @@ export function App() {
   useEffect(() => {
     async function loadCloudData() {
       try {
+        console.log('[App] Loading data from database...');
         const [fetchedStudents, fetchedLogs, fetchedRules] = await Promise.all([
           fetchStudentsFromDB(),
           fetchAuditLogsFromDB(),
           fetchFeeRulesFromDB(),
         ]);
+        console.log(`[App] Loaded ${fetchedStudents.length} students from database`);
         setStudents(fetchedStudents);
         setAuditLogs(fetchedLogs);
         setFeeRules(fetchedRules);
@@ -281,17 +283,20 @@ export function App() {
 
   // Handle bulk import from PDF/Excel
   const handleImportStudents = async (importedStudents: Student[]) => {
+    console.log(`[Import] Starting import of ${importedStudents.length} students`);
     const existingRegNos = new Set(students.map(s => s.registrationNo));
     const newStudents = importedStudents.filter(s => !existingRegNos.has(s.registrationNo));
     const duplicates = importedStudents.filter(s => existingRegNos.has(s.registrationNo));
 
     // Add all imported students (including duplicates with new IDs)
     const updatedStudents = [...importedStudents, ...students];
+    console.log(`[Import] Total students after import: ${updatedStudents.length}`);
     setStudents(updatedStudents);
     saveStoredStudents(updatedStudents);
 
     // Bulk sync ALL students to Supabase to ensure persistence
     await syncAllStudentsToDB(updatedStudents);
+    console.log(`[Import] Sync complete`);
 
     await addAuditLogToDB({
       action: 'Bulk Student Import',

@@ -11,6 +11,7 @@ import {
   ChevronRight,
   ShieldAlert,
   FileSpreadsheet,
+  Database,
 } from 'lucide-react';
 
 interface SidebarNavProps {
@@ -34,6 +35,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     { id: 'receipts', label: 'Receipt Generator', icon: Receipt },
     { id: 'structures', label: 'Fee Structures', icon: BookOpen },
     { id: 'audit', label: 'Audit & Transaction Log', icon: ShieldAlert },
+    { id: 'backup', label: 'Backup & Restore', icon: Database },
   ];
 
   return (

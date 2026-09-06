@@ -21,6 +21,7 @@ import { PrintableReceipt } from './components/PrintableReceipt';
 import { StudentReceiptModal } from './components/StudentReceiptModal';
 import { ImportDataModal } from './components/ImportDataModal';
 import { ReceiptCenterPanel } from './components/ReceiptCenterPanel';
+import { BackupRestorePanel } from './components/BackupRestorePanel';
 import { UserPlus, DollarSign, Download, RefreshCw, CheckCircle2, Upload } from 'lucide-react';
 
 import {
@@ -533,6 +534,22 @@ export function App() {
           {/* TAB 6: FEE STRUCTURES */}
           {currentTab === 'structures' && (
             <FeeStructureManager rules={feeRules} sessions={availableSessions} onSaveRules={handleSaveFeeRules} onApplyToAllStudents={handleApplyFeeRulesToAllStudents} isReadOnly={isReadOnlyMode} />
+          )}
+
+          {/* TAB 7: BACKUP & RESTORE */}
+          {currentTab === 'backup' && (
+            <BackupRestorePanel
+              students={students}
+              feeRules={feeRules}
+              auditLogs={auditLogs}
+              onRestore={(restoredStudents, restoredRules) => {
+                setStudents(restoredStudents);
+                if (restoredRules.length > 0) setFeeRules(restoredRules);
+                refreshAuditLogs();
+                showToast(`Backup restored: ${restoredStudents.length} students loaded`);
+              }}
+              isReadOnly={isReadOnlyMode}
+            />
           )}
         </main>
       </div>

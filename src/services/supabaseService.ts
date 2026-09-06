@@ -35,7 +35,7 @@ const mapRowToStudent = (row: any): Student => {
     nextDueDate: row.next_due_date || '',
     address: row.address || '',
     category: row.category || 'General',
-    feeBreakdown: (row.fee_breakdown as FeeBreakdown) || {
+    feeBreakdown: (typeof row.fee_breakdown === 'string' ? JSON.parse(row.fee_breakdown) : row.fee_breakdown) as FeeBreakdown || {
       tuitionFee: 0,
       admissionFee: 0,
       examFee: 0,
@@ -54,7 +54,9 @@ const mapRowToStudent = (row: any): Student => {
         { semester: 'Sem 4', year: '2nd Year', totalFee: semFee, paidAmount: Math.max(0, paid - semFee * 3), remainingAmount: semFee > 0 ? Math.max(0, semFee - Math.max(0, paid - semFee * 3)) : 0, status: paid >= semFee * 4 && semFee > 0 ? 'Paid' : paid > semFee * 3 ? 'Partly Paid' : 'Unpaid', dueDate: '2028-03-15' },
       ];
     })(),
-    paymentHistory: (row.payment_history as PaymentRecord[]) || [],
+    paymentHistory: Array.isArray(row.payment_history)
+      ? row.payment_history
+      : (typeof row.payment_history === 'string' ? (() => { try { return JSON.parse(row.payment_history); } catch { return []; } })() : []) as PaymentRecord[],
     discountAmount: Number(row.discount_amount || 0),
     scholarshipApplied: row.scholarship_applied || undefined,
     lastReminderSent: row.last_reminder_sent || undefined,

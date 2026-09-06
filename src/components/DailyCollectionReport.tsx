@@ -33,9 +33,11 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
   const allTransactions = useMemo(() => {
     const records: { student: Student; payment: PaymentRecord }[] = [];
     students.forEach((st) => {
-      st.paymentHistory.forEach((pm) => {
-        records.push({ student: st, payment: pm });
-      });
+      if (Array.isArray(st.paymentHistory)) {
+        st.paymentHistory.forEach((pm) => {
+          records.push({ student: st, payment: pm });
+        });
+      }
     });
     // Sort descending by date
     return records.sort((a, b) => new Date(b.payment.date).getTime() - new Date(a.payment.date).getTime());

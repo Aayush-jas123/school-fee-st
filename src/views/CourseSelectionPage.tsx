@@ -39,7 +39,7 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
           >
             <Building2 className="w-4 h-4 text-neutral-700" />
             <span className="font-bold text-neutral-900">Shanti College of Education</span>
-            <span className="text-zinc-700">•</span>
+            <span className="text-neutral-600">•</span>
             <span className="text-neutral-700 flex items-center gap-1">
               <UserCheck className="w-3.5 h-3.5" /> {staffName}
             </span>
@@ -74,13 +74,13 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + idx * 0.15, duration: 0.5 }}
                 onClick={() => onSelectCourse(course.code)}
-                className="group relative bg-neutral-50 backdrop-blur-sm border border-neutral-200 hover:border-violet-500/40 rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:shadow-violet-500/5 transition-all duration-500 cursor-pointer flex flex-col justify-between space-y-8 card-premium"
+                className="group relative bg-neutral-50 backdrop-blur-sm border border-neutral-200 hover:border-neutral-200 rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:shadow-violet-500/5 transition-all duration-500 cursor-pointer flex flex-col justify-between space-y-8 card-premium"
               >
                 {/* Hover gradient overlay */}
                 <div className={`absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${
                   isJBT
-                    ? 'bg-gradient-to-br from-emerald-500/[0.03] to-transparent'
-                    : 'bg-gradient-to-br from-violet-500/[0.03] to-transparent'
+                    ? 'bg-neutral-50'
+                    : 'bg-neutral-50'
                 }`} />
 
                 {/* Header Icon & Program Badge */}
@@ -143,7 +143,7 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
         >
           <button
             onClick={() => onSelectCourse('ALL')}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-violet-950/30 hover:bg-violet-900/30 border border-neutral-200 text-neutral-700 hover:text-neutral-900 text-xs font-semibold transition-all cursor-pointer shadow-md hover:shadow-violet-500/10 hover:border-violet-500/30"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-violet-950/30 hover:bg-violet-900/30 border border-neutral-200 text-neutral-700 hover:text-neutral-900 text-xs font-semibold transition-all cursor-pointer shadow-md hover:shadow-violet-500/10 hover:border-neutral-200"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>View All Programs Overview (Read-Only)</span>

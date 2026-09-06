@@ -89,7 +89,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded border border-emerald-500/30">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
                   College Accountant Portal
                 </span>
                 <span className="text-neutral-600">•</span>
@@ -146,7 +146,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-neutral-50/60 border border-violet-500/30/60 rounded-xl px-3 py-1.5 text-neutral-900 font-mono font-bold focus:outline-none"
+                className="bg-neutral-50/60 border border-neutral-200/60 rounded-xl px-3 py-1.5 text-neutral-900 font-mono font-bold focus:outline-none"
               />
             )}
 
@@ -197,7 +197,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
         <div className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-lg relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-neutral-500 font-semibold uppercase tracking-wider">Cash Collections</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-neutral-700 flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
@@ -208,18 +208,18 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
         <div className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-lg relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-neutral-500 font-semibold uppercase tracking-wider">UPI / Online QR</span>
-            <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
               <QrCode className="w-4 h-4" />
             </div>
           </div>
-          <span className="text-2xl font-extrabold text-blue-400">{formatCurrencyINR(upiCollected)}</span>
+          <span className="text-2xl font-extrabold text-neutral-700">{formatCurrencyINR(upiCollected)}</span>
           <p className="text-[11px] text-neutral-500 mt-1">GPay, PhonePe, Paytm QR</p>
         </div>
 
         <div className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-lg relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-neutral-500 font-semibold uppercase tracking-wider">Bank / Cheque / DD</span>
-            <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-neutral-700 flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
               <Building className="w-4 h-4" />
             </div>
           </div>
@@ -252,12 +252,12 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
                 <th className="py-3 px-4 text-center">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/40/80 font-medium">
+            <tbody className="divide-y divide-neutral-200 font-medium">
               {filteredTransactions.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-neutral-600">
                     <div className="max-w-xs mx-auto space-y-1">
-                      <Calendar className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
+                      <Calendar className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
                       <p className="font-bold text-neutral-700">No payment transactions logged for {selectedDate}</p>
                       <p className="text-[11px] text-neutral-600">Select another date or switch to "All Records" view.</p>
                     </div>
@@ -275,7 +275,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
                       <span className="text-[10px] text-neutral-500 font-mono">{student.registrationNo}</span>
                     </td>
                     <td className="py-3 px-4 whitespace-nowrap">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 mr-1">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200 mr-1">
                         {student.course}
                       </span>
                       <span className="text-neutral-500 text-[11px]">{student.stream || 'Arts'}</span>
@@ -288,10 +288,10 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
                     <td className="py-3 px-4 text-center whitespace-nowrap">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                         payment.mode === 'Cash'
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                          ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                           : payment.mode === 'UPI'
-                          ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                          : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                          ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
+                          : 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                       }`}>
                         {payment.mode}
                       </span>
@@ -315,7 +315,7 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
               )}
             </tbody>
             {filteredTransactions.length > 0 && (
-              <tfoot className="bg-neutral-50/60 text-neutral-900 font-extrabold border-t border-zinc-700/50">
+              <tfoot className="bg-neutral-50/60 text-neutral-900 font-extrabold border-t border-neutral-200">
                 <tr>
                   <td colSpan={6} className="py-3 px-4 text-right text-xs uppercase tracking-wider text-neutral-700">
                     Total Daily Collection ({selectedDate}):

@@ -65,7 +65,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
               <h1 className="text-2xl font-black text-indigo-950 uppercase tracking-wide">
                 SHANTI COLLEGE OF EDUCATION
               </h1>
-              <p className="text-xs font-semibold text-zinc-700 uppercase tracking-wider">
+              <p className="text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Recognized by Govt & Affiliated for JBT & B.Ed Programs
               </p>
               <p className="text-[11px] text-neutral-600">Institutional Campus, Education Hub, Haryana • Contact: +91 172 2589012</p>
@@ -102,22 +102,22 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
             <table className="w-full text-xs border-collapse border border-slate-300">
               <tbody>
                 <tr>
-                  <td className="border border-slate-300 p-2 font-medium text-zinc-700 w-1/3">Payment For</td>
+                  <td className="border border-slate-300 p-2 font-medium text-neutral-600 w-1/3">Payment For</td>
                   <td className="border border-slate-300 p-2 font-bold">{targetSem} — {targetSlot?.year || (targetSem === 'Sem 1' || targetSem === 'Sem 2' ? '1st Year' : '2nd Year')}</td>
                 </tr>
                 <tr>
-                  <td className="border border-slate-300 p-2 font-medium text-zinc-700">Description</td>
+                  <td className="border border-slate-300 p-2 font-medium text-neutral-600">Description</td>
                   <td className="border border-slate-300 p-2">
                     <span className="font-bold">{payment.remark || 'Semester Fee Payment'}</span>
                     {payment.installmentNo ? ` (EMI Installment #${payment.installmentNo})` : ''}
                   </td>
                 </tr>
                 <tr>
-                  <td className="border border-slate-300 p-2 font-medium text-zinc-700">Payment Mode</td>
+                  <td className="border border-slate-300 p-2 font-medium text-neutral-600">Payment Mode</td>
                   <td className="border border-slate-300 p-2 font-bold">{payment.mode}</td>
                 </tr>
                 <tr>
-                  <td className="border border-slate-300 p-2 font-medium text-zinc-700">Transaction Reference</td>
+                  <td className="border border-slate-300 p-2 font-medium text-neutral-600">Transaction Reference</td>
                   <td className="border border-slate-300 p-2 font-mono font-bold">{payment.transactionRef}</td>
                 </tr>
                 <tr className="bg-emerald-50">
@@ -225,19 +225,19 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
             <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider">Outstanding Fee Summary</h3>
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
-                <p className="text-zinc-700">Total 2-Year Program Fee:</p>
+                <p className="text-neutral-600">Total 2-Year Program Fee:</p>
                 <p className="text-base font-extrabold text-slate-900">{formatCurrencyINR(student.totalFees)}</p>
               </div>
               <div>
-                <p className="text-zinc-700">Total Paid Till Date:</p>
+                <p className="text-neutral-600">Total Paid Till Date:</p>
                 <p className="text-base font-extrabold text-emerald-800">{formatCurrencyINR(student.paidTillNow)}</p>
               </div>
               <div>
-                <p className="text-zinc-700">{targetSem} Pending Balance:</p>
+                <p className="text-neutral-600">{targetSem} Pending Balance:</p>
                 <p className="text-base font-extrabold text-amber-800">{semRemaining > 0 ? formatCurrencyINR(semRemaining) : 'CLEARED ✓'}</p>
               </div>
               <div>
-                <p className="text-zinc-700">Overall Pending Balance:</p>
+                <p className="text-neutral-600">Overall Pending Balance:</p>
                 <p className="text-base font-extrabold text-rose-800">{student.remainingFees > 0 ? formatCurrencyINR(student.remainingFees) : 'ALL CLEARED ✓'}</p>
               </div>
             </div>

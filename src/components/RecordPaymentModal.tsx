@@ -238,17 +238,17 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   onClick={() => handleSemesterChange(sem)}
                   className={`p-2.5 rounded-xl border text-left transition-all relative ${
                     isSelected
-                      ? 'bg-violet-600/20 border-violet-500/30 text-neutral-900 ring-2 ring-violet-500/40'
-                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50'
+                      ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 ring-2 ring-neutral-200'
+                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-xs">{sem}</span>
                     <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${
                       isPaid
-                        ? 'bg-emerald-500/20 text-neutral-700 border border-emerald-500/30'
+                        ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                         : isPartly
-                        ? 'bg-amber-500/20 text-neutral-700 border border-amber-500/30'
+                        ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                         : 'bg-rose-500/20 text-neutral-700 border border-rose-500/30'
                     }`}>
                       {slot?.status || 'Unpaid'}
@@ -321,8 +321,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   onClick={() => handleModeChange(mode)}
                   className={`py-2 px-2 rounded-xl font-semibold border transition-all text-center ${
                     paymentMode === mode
-                      ? 'bg-violet-600 border-violet-500/30 text-neutral-900 shadow-lg shadow-violet-600/20'
-                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50 hover:text-neutral-900'
+                      ? 'bg-violet-600 border-neutral-200 text-neutral-900 shadow-lg shadow-violet-600/20'
+                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200 hover:text-neutral-900'
                   }`}
                 >
                   {mode}
@@ -396,7 +396,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* UPI Live QR Button if UPI Mode selected */}
           {paymentMode === 'UPI' && (
-            <div className="bg-violet-950/30 border border-violet-800/40 rounded-xl p-3 flex items-center justify-between">
+            <div className="bg-violet-950/30 border border-neutral-200 rounded-xl p-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <QrCode className="w-5 h-5 text-neutral-700" />
                 <span className="text-neutral-700 font-medium">Generate Dynamic Payment QR ({selectedSemester})</span>
@@ -412,7 +412,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           )}
 
           {/* Next EMI Number Preview */}
-          <div className="bg-violet-950/20 p-2.5 rounded-xl border border-violet-800/30 flex items-center justify-between text-xs">
+          <div className="bg-neutral-50 p-2.5 rounded-xl border border-violet-800/30 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-neutral-700" />
               <span className="text-neutral-700">This will be recorded as <strong className="text-neutral-700">EMI #{emiCount + 1}</strong> for {selectedSemester}</span>
@@ -450,7 +450,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-neutral-900 font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold shadow-lg shadow-neutral-900/10 flex items-center gap-2 cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4" />
               {isSubmitting ? 'Processing...' : 'Confirm & Print Receipt'}
@@ -471,7 +471,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               <h3 className="text-lg font-bold text-neutral-900">Scan & Pay via UPI</h3>
               <p className="text-xs text-neutral-500">GPay, PhonePe, Paytm, BHIM</p>
 
-              <div className="bg-white p-4 rounded-2xl inline-block border-4 border-violet-500/30 shadow-lg">
+              <div className="bg-white p-4 rounded-2xl inline-block border-4 border-neutral-200 shadow-lg">
                 {/* SVG QR Code Simulation */}
                 <svg className="w-48 h-48 mx-auto" viewBox="0 0 100 100">
                   <rect width="100" height="100" fill="white" />

@@ -90,11 +90,11 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
   ];
 
   const accentStyles: Record<string, { iconBg: string; border: string; tagBg: string; tagText: string; tagBorder: string }> = {
-    violet: { iconBg: 'bg-violet-600', border: 'hover:border-violet-500/30', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
-    blue: { iconBg: 'bg-blue-600', border: 'hover:border-blue-500/30', tagBg: 'bg-blue-500/10', tagText: 'text-blue-400', tagBorder: 'border-blue-500/20' },
-    emerald: { iconBg: 'bg-emerald-600', border: 'hover:border-emerald-500/30', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
+    violet: { iconBg: 'bg-violet-600', border: 'hover:border-neutral-200', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
+    blue: { iconBg: 'bg-blue-600', border: 'hover:border-neutral-200', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
+    emerald: { iconBg: 'bg-emerald-600', border: 'hover:border-neutral-200', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
     rose: { iconBg: 'bg-rose-600', border: 'hover:border-rose-500/30', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
-    amber: { iconBg: 'bg-amber-500', border: 'hover:border-amber-500/30', tagBg: 'bg-amber-500/10', tagText: 'text-neutral-700', tagBorder: 'border-amber-500/20' },
+    amber: { iconBg: 'bg-amber-500', border: 'hover:border-neutral-200', tagBg: 'bg-neutral-100', tagText: 'text-neutral-700', tagBorder: 'border-neutral-200' },
   };
 
   return (
@@ -121,12 +121,12 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
             <span className="text-neutral-500 block text-[11px]">Collection Target</span>
             <span className="text-neutral-700 font-extrabold text-sm">{collectionPercentage}% Achieved</span>
           </div>
-          <div className="w-32 bg-neutral-100 h-2.5 rounded-full overflow-hidden border border-zinc-700/40">
+          <div className="w-32 bg-neutral-100 h-2.5 rounded-full overflow-hidden border border-neutral-200">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${collectionPercentage}%` }}
               transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
-              className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full"
+              className="bg-neutral-900 h-full rounded-full"
             />
           </div>
         </div>
@@ -146,7 +146,7 @@ export const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({ st
               className={`bg-white border border-neutral-200 rounded-2xl p-4 md:p-5 shadow-lg transition-all duration-300 relative overflow-hidden group card-premium ${style.border}`}
             >
               {/* Subtle gradient on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="absolute inset-0 bg-neutral-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
               <div className="flex items-center justify-between mb-3 relative">
                 <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">

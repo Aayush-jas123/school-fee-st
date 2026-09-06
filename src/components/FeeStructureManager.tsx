@@ -65,7 +65,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
         </div>
 
         {isReadOnly ? (
-          <span className="px-4 py-2 rounded-xl bg-amber-500/10 text-amber-300 border border-amber-500/30 font-bold text-xs">
+          <span className="px-4 py-2 rounded-xl bg-neutral-100 text-neutral-700 border border-neutral-200 font-bold text-xs">
             Read-Only Portal (Editing Locked)
           </span>
         ) : (
@@ -87,14 +87,14 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
       </div>
 
       {appliedSuccess && (
-        <div className="bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
+        <div className="bg-neutral-50 border border-neutral-200 text-neutral-700 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
           <CheckCircle2 className="w-4 h-4 text-neutral-700" />
           <span>Fee structure applied to all students successfully! All balances have been recalculated.</span>
         </div>
       )}
 
       {savedSuccess && (
-        <div className="bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
+        <div className="bg-neutral-50 border border-neutral-200 text-neutral-700 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
           <CheckCircle2 className="w-4 h-4 text-neutral-700" />
           <span>Fee structure rules updated successfully across the institution!</span>
         </div>
@@ -106,8 +106,8 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           onClick={() => setActiveCourse('JBT')}
           className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
             activeCourse === 'JBT'
-              ? 'bg-violet-600/20 border-violet-500/30 text-neutral-900 shadow-lg ring-1 ring-violet-500/40'
-              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50'
+              ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 shadow-lg ring-1 ring-neutral-200'
+              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
           }`}
         >
           <GraduationCap className="w-6 h-6 text-neutral-700" />
@@ -121,8 +121,8 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           onClick={() => setActiveCourse('B.Ed')}
           className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
             activeCourse === 'B.Ed'
-              ? 'bg-violet-600/20 border-violet-500/30 text-neutral-900 shadow-lg ring-1 ring-violet-500/40'
-              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50'
+              ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 shadow-lg ring-1 ring-neutral-200'
+              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
           }`}
         >
           <BookOpen className="w-6 h-6 text-neutral-700" />

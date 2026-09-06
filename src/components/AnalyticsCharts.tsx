@@ -39,7 +39,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white border border-zinc-700/50 p-3 rounded-xl shadow-lg text-xs text-neutral-800">
+        <div className="bg-white border border-neutral-200 p-3 rounded-xl shadow-lg text-xs text-neutral-800">
           <p className="font-bold text-neutral-900 mb-1">{label || payload[0].name}</p>
           {payload.map((entry: any, index: number) => (
             <p key={`item-${index}`} className="flex items-center gap-2" style={{ color: entry.color }}>
@@ -67,7 +67,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
               <PieIcon className="w-4 h-4 text-neutral-700" />
               Student Payment Status Ratio
             </h3>
-            <span className="px-2.5 py-1 rounded-md bg-neutral-100 border border-zinc-700/50 text-[10px] font-semibold text-neutral-700">
+            <span className="px-2.5 py-1 rounded-md bg-neutral-100 border border-neutral-200 text-[10px] font-semibold text-neutral-700">
               Live Distribution
             </span>
           </div>
@@ -114,7 +114,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
             <span className="block font-bold text-sm">{paidCount}</span>
             <span className="text-[10px]">Paid</span>
           </div>
-          <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-neutral-700">
+          <div className="p-2 rounded-xl bg-neutral-100 border border-neutral-200 text-neutral-700">
             <span className="block font-bold text-sm">{partlyPaidCount}</span>
             <span className="text-[10px]">Partly Paid</span>
           </div>
@@ -133,7 +133,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ students }) =>
               <BarChart3 className="w-4 h-4 text-neutral-700" />
               Monthly Fee Collection Trend (₹)
             </h3>
-            <span className="px-2.5 py-1 rounded-md bg-neutral-100 border border-emerald-500/30 text-[10px] font-semibold text-neutral-700">
+            <span className="px-2.5 py-1 rounded-md bg-neutral-100 border border-neutral-200 text-[10px] font-semibold text-neutral-700">
               FY 2024-2025
             </span>
           </div>

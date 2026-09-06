@@ -134,6 +134,38 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
   const sessionMatch = firstPageText.match(/(\d{4})\s*[-–]\s*(\d{4})/);
   const detectedSession = sessionMatch ? `${sessionMatch[1]}-${sessionMatch[2]}` : '';
 
+  // Header items to filter out
+  const HEADER_PATTERNS = [
+    /^Page\s*\d+\s*of\s*\d+$/i, /\d{2}\/\d{2}\/\d{4}$/,
+    /HIMACHAL\s*PRADESH/i, /SHIMLA/i, /B\.Ed\s*Admission/i,
+    /Online\s*Counselling/i, /Shanti\s*College/i, /Kailash\s*Nagar/i,
+    /Tehsil\s*Amb/i, /^College\s*Name$/i, /^Total$/i,
+    /^Name$/i, /^Father'?s?$/i, /^Marks?$/i, /^Stream$/i,
+    /^Student\s*Category$/i, /^Allotted\s*seat$/i, /^category$/i,
+    /^Counselling$/i, /^Round$/i, /^Seat\s*Type$/i, /^Fee$/i,
+    /^Admission$/i, /^\d{4}-\d{4}$/,
+  ];
+
+  const isHeaderItem = (s: string) => HEADER_PATTERNS.some(p => p.test(s));
+
+  // Join text parts intelligently (handles PDF word splitting)
+  const joinTextParts = (parts: string[]): string => {
+    if (parts.length === 0) return '';
+    let result = parts[0];
+    for (let i = 1; i < parts.length; i++) {
+      const part = parts[i];
+      const prev = result;
+      if (prev.endsWith('-')) result = prev + part; // "Non-" + "Medical" → "Non-Medical"
+      else if (part.length === 1) result = prev + part; // "SHUBHA" + "M" → "SHUBHAM"
+      else if (/^[a-z]/.test(part)) result = prev + part; // continuation
+      else result = prev + ' ' + part; // separate words
+    }
+    return result;
+  };
+
+  // Clean stream: remove leading numbers (Total Marks leaking)
+  const cleanStream = (s: string): string => s.replace(/^\d+\s+/, '');
+
   const allStudents: Student[] = [];
   let globalIdx = 0;
 
@@ -141,226 +173,89 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
     const page = await pdf.getPage(pageNum);
     const textContent = await page.getTextContent();
 
-    // Extract ALL items with positions
-    const allItems: TextItem[] = textContent.items
+    // Extract items with positions, filter out headers
+    const items: TextItem[] = textContent.items
       .filter((it: any) => it.str && it.str.trim().length > 0)
       .map((it: any) => ({
         str: it.str.trim(),
         x: Math.round(it.transform[4]),
         y: Math.round(it.transform[5]),
         w: it.width || 0,
-      }));
+      }))
+      .filter(it => !isHeaderItem(it.str));
 
-    // Filter out noise items
-    const items = allItems.filter((it) => {
-      const s = it.str;
-      if (/^Page\s*\d+\s*of\s*\d+$/i.test(s)) return false;
-      if (/\d{2}\/\d{2}\/\d{4}$/.test(s)) return false;
-      if (/HIMACHAL\s*PRADESH/i.test(s)) return false;
-      if (/SHIMLA/i.test(s)) return false;
-      if (/B\.Ed\s*Admission/i.test(s)) return false;
-      if (/Online\s*Counselling/i.test(s)) return false;
-      if (/Shanti\s*College/i.test(s)) return false;
-      if (/Kailash\s*Nagar/i.test(s)) return false;
-      if (/Tehsil\s*Amb/i.test(s)) return false;
-      if (/^College\s*Name$/i.test(s)) return false;
-      if (/^Total$/i.test(s)) return false;
-      return true;
-    });
+    // Find registration number items
+    const regNoItems = items.filter(it =>
+      /^[A-Z]\d{2}[A-Z]\d{5,8}$/i.test(it.str.replace(/\s+/g, ''))
+    );
+    if (regNoItems.length === 0) continue;
 
-    // ── Strategy: Find registration number items, then use x-position to extract name/father ──
-    
-    // Sort all items by y (top to bottom), then x (left to right)
-    items.sort((a, b) => b.y - a.y || a.x - b.x);
+    // Sort by y descending (top to bottom)
+    regNoItems.sort((a, b) => b.y - a.y);
 
-    // Group items into visual rows using a generous y-tolerance
-    const rows: TextItem[][] = [];
-    let currentRow: TextItem[] = [];
-    let lastY = -9999;
-
-    for (const item of items) {
-      if (Math.abs(item.y - lastY) > 6) {
-        if (currentRow.length > 0) rows.push([...currentRow]);
-        currentRow = [item];
-        lastY = item.y;
-      } else {
-        currentRow.push(item);
-      }
-    }
-    if (currentRow.length > 0) rows.push(currentRow);
-
-    // For each row, sort items by x position
-    for (const row of rows) {
-      row.sort((a, b) => a.x - b.x);
+    // Compute midpoints between consecutive reg nos for record boundaries
+    const boundaries: number[] = [];
+    for (let i = 0; i < regNoItems.length - 1; i++) {
+      boundaries.push((regNoItems[i].y + regNoItems[i + 1].y) / 2);
     }
 
-    // Find the header row to detect column x-ranges
-    // The header might span multiple visual rows, so check consecutive pairs
-    let nameColRange = { min: 0, max: 0 };
-    let fatherColRange = { min: 0, max: 0 };
-    let headerDetected = false;
+    // Process each record
+    for (let i = 0; i < regNoItems.length; i++) {
+      const upperBound = i === 0 ? 9999 : boundaries[i - 1];
+      const lowerBound = i === regNoItems.length - 1 ? -9999 : boundaries[i];
 
-    for (let i = 0; i < rows.length; i++) {
-      const text = rows[i].map(it => it.str).join(' ');
-      // Check single row
-      if (/Name.*Father|Father.*Name/i.test(text) && /Reg|Roll/i.test(text)) {
-        // Found header in single row — detect name/father columns
-        const nameItem = rows[i].find(it => /^Name$/i.test(it.str));
-        const fatherItem = rows[i].find(it => /Father/i.test(it.str));
-        if (nameItem && fatherItem) {
-          // Name column: from name item x to father item x
-          nameColRange = { min: nameItem.x - 10, max: fatherItem.x - 5 };
-          // Father column: from father item x to next column
-          const nextItem = rows[i].find(it => it.x > fatherItem.x + 20 && !/Father/i.test(it.str));
-          fatherColRange = { min: fatherItem.x - 10, max: nextItem ? nextItem.x - 5 : fatherItem.x + 200 };
-          headerDetected = true;
-          break;
-        }
-      }
-      // Check two consecutive rows merged (header might be split)
-      if (i + 1 < rows.length) {
-        const mergedText = [...rows[i], ...rows[i + 1]].map(it => it.str).join(' ');
-        if (/Name.*Father|Father.*Name/i.test(mergedText) && /Reg|Roll/i.test(mergedText)) {
-          const allHeaderItems = [...rows[i], ...rows[i + 1]].sort((a, b) => a.x - b.x);
-          const nameItem = allHeaderItems.find(it => /^Name$/i.test(it.str));
-          const fatherItem = allHeaderItems.find(it => /Father/i.test(it.str));
-          if (nameItem && fatherItem) {
-            nameColRange = { min: nameItem.x - 10, max: fatherItem.x - 5 };
-            const nextItem = allHeaderItems.find(it => it.x > fatherItem.x + 20 && !/Father/i.test(it.str));
-            fatherColRange = { min: fatherItem.x - 10, max: nextItem ? nextItem.x - 5 : fatherItem.x + 200 };
-            headerDetected = true;
-            break;
+      // Collect items within y-range, filter out leftover header text
+      const recordItems = items.filter(it =>
+        it.y <= upperBound && it.y > lowerBound && it.x > 100
+      );
+
+      // Assign to columns by x-position
+      let sno = '', regNoStr = '';
+      const nameParts: string[] = [], fatherParts: string[] = [];
+      const streamParts: string[] = [], categoryParts: string[] = [];
+      let fee = '';
+
+      for (const it of recordItems) {
+        const s = it.str;
+        if (it.x < 170) {
+          if (/^\d+$/.test(s)) sno = s;
+        } else if (it.x < 260) {
+          if (/^[A-Z]\d{2}[A-Z]\d{5,8}$/i.test(s.replace(/\s+/g, ''))) {
+            regNoStr = s.replace(/\s+/g, '').toUpperCase();
           }
-        }
-      }
-    }
-
-    // Process data rows
-    // Merge continuation rows (rows without reg number) with previous data row
-    const mergedRows: TextItem[][] = [];
-    for (const row of rows) {
-      const text = row.map(it => it.str).join(' ');
-      // Skip header rows
-      if (/S\s*No.*Roll.*Reg|Name.*Father/i.test(text)) continue;
-      if (/^Total\s*[\d,.]+$/i.test(text)) continue;
-
-      const hasRegNo = row.some(it => /[A-Z]\d{2}[A-Z]\d{5,8}/i.test(it.str.replace(/\s+/g, '')));
-      if (hasRegNo) {
-        mergedRows.push([...row]);
-      } else if (mergedRows.length > 0) {
-        // Continuation row — merge into previous
-        mergedRows[mergedRows.length - 1].push(...row);
-      }
-    }
-
-    for (const row of mergedRows) {
-      // Sort by x
-      row.sort((a, b) => a.x - b.x);
-
-      // Find registration number item
-      const regItem = row.find(it => /[A-Z]\d{2}[A-Z]\d{5,8}/i.test(it.str.replace(/\s+/g, '')));
-      if (!regItem) continue;
-
-      const regNo = regItem.str.replace(/\s+/g, '').toUpperCase();
-      if (regNo.length < 5) continue;
-
-      // Find roll number: item just before reg number (numeric)
-      const regIdx = row.indexOf(regItem);
-      let rollNo = '';
-      if (regIdx > 0) {
-        const prevItem = row[regIdx - 1];
-        if (/^\d{4,7}$/.test(prevItem.str)) {
-          rollNo = prevItem.str;
+        } else if (it.x < 315) {
+          nameParts.push(s);
+        } else if (it.x < 390) {
+          fatherParts.push(s);
+        } else if (it.x >= 410 && it.x < 460) {
+          streamParts.push(s);
+        } else if (it.x >= 460 && it.x < 510) {
+          if (/^\d+\.?\d*$/.test(s)) fee = s;
+        } else if (it.x >= 510 && it.x < 580) {
+          categoryParts.push(s);
         }
       }
 
-      // Extract name and father's name using column ranges
-      let name = '';
-      let fatherName = '';
+      const name = joinTextParts(nameParts);
+      const fatherName = joinTextParts(fatherParts);
+      const stream = cleanStream(joinTextParts(streamParts));
+      const category = joinTextParts(categoryParts);
+      const totalFees = fee ? parseFloat(fee) : 7056;
 
-      if (headerDetected && nameColRange.max > 0) {
-        // Use detected column ranges
-        const nameItems = row.filter(it => it.x >= nameColRange.min && it.x < nameColRange.max && it !== regItem);
-        const fatherItems = row.filter(it => it.x >= fatherColRange.min && it.x < fatherColRange.max);
-        name = nameItems.map(it => it.str).join(' ').trim();
-        fatherName = fatherItems.map(it => it.str).join(' ').trim();
-      } else {
-        // Fallback: use x-position heuristic relative to reg number
-        // Name is typically 50-200px to the right of reg number
-        // Father's name is typically 200-400px to the right of reg number
-        const itemsAfterReg = row.filter(it => it.x > regItem.x + regItem.w && it !== regItem);
-        
-        // Find stream/fee items to determine boundary
-        const streamItem = itemsAfterReg.find(it => /Medical|Non|Arts|Commer/i.test(it.str));
-        const feeItem = itemsAfterReg.find(it => /\d{4,5}\.?\d*$/i.test(it.str));
-        const boundaryX = streamItem ? streamItem.x : feeItem ? feeItem.x - 50 : regItem.x + 350;
-
-        const nameFatherItems = itemsAfterReg.filter(it => it.x < boundaryX);
-        
-        // Split name/father: find the midpoint of ALL-CAPS word items
-        const capsItems = nameFatherItems.filter(it => /^[A-Z][A-Z\s]*$/.test(it.str) && it.str.length >= 2);
-        if (capsItems.length >= 2) {
-          const midX = (capsItems[0].x + capsItems[capsItems.length - 1].x) / 2;
-          const nameItems = capsItems.filter(it => it.x < midX);
-          const fatherItems = capsItems.filter(it => it.x >= midX);
-          name = nameItems.map(it => it.str).join(' ').trim();
-          fatherName = fatherItems.map(it => it.str).join(' ').trim();
-        } else if (capsItems.length === 1) {
-          name = capsItems[0].str;
-        }
-      }
-
-      if (!name || name.length < 2) continue;
-
-      // Extract stream
-      const allText = row.map(it => it.str).join(' ');
-      let stream = 'Arts';
-      if (/Non-Medical/i.test(allText)) stream = 'Non-Medical';
-      else if (/Medical/i.test(allText)) stream = 'Medical';
-      else if (/Commer/i.test(allText)) stream = 'Commerce';
-      else if (/Arts/i.test(allText)) stream = 'Arts';
-
-      // Extract fee
-      const feeMatch = allText.match(/(\d{4,5}\.\d{2})/);
-      const totalFees = feeMatch ? parseFloat(feeMatch[1]) : 7056;
-
-      // Determine category
-      let category = 'General';
-      if (/SCHEDULED\s*CASTE|\(SC\)/i.test(allText)) category = 'SC';
-      else if (/SCHEDULED\s*TRIBE|\(ST\)/i.test(allText)) category = 'ST';
-      else if (/OTHER\s*BACKWARD|\(OBC\)/i.test(allText)) category = 'OBC';
-      else if (/ECONOMICALLY\s*WEAKER|\(EWS\)/i.test(allText)) category = 'General';
-
-      // Determine seat type
-      let seatType = '';
-      if (/Management\s*Quota/i.test(allText)) seatType = 'Management Quota';
-      else if (/HP\s*Quota/i.test(allText)) seatType = 'HP Quota';
-      else if (/Other\s*State/i.test(allText)) seatType = 'Other State';
-
-      // Determine counselling round
-      let counsellingRound = '';
-      const roundPatterns = [
-        /First\s*Round/i, /Second\s*Round/i, /Third\s*Round/i, /Fourth\s*Round/i,
-        /Final\s*Mop/i, /On[\s-]*Spot/i, /Open\s*Offline/i, /Management\s*Seat\s*Quota/i,
-        /Mop[\s-]*Up/i,
-      ];
-      for (const pat of roundPatterns) {
-        const m = allText.match(pat);
-        if (m) { counsellingRound = m[0]; break; }
-      }
+      if (!name || name.length < 2 || !regNoStr) continue;
 
       globalIdx++;
       const student = rawRecordToStudent(
         {
-          registrationNo: regNo,
-          rollNo,
+          registrationNo: regNoStr,
+          rollNo: sno,
           name,
           fatherName,
           stream,
           totalFees,
           category,
-          seatType,
-          counsellingRound,
+          seatType: '',
+          counsellingRound: '',
         },
         'B.Ed',
         detectedSession,

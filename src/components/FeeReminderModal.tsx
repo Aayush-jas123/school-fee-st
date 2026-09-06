@@ -49,7 +49,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-200 pb-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-amber-500/20 text-neutral-700 flex items-center justify-center font-bold">
+            <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
               <BellRing className="w-6 h-6" />
             </div>
             <div>
@@ -66,10 +66,10 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
         </div>
 
         {/* Student Alert Box */}
-        <div className="bg-amber-950/30 border border-amber-800/60 rounded-2xl p-4 mb-6 space-y-2">
+        <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-4 mb-6 space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="font-bold text-neutral-900 text-sm">{student.name} ({student.course})</span>
-            <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold uppercase text-[10px]">
+            <span className="px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-700 font-bold uppercase text-[10px]">
               {student.feeStatus}
             </span>
           </div>
@@ -90,7 +90,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
             <div className="grid grid-cols-4 gap-2">
               {[
                 { name: 'WhatsApp', icon: MessageSquare, color: 'text-neutral-700' },
-                { name: 'Email', icon: Mail, color: 'text-blue-400' },
+                { name: 'Email', icon: Mail, color: 'text-neutral-700' },
                 { name: 'SMS', icon: Phone, color: 'text-neutral-700' },
                 { name: 'Printed Notice', icon: Printer, color: 'text-purple-400' },
               ].map((c) => {
@@ -105,8 +105,8 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                     }}
                     className={`p-3 rounded-2xl border flex flex-col items-center gap-1.5 transition-all text-center ${
                       channel === c.name
-                        ? 'bg-violet-600 border-violet-500/30 text-neutral-900 shadow-lg shadow-violet-600/20'
-                        : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50'
+                        ? 'bg-violet-600 border-neutral-200 text-neutral-900 shadow-lg shadow-violet-600/20'
+                        : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
                     }`}
                   >
                     <IconComponent className={`w-5 h-5 ${channel === c.name ? 'text-neutral-900' : c.color}`} />
@@ -163,7 +163,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
               type="button"
               onClick={handleSendReminder}
               disabled={broadcastSent}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-neutral-900 font-bold shadow-lg shadow-amber-600/30 flex items-center gap-2 cursor-pointer text-xs"
+              className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold shadow-lg shadow-neutral-900/10 flex items-center gap-2 cursor-pointer text-xs"
             >
               <Send className="w-4 h-4" />
               {broadcastSent ? 'Dispatching...' : `Broadcast ${channel}`}
@@ -177,7 +177,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
             <div className="bg-white text-slate-900 rounded-3xl max-w-2xl w-full p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto relative print:p-0 print:shadow-none">
               <button
                 onClick={() => setShowPrintDemandNotice(false)}
-                className="absolute right-6 top-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-zinc-700 print:hidden"
+                className="absolute right-6 top-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-neutral-600 print:hidden"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -187,7 +187,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
                 <h1 className="text-2xl font-black text-indigo-950 uppercase tracking-wide">
                   SHANTI COLLEGE OF EDUCATION
                 </h1>
-                <p className="text-xs font-semibold text-zinc-700 uppercase tracking-wider">
+                <p className="text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                   Approved by NCTE & Affiliated to State University
                 </p>
                 <p className="text-[11px] text-neutral-600">
@@ -251,7 +251,7 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
               </div>
 
               {/* Instructions & Signature */}
-              <div className="text-[11px] text-zinc-700 space-y-2">
+              <div className="text-[11px] text-neutral-600 space-y-2">
                 <p className="font-semibold text-slate-800">Important Instructions:</p>
                 <ul className="list-disc pl-4 space-y-1">
                   <li>Please remit the total payable amount within <strong>{graceDays} days</strong> of receipt of this notice.</li>

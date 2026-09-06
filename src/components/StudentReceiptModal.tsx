@@ -81,11 +81,11 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 md:p-6 overflow-y-auto">
-      <div className="bg-white border border-zinc-700/50 rounded-3xl w-full max-w-4xl shadow-2xl text-neutral-900 overflow-hidden my-auto">
+      <div className="bg-white border border-neutral-200 rounded-3xl w-full max-w-4xl shadow-2xl text-neutral-900 overflow-hidden my-auto">
         {/* Header */}
-        <div className="p-5 md:p-6 bg-gradient-to-r from-slate-950 to-indigo-950/40 border-b border-neutral-200 flex items-start justify-between">
+        <div className="p-5 md:p-6 bg-neutral-100 border-b border-neutral-200 flex items-start justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-neutral-700 flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center shrink-0">
               <Receipt className="w-6 h-6" />
             </div>
             <div>
@@ -150,7 +150,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
           <button
             onClick={() => setActiveSection('semester')}
             className={`py-3 border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeSection === 'semester' ? 'border-violet-500/30 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
+              activeSection === 'semester' ? 'border-neutral-200 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
             }`}
           >
             <Calendar className="w-3.5 h-3.5" />
@@ -174,7 +174,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
             <div className="space-y-4">
               {student.paymentHistory.length === 0 ? (
                 <div className="text-center py-10 text-neutral-600 space-y-3">
-                  <AlertCircle className="w-10 h-10 text-zinc-700 mx-auto" />
+                  <AlertCircle className="w-10 h-10 text-neutral-600 mx-auto" />
                   <p className="text-sm font-semibold text-neutral-500">No payment records found</p>
                   <p className="text-xs text-neutral-600">Receipts will be available once payments are recorded for this student.</p>
                 </div>
@@ -194,14 +194,14 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                           onClick={() => setSelectedPaymentId(rec.id)}
                           className={`p-4 rounded-xl border cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-emerald-950/30 border-emerald-500/60 ring-1 ring-emerald-500/30'
-                              : 'bg-neutral-50/50 border-neutral-200 hover:border-zinc-700/50'
+                              ? 'bg-neutral-50 border-emerald-500/60 ring-1 ring-emerald-500/30'
+                              : 'bg-neutral-50/50 border-neutral-200 hover:border-neutral-200'
                           }`}
                         >
                           <div className="flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3 min-w-0">
                               <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                                isSelected ? 'bg-emerald-500/20 text-neutral-700' : 'bg-neutral-100 text-neutral-500'
+                                isSelected ? 'bg-neutral-100 text-neutral-700' : 'bg-neutral-100 text-neutral-500'
                               }`}>
                                 {isSelected ? <CheckCircle2 className="w-4 h-4" /> : <Hash className="w-4 h-4" />}
                               </div>
@@ -214,7 +214,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                                     </span>
                                   )}
                                   {rec.installmentNo && (
-                                    <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 text-[10px]">
+                                    <span className="px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-700 font-bold border border-neutral-200 text-[10px]">
                                       EMI #{rec.installmentNo}
                                     </span>
                                   )}
@@ -303,9 +303,9 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                         <span
                           className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                             isPaid
-                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                              ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                               : isPartly
-                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                              ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                               : 'bg-rose-500/20 text-neutral-700 border border-rose-500/30'
                           }`}
                         >
@@ -396,15 +396,15 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                     <span className="text-neutral-500 block text-[10px] uppercase font-semibold">Total Program Fee</span>
                     <span className="text-base font-extrabold text-neutral-900 block mt-1">{formatINR(student.totalFees)}</span>
                   </div>
-                  <div className="bg-emerald-950/30 p-3 rounded-xl border border-emerald-800/30">
+                  <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200">
                     <span className="text-neutral-500 block text-[10px] uppercase font-semibold">Total Collected</span>
                     <span className="text-base font-extrabold text-neutral-700 block mt-1">{formatINR(student.paidTillNow)}</span>
                   </div>
-                  <div className="bg-amber-950/30 p-3 rounded-xl border border-amber-800/30">
+                  <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200">
                     <span className="text-neutral-500 block text-[10px] uppercase font-semibold">Outstanding</span>
                     <span className="text-base font-extrabold text-neutral-700 block mt-1">{formatINR(student.remainingFees)}</span>
                   </div>
-                  <div className="bg-violet-950/20 p-3 rounded-xl border border-indigo-800/30">
+                  <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200">
                     <span className="text-neutral-500 block text-[10px] uppercase font-semibold">Total Transactions</span>
                     <span className="text-base font-extrabold text-neutral-700 block mt-1">{student.paymentHistory.length}</span>
                   </div>
@@ -437,9 +437,9 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                             <span
                               className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                                 slot.status === 'Paid'
-                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                  ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                                   : slot.status === 'Partly Paid'
-                                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                  ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                                   : 'bg-rose-500/20 text-neutral-700 border border-rose-500/30'
                               }`}
                             >
@@ -449,7 +449,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                         </tr>
                       ))}
                     </tbody>
-                    <tfoot className="bg-white font-bold border-t border-zinc-700/50 text-neutral-900">
+                    <tfoot className="bg-white font-bold border-t border-neutral-200 text-neutral-900">
                       <tr>
                         <td colSpan={2} className="p-2.5 text-right">Program Total:</td>
                         <td className="p-2.5 text-right font-mono">{formatINR(student.totalFees)}</td>
@@ -478,7 +478,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                       <tr><td className="p-2.5">Campus Development Fund</td><td className="p-2.5 text-right font-bold text-neutral-900">{formatINR(student.feeBreakdown.developmentFee)}</td></tr>
                       <tr><td className="p-2.5">Practical Lab & Skill Training</td><td className="p-2.5 text-right font-bold text-neutral-900">{formatINR(student.feeBreakdown.labFee)}</td></tr>
                     </tbody>
-                    <tfoot className="bg-white font-bold border-t border-zinc-700/50 text-neutral-900">
+                    <tfoot className="bg-white font-bold border-t border-neutral-200 text-neutral-900">
                       <tr>
                         <td className="p-2.5">Total 2-Year Fee</td>
                         <td className="p-2.5 text-right text-sm text-neutral-700">{formatINR(student.totalFees)}</td>
@@ -491,7 +491,7 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
               {/* Generate Full Statement Button */}
               <button
                 onClick={handleGenerateStatement}
-                className="w-full px-5 py-3 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-neutral-900 font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-600/30 transition-all"
+                className="w-full px-5 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-neutral-900/10 transition-all"
               >
                 <Download className="w-4 h-4" />
                 Generate Complete Fee Statement Receipt

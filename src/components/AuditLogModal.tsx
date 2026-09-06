@@ -15,7 +15,7 @@ export const AuditLogModal: React.FC<AuditLogModalProps> = ({ logs, onClose }) =
       case 'STUDENT_ADD':
         return <UserPlus className="w-4 h-4 text-neutral-700" />;
       case 'STUDENT_EDIT':
-        return <User className="w-4 h-4 text-blue-400" />;
+        return <User className="w-4 h-4 text-neutral-700" />;
       case 'REMINDER':
         return <BellRing className="w-4 h-4 text-neutral-700" />;
       default:
@@ -53,7 +53,7 @@ export const AuditLogModal: React.FC<AuditLogModalProps> = ({ logs, onClose }) =
             logs.map((log) => (
               <div
                 key={log.id}
-                className="bg-neutral-50/60 p-4 rounded-2xl border border-neutral-200 flex items-start justify-between gap-4 hover:border-zinc-700/50 transition-colors"
+                className="bg-neutral-50/60 p-4 rounded-2xl border border-neutral-200 flex items-start justify-between gap-4 hover:border-neutral-200 transition-colors"
               >
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-xl bg-white border border-neutral-200 flex items-center justify-center mt-0.5">

@@ -60,7 +60,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
         {/* Modal Header */}
         <div className="p-5 md:p-6 bg-neutral-50/60 border-b border-neutral-200 flex items-start justify-between relative">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-emerald-500 text-neutral-900 flex items-center justify-center text-xl font-bold shadow-lg shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-neutral-900 text-white flex items-center justify-center text-xl font-bold shadow-lg shrink-0">
               {student.name.charAt(0)}
             </div>
             <div>
@@ -69,8 +69,8 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 <span
                   className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
                     student.course === 'JBT'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                      : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                      ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
+                      : 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                   }`}
                 >
                   {student.course} Program
@@ -79,7 +79,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                   {student.currentSemester || 'Sem 1'}
                 </span>
                 {student.stream && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
                     {student.stream}
                   </span>
                 )}
@@ -125,7 +125,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
           <button
             onClick={() => setActiveTab('overview')}
             className={`py-3 border-b-2 transition-all cursor-pointer ${
-              activeTab === 'overview' ? 'border-violet-500/30 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
+              activeTab === 'overview' ? 'border-neutral-200 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
             }`}
           >
             Personal Profile
@@ -133,7 +133,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
           <button
             onClick={() => setActiveTab('semesters')}
             className={`py-3 border-b-2 transition-all cursor-pointer ${
-              activeTab === 'semesters' ? 'border-violet-500/30 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
+              activeTab === 'semesters' ? 'border-neutral-200 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
             }`}
           >
             4-Semester Fee Ledger
@@ -141,7 +141,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
           <button
             onClick={() => setActiveTab('breakdown')}
             className={`py-3 border-b-2 transition-all cursor-pointer ${
-              activeTab === 'breakdown' ? 'border-violet-500/30 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
+              activeTab === 'breakdown' ? 'border-neutral-200 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
             }`}
           >
             Annual Headwise Breakdown
@@ -149,7 +149,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
           <button
             onClick={() => setActiveTab('history')}
             className={`py-3 border-b-2 transition-all cursor-pointer ${
-              activeTab === 'history' ? 'border-violet-500/30 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
+              activeTab === 'history' ? 'border-neutral-200 text-neutral-700 font-bold' : 'border-transparent hover:text-neutral-800'
             }`}
           >
             Payment Logs ({student.paymentHistory.length})
@@ -223,7 +223,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                     </div>
                     <div className="flex justify-between">
                       <span className="text-neutral-500">Stream:</span>
-                      <span className="font-bold text-amber-300">{student.stream || 'Arts'}</span>
+                      <span className="font-bold text-neutral-700">{student.stream || 'Arts'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-neutral-500">Current Semester:</span>
@@ -281,7 +281,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                       key={slot.semester}
                       className={`p-4 rounded-2xl border transition-all ${
                         isCurrent
-                          ? 'bg-violet-950/20 border-violet-500/30/60 ring-1 ring-violet-500/40/30'
+                          ? 'bg-neutral-50 border-neutral-200/60 ring-1 ring-neutral-200'
                           : 'bg-neutral-50/50 border-neutral-200'
                       }`}
                     >
@@ -298,9 +298,9 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                         <span
                           className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                             isPaid
-                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                              ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                               : isPartly
-                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                              ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
                               : 'bg-rose-500/20 text-neutral-700 border border-rose-500/30'
                           }`}
                         >
@@ -330,7 +330,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                         <div className="w-full bg-white rounded-full h-1.5 overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${
-                              isPaid ? 'bg-emerald-500' : isPartly ? 'bg-amber-500' : 'bg-zinc-700'
+                              isPaid ? "bg-neutral-900" : isPartly ? "bg-neutral-400" : "bg-neutral-300"
                             }`}
                             style={{ width: `${slot.totalFee > 0 ? Math.min(100, (slot.paidAmount / slot.totalFee) * 100) : 0}%` }}
                           />
@@ -424,7 +424,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                       <td className="p-3 text-right font-bold text-neutral-900">{formatINR(student.feeBreakdown.labFee)}</td>
                     </tr>
                   </tbody>
-                  <tfoot className="bg-white text-neutral-900 font-bold border-t border-zinc-700/50">
+                  <tfoot className="bg-white text-neutral-900 font-bold border-t border-neutral-200">
                     <tr>
                       <td className="p-3">Total Course 2-Year Fee</td>
                       <td className="p-3 text-right text-sm text-neutral-700">{formatINR(student.totalFees)}</td>
@@ -440,7 +440,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
             <div className="space-y-4">
               {student.paymentHistory.length === 0 ? (
                 <div className="text-center py-8 text-neutral-600 space-y-2">
-                  <Clock className="w-8 h-8 text-zinc-700 mx-auto" />
+                  <Clock className="w-8 h-8 text-neutral-600 mx-auto" />
                   <p className="text-xs font-semibold text-neutral-500">No payment receipts logged yet</p>
                   <p className="text-[11px] text-neutral-600">Payments will appear here as soon as transactions are processed.</p>
                 </div>
@@ -448,15 +448,15 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                 <div className="space-y-3">
                   {/* Summary Header */}
                   <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="bg-emerald-950/30 p-2 rounded-xl border border-emerald-800/30">
+                    <div className="bg-neutral-50 p-2 rounded-xl border border-neutral-200">
                       <span className="text-[10px] text-neutral-500 block">Total Payments</span>
                       <span className="text-sm font-bold text-neutral-700">{student.paymentHistory.length}</span>
                     </div>
-                    <div className="bg-violet-950/20 p-2 rounded-xl border border-indigo-800/30">
+                    <div className="bg-neutral-50 p-2 rounded-xl border border-neutral-200">
                       <span className="text-[10px] text-neutral-500 block">Total Collected</span>
                       <span className="text-sm font-bold text-neutral-700">{formatINR(student.paidTillNow)}</span>
                     </div>
-                    <div className="bg-amber-950/30 p-2 rounded-xl border border-amber-800/30">
+                    <div className="bg-neutral-50 p-2 rounded-xl border border-neutral-200">
                       <span className="text-[10px] text-neutral-500 block">Still Pending</span>
                       <span className="text-sm font-bold text-neutral-700">{formatINR(student.remainingFees)}</span>
                     </div>
@@ -479,7 +479,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
                               </span>
                             )}
                             {rec.installmentNo && (
-                              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 text-[10px]">
+                              <span className="px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 font-bold border border-neutral-200 text-[10px]">
                                 EMI #{rec.installmentNo}
                               </span>
                             )}
@@ -507,7 +507,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
         <div className="p-4 md:p-6 bg-neutral-50/60 border-t border-neutral-200 flex items-center justify-between gap-3 text-xs">
           <button
             onClick={handlePrintReceipt}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-800 font-semibold border border-zinc-700/50 transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-800 font-semibold border border-neutral-200 transition-colors"
           >
             <Printer className="w-4 h-4 text-neutral-700" />
             Print Fee Receipt

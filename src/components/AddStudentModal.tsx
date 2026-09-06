@@ -131,8 +131,8 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 onClick={() => setCourse('JBT')}
                 className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all ${
                   course === 'JBT'
-                    ? 'bg-violet-600/20 border-violet-500/30 text-neutral-900 shadow-lg shadow-violet-500/15 ring-1 ring-violet-500/40'
-                    : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50'
+                    ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 shadow-lg shadow-violet-500/15 ring-1 ring-neutral-200'
+                    : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
                 }`}
               >
                 <div className="w-9 h-9 rounded-xl bg-violet-500/20 text-neutral-700 flex items-center justify-center font-bold">
@@ -149,11 +149,11 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 onClick={() => setCourse('B.Ed')}
                 className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all ${
                   course === 'B.Ed'
-                    ? 'bg-violet-600/20 border-violet-500/30 text-neutral-900 shadow-lg shadow-violet-500/15 ring-1 ring-violet-500/40'
-                    : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50'
+                    ? 'bg-violet-600/20 border-neutral-200 text-neutral-900 shadow-lg shadow-violet-500/15 ring-1 ring-neutral-200'
+                    : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-200'
                 }`}
               >
-                <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+                <div className="w-9 h-9 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold">
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <div>
@@ -308,7 +308,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
           </div>
 
           {/* Initial Token Payment option */}
-          <div className="bg-violet-950/20 border border-violet-800/40 p-4 rounded-2xl space-y-2">
+          <div className="bg-neutral-50 border border-neutral-200 p-4 rounded-2xl space-y-2">
             <label className="block text-neutral-700 font-bold">Initial Token / Admission Payment (Optional ₹)</label>
             <p className="text-[11px] text-neutral-500">Enter amount if student is paying admission fee right now</p>
             <input
@@ -332,7 +332,7 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-neutral-900 font-bold shadow-lg shadow-violet-600/20 flex items-center gap-2 cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold shadow-lg shadow-neutral-900/10 flex items-center gap-2 cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4" /> Complete Admission
             </button>

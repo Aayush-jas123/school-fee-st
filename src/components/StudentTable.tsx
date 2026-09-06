@@ -201,14 +201,14 @@ export const StudentTable: React.FC<StudentTableProps> = ({
     switch (status) {
       case 'Paid':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-emerald-500/30">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Paid
           </span>
         );
       case 'Partly Paid':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-neutral-700 border border-amber-500/30">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
             <AlertTriangle className="w-3.5 h-3.5" />
             Partly Paid
           </span>
@@ -295,7 +295,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
             <button
               onClick={exportCSV}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 border border-zinc-700/50 text-xs font-semibold text-neutral-800 transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 border border-neutral-200 text-xs font-semibold text-neutral-800 transition-all"
             >
               <Download className="w-4 h-4 text-neutral-700" />
               Export CSV
@@ -310,7 +310,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           </div>
 
           {/* Course Filter */}
-          <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-zinc-700/50 text-xs">
+          <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-neutral-200 text-xs">
             <span className="text-neutral-500 px-2 font-medium">Course:</span>
             {(['ALL', 'JBT', 'B.Ed'] as const).map((c) => (
               <button
@@ -328,7 +328,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           </div>
 
           {/* Status Filter */}
-          <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-zinc-700/50 text-xs">
+          <div className="flex items-center gap-1 bg-zinc-800/80 p-1 rounded-xl border border-neutral-200 text-xs">
             <span className="text-neutral-500 px-2 font-medium">Status:</span>
             {(['ALL', 'Paid', 'Partly Paid', 'Unpaid'] as const).map((st) => (
               <button
@@ -407,7 +407,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
               <tr>
                 <td colSpan={11} className="py-12 text-center text-neutral-600">
                   <div className="max-w-xs mx-auto space-y-2">
-                    <Search className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
+                    <Search className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
                     <p className="text-sm font-semibold text-neutral-500">No matching student records found</p>
                     <p className="text-xs text-neutral-600">Try clearing search filters or selecting another course.</p>
                   </div>
@@ -422,7 +422,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                 )}`;
 
                 return (
-                  <tr key={student.id} className="hover:bg-zinc-800/30 transition-colors group">
+                  <tr key={student.id} className="hover:bg-neutral-50 transition-colors group">
                     {/* Registration No */}
                     <td className="py-3.5 px-4 font-mono font-bold text-neutral-700">
                       {student.registrationNo}
@@ -431,7 +431,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                     {/* Student Name */}
                     <td className="py-3.5 px-4 text-neutral-900 font-bold whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-neutral-100 text-neutral-700 border border-zinc-700/50 flex items-center justify-center font-bold text-xs shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-neutral-100 text-neutral-700 border border-neutral-200 flex items-center justify-center font-bold text-xs shrink-0">
                           {student.name.charAt(0)}
                         </div>
                         <div>
@@ -458,7 +458,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           target="_blank"
                           rel="noopener noreferrer"
                           title={`Chat on WhatsApp with ${student.name}`}
-                          className="px-2 py-0.5 rounded-lg bg-neutral-100 hover:bg-emerald-600 text-neutral-700 hover:text-neutral-900 border border-emerald-500/30 flex items-center gap-1 text-[10px] font-bold transition-all"
+                          className="px-2 py-0.5 rounded-lg bg-neutral-100 hover:bg-emerald-600 text-neutral-700 hover:text-neutral-900 border border-neutral-200 flex items-center gap-1 text-[10px] font-bold transition-all"
                         >
                           <MessageSquare className="w-3 h-3" />
                           <span>WhatsApp</span>
@@ -469,14 +469,14 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                     {/* Course, Stream & Semester */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="flex items-center gap-1.5">
-                        <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
                           {student.course}
                         </span>
                         <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-violet-500/20 text-neutral-700 border border-neutral-200">
                           {student.currentSemester || 'Sem 1'}
                         </span>
                         {student.stream && (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 text-neutral-700 border border-neutral-200">
                             {student.stream}
                           </span>
                         )}
@@ -492,7 +492,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                             value={tempRollVal}
                             onChange={(e) => setTempRollVal(e.target.value)}
                             placeholder="Enter Roll No"
-                            className="w-24 bg-neutral-50/60 border border-violet-500/30 rounded px-2 py-0.5 text-xs text-neutral-900 font-mono"
+                            className="w-24 bg-neutral-50/60 border border-neutral-200 rounded px-2 py-0.5 text-xs text-neutral-900 font-mono"
                             autoFocus
                           />
                           <button
@@ -514,8 +514,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           title={isReadOnly ? 'Roll Number' : 'Click to Edit Roll Number'}
                           className={`inline-flex items-center gap-1.5 font-mono text-[11px] px-2 py-1 rounded-lg border transition-all ${
                             student.rollNo
-                              ? 'bg-neutral-100 border-zinc-700/50 text-neutral-900 hover:border-violet-500/30 cursor-pointer'
-                              : 'bg-amber-500/10 border-amber-500/30 text-neutral-700 hover:bg-amber-500/20 cursor-pointer'
+                              ? 'bg-neutral-100 border-neutral-200 text-neutral-900 hover:border-neutral-200 cursor-pointer'
+                              : 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:bg-neutral-100 cursor-pointer'
                           }`}
                         >
                           <span>{student.rollNo || '+ Set Roll No'}</span>
@@ -533,7 +533,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                             value={tempFeeVal}
                             onChange={(e) => setTempFeeVal(Number(e.target.value))}
                             placeholder="Enter Fee"
-                            className="w-24 bg-neutral-50/60 border border-violet-500/30 rounded px-2 py-0.5 text-xs text-neutral-900 font-mono text-right font-bold"
+                            className="w-24 bg-neutral-50/60 border border-neutral-200 rounded px-2 py-0.5 text-xs text-neutral-900 font-mono text-right font-bold"
                             autoFocus
                           />
                           <button
@@ -555,8 +555,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           title={isReadOnly ? 'Total Fee' : 'Click to Set Total Fee'}
                           className={`inline-flex items-center gap-1.5 font-mono text-xs px-2 py-1 rounded-lg border transition-all ${
                             student.totalFees > 0
-                              ? 'bg-neutral-100 border-zinc-700/50 text-neutral-900 hover:border-violet-500/30 cursor-pointer font-bold'
-                              : 'bg-amber-500/10 border-amber-500/30 text-neutral-700 hover:bg-amber-500/20 cursor-pointer font-bold'
+                              ? 'bg-neutral-100 border-neutral-200 text-neutral-900 hover:border-neutral-200 cursor-pointer font-bold'
+                              : 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:bg-neutral-100 cursor-pointer font-bold'
                           }`}
                         >
                           <span>{student.totalFees > 0 ? formatINR(student.totalFees) : 'NIL / TBD (+Set Fee)'}</span>
@@ -596,12 +596,12 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           title={isReadOnly ? 'Paid Till Now' : 'Click to Edit / Update Amount Paid'}
                           className={`inline-flex items-center gap-1.5 font-mono text-xs px-2 py-1 rounded-lg border transition-all ${
                             student.paidTillNow > 0
-                              ? 'bg-neutral-100 border-zinc-700/50 text-neutral-700 hover:border-emerald-500 cursor-pointer font-bold'
-                              : 'bg-white border-neutral-200 text-neutral-500 hover:border-zinc-700/50 cursor-pointer'
+                              ? 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:border-emerald-500 cursor-pointer font-bold'
+                              : 'bg-white border-neutral-200 text-neutral-500 hover:border-neutral-200 cursor-pointer'
                           }`}
                         >
                           <span>{formatINR(student.paidTillNow)}</span>
-                          {!isReadOnly && <Edit2 className="w-3 h-3 text-neutral-600 group-hover:text-emerald-300" />}
+                          {!isReadOnly && <Edit2 className="w-3 h-3 text-neutral-600 group-hover:text-neutral-700" />}
                         </div>
                       )}
                     </td>
@@ -634,7 +634,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onSendReminder(student)}
                             title="Send Fee Reminder / Notice"
-                            className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-600 text-neutral-700 hover:text-neutral-900 border border-amber-500/30 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-neutral-100 hover:bg-amber-600 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer"
                           >
                             Notice
                           </button>
@@ -643,7 +643,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onGenerateReceipt(student)}
                             title="Generate Fee Receipt"
-                            className="px-2.5 py-1.5 rounded-lg bg-neutral-100 hover:bg-emerald-600 text-neutral-700 hover:text-neutral-900 border border-emerald-500/30 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
+                            className="px-2.5 py-1.5 rounded-lg bg-neutral-100 hover:bg-emerald-600 text-neutral-700 hover:text-neutral-900 border border-neutral-200 transition-all cursor-pointer flex items-center gap-1 font-semibold text-[11px]"
                           >
                             <Receipt className="w-3.5 h-3.5" />
                             <span>Receipt</span>
@@ -661,7 +661,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                           <button
                             onClick={() => onEditStudent(student)}
                             title="Edit Full Profile Record"
-                            className="p-1.5 rounded-lg bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 border border-zinc-700/50 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 border border-neutral-200 transition-all cursor-pointer"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
@@ -693,7 +693,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
             <ChevronLeft className="w-4 h-4" />
           </button>
 
-          <span className="px-3 py-1 rounded-lg bg-neutral-100 border border-zinc-700/50 text-neutral-900 font-semibold">
+          <span className="px-3 py-1 rounded-lg bg-neutral-100 border border-neutral-200 text-neutral-900 font-semibold">
             Page {currentPage} of {totalPages}
           </span>
 

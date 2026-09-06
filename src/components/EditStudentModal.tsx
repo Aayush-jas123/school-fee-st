@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import type { Student, CourseType, FeeStatusType, SemesterFeeSlot, SeatType } from '../types/feeSystem';
+import type { Student, CourseType, FeeStatusType, SemesterFeeSlot } from '../types/feeSystem';
 import { getSeatTypesForCourse } from '../types/feeSystem';
 import { X, Save, CheckCircle2, Armchair } from 'lucide-react';
 import { DEFAULT_FEE_RULES } from '../utils/storage';

@@ -146,31 +146,31 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
         className="bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800/60">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-violet-500/10 text-violet-400 flex items-center justify-center border border-violet-500/20">
+            <div className="w-10 h-10 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center border border-neutral-200">
               <Upload className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white">Import Student Data</h2>
-              <p className="text-xs text-zinc-500">Import admission records from PDF or Excel files</p>
+              <h2 className="text-lg font-bold text-neutral-900">Import Student Data</h2>
+              <p className="text-xs text-neutral-500">Import admission records from PDF or Excel files</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-800 text-zinc-500 hover:text-white transition-colors cursor-pointer">
+          <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-800 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Step Indicator */}
-        <div className="px-6 py-3 border-b border-zinc-800/40 flex items-center gap-2">
+        <div className="px-6 py-3 border-b border-neutral-200 flex items-center gap-2">
           {(['upload', 'configure', 'preview'] as const).map((s, i) => (
             <div key={s} className="flex items-center gap-2">
               <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
                 step === s || (i === 0 && step === 'importing') || (i === 1 && step === 'preview')
-                  ? 'bg-violet-600 text-white'
+                  ? 'bg-violet-600 text-neutral-900'
                   : ['upload', 'configure', 'preview'].indexOf(step) > i
-                    ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-600/30'
-                    : 'bg-zinc-800 text-zinc-600 border border-zinc-700/50'
+                    ? 'bg-emerald-600/20 text-neutral-700 border border-emerald-600/30'
+                    : 'bg-zinc-800 text-neutral-600 border border-zinc-700/50'
               }`}>
                 {['upload', 'configure', 'preview'].indexOf(step) > i || (i <= 1 && step === 'preview') ? (
                   <CheckCircle2 className="w-3.5 h-3.5" />
@@ -178,7 +178,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                   i + 1
                 )}
               </div>
-              <span className={`text-xs font-medium capitalize ${step === s ? 'text-white' : 'text-zinc-600'}`}>
+              <span className={`text-xs font-medium capitalize ${step === s ? 'text-neutral-900' : 'text-neutral-600'}`}>
                 {s === 'upload' ? 'Upload' : s === 'configure' ? 'Configure' : 'Preview & Import'}
               </span>
               {i < 2 && <ChevronRight className="w-3.5 h-3.5 text-zinc-700" />}
@@ -209,21 +209,21 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                   className="hidden"
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); }}
                 />
-                <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-violet-400' : 'text-zinc-600'}`} />
-                <h3 className="text-lg font-bold text-white mb-1">
+                <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-neutral-700' : 'text-neutral-600'}`} />
+                <h3 className="text-lg font-bold text-neutral-900 mb-1">
                   {isDragging ? 'Drop your file here' : 'Drag & drop or click to browse'}
                 </h3>
-                <p className="text-sm text-zinc-500 mb-4">
+                <p className="text-sm text-neutral-500 mb-4">
                   Supports PDF admission reports, Excel (.xlsx/.xls), and CSV files
                 </p>
                 <div className="flex items-center justify-center gap-4">
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-800/60 px-3 py-1.5 rounded-lg">
+                  <div className="flex items-center gap-1.5 text-xs text-neutral-500 bg-neutral-100 px-3 py-1.5 rounded-lg">
                     <FileText className="w-3.5 h-3.5 text-red-400" /> PDF
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-800/60 px-3 py-1.5 rounded-lg">
-                    <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" /> Excel
+                  <div className="flex items-center gap-1.5 text-xs text-neutral-500 bg-neutral-100 px-3 py-1.5 rounded-lg">
+                    <FileSpreadsheet className="w-3.5 h-3.5 text-neutral-700" /> Excel
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-800/60 px-3 py-1.5 rounded-lg">
+                  <div className="flex items-center gap-1.5 text-xs text-neutral-500 bg-neutral-100 px-3 py-1.5 rounded-lg">
                     <FileSpreadsheet className="w-3.5 h-3.5 text-blue-400" /> CSV
                   </div>
                 </div>
@@ -242,22 +242,22 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
           {step === 'configure' && (
             <div className="space-y-5">
               {/* File Info */}
-              <div className="flex items-center gap-3 bg-zinc-800/40 border border-zinc-700/40 rounded-2xl p-4">
+              <div className="flex items-center gap-3 bg-neutral-50 border border-zinc-700/40 rounded-2xl p-4">
                 {fileType === 'pdf' ? (
                   <FileText className="w-8 h-8 text-red-400" />
                 ) : (
-                  <FileSpreadsheet className="w-8 h-8 text-emerald-400" />
+                  <FileSpreadsheet className="w-8 h-8 text-neutral-700" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">{file?.name}</p>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-sm font-semibold text-neutral-900 truncate">{file?.name}</p>
+                  <p className="text-xs text-neutral-500">
                     {fileType === 'pdf' ? 'PDF Document' : 'Excel Spreadsheet'} •{' '}
                     {file ? `${(file.size / 1024).toFixed(1)} KB` : ''}
                   </p>
                 </div>
                 <button
                   onClick={() => { setStep('upload'); setFile(null); setFileType(null); setError(null); }}
-                  className="text-xs text-zinc-500 hover:text-white px-3 py-1.5 rounded-lg hover:bg-zinc-700 transition-colors cursor-pointer"
+                  className="text-xs text-neutral-500 hover:text-neutral-900 px-3 py-1.5 rounded-lg hover:bg-zinc-700 transition-colors cursor-pointer"
                 >
                   Change
                 </button>
@@ -265,7 +265,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
 
               {/* Course Selection */}
               <div>
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 block">Program / Course</label>
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2 block">Program / Course</label>
                 <div className="grid grid-cols-2 gap-3">
                   {COURSE_OPTIONS.map(opt => (
                     <button
@@ -273,11 +273,11 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                       onClick={() => setCourse(opt.value)}
                       className={`flex items-center gap-3 p-4 rounded-2xl border transition-all cursor-pointer ${
                         course === opt.value
-                          ? 'border-violet-500/50 bg-violet-500/10 text-white'
-                          : 'border-zinc-700/50 bg-zinc-800/30 text-zinc-400 hover:border-zinc-600'
+                          ? 'border-violet-500/50 bg-neutral-100 text-neutral-900'
+                          : 'border-zinc-700/50 bg-zinc-800/30 text-neutral-500 hover:border-zinc-600'
                       }`}
                     >
-                      <opt.icon className={`w-5 h-5 ${course === opt.value ? 'text-violet-400' : 'text-zinc-600'}`} />
+                      <opt.icon className={`w-5 h-5 ${course === opt.value ? 'text-neutral-700' : 'text-neutral-600'}`} />
                       <span className="font-semibold text-sm">{opt.label}</span>
                     </button>
                   ))}
@@ -286,7 +286,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
 
               {/* Session Selection */}
               <div>
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 block">Academic Session / Year</label>
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2 block">Academic Session / Year</label>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                   {SESSION_OPTIONS.map(s => (
                     <button
@@ -294,8 +294,8 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                       onClick={() => setSession(s)}
                       className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
                         session === s
-                          ? 'border-violet-500/50 bg-violet-500/10 text-violet-300'
-                          : 'border-zinc-700/50 bg-zinc-800/30 text-zinc-500 hover:border-zinc-600'
+                          ? 'border-violet-500/50 bg-neutral-100 text-neutral-700'
+                          : 'border-zinc-700/50 bg-zinc-800/30 text-neutral-500 hover:border-zinc-600'
                       }`}
                     >
                       <Calendar className="w-3 h-3" />
@@ -304,7 +304,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                   ))}
                 </div>
                 {fileType === 'pdf' && (
-                  <p className="text-[11px] text-zinc-600 mt-2 flex items-center gap-1">
+                  <p className="text-[11px] text-neutral-600 mt-2 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" /> Session will be auto-detected from PDF header
                   </p>
                 )}
@@ -312,15 +312,15 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
 
               {/* Import Mode */}
               <div>
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 block">Import Mode</label>
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2 block">Import Mode</label>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
-                    <p className="text-xs font-semibold text-emerald-400">Append (Recommended)</p>
-                    <p className="text-[11px] text-zinc-500 mt-0.5">Add to existing student records</p>
+                    <p className="text-xs font-semibold text-neutral-700">Append (Recommended)</p>
+                    <p className="text-[11px] text-neutral-500 mt-0.5">Add to existing student records</p>
                   </div>
                   <div className="p-3 rounded-xl border border-zinc-700/50 bg-zinc-800/30 opacity-50">
-                    <p className="text-xs font-semibold text-zinc-500">Replace All</p>
-                    <p className="text-[11px] text-zinc-600 mt-0.5">Coming soon</p>
+                    <p className="text-xs font-semibold text-neutral-500">Replace All</p>
+                    <p className="text-[11px] text-neutral-600 mt-0.5">Coming soon</p>
                   </div>
                 </div>
               </div>
@@ -339,35 +339,35 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
             <div className="space-y-4">
               {/* Summary Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="bg-zinc-800/40 border border-zinc-700/40 rounded-2xl p-3">
+                <div className="bg-neutral-50 border border-zinc-700/40 rounded-2xl p-3">
                   <div className="flex items-center gap-2 mb-1">
-                    <Users className="w-4 h-4 text-violet-400" />
-                    <span className="text-[11px] text-zinc-500 font-medium">Total Records</span>
+                    <Users className="w-4 h-4 text-neutral-700" />
+                    <span className="text-[11px] text-neutral-500 font-medium">Total Records</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">{summary.totalRecords}</p>
+                  <p className="text-2xl font-bold text-neutral-900">{summary.totalRecords}</p>
                 </div>
-                <div className="bg-zinc-800/40 border border-zinc-700/40 rounded-2xl p-3">
+                <div className="bg-neutral-50 border border-zinc-700/40 rounded-2xl p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <Calendar className="w-4 h-4 text-blue-400" />
-                    <span className="text-[11px] text-zinc-500 font-medium">Session</span>
+                    <span className="text-[11px] text-neutral-500 font-medium">Session</span>
                   </div>
-                  <p className="text-lg font-bold text-white">{summary.session}</p>
+                  <p className="text-lg font-bold text-neutral-900">{summary.session}</p>
                 </div>
-                <div className="bg-zinc-800/40 border border-zinc-700/40 rounded-2xl p-3">
+                <div className="bg-neutral-50 border border-zinc-700/40 rounded-2xl p-3">
                   <div className="flex items-center gap-2 mb-1">
-                    <BookOpen className="w-4 h-4 text-emerald-400" />
-                    <span className="text-[11px] text-zinc-500 font-medium">Streams</span>
+                    <BookOpen className="w-4 h-4 text-neutral-700" />
+                    <span className="text-[11px] text-neutral-500 font-medium">Streams</span>
                   </div>
-                  <p className="text-sm font-bold text-white">
+                  <p className="text-sm font-bold text-neutral-900">
                     {Object.entries(summary.byStream).map(([k, v]) => `${k}: ${v}`).join(', ')}
                   </p>
                 </div>
-                <div className="bg-zinc-800/40 border border-zinc-700/40 rounded-2xl p-3">
+                <div className="bg-neutral-50 border border-zinc-700/40 rounded-2xl p-3">
                   <div className="flex items-center gap-2 mb-1">
-                    <Tag className="w-4 h-4 text-amber-400" />
-                    <span className="text-[11px] text-zinc-500 font-medium">Categories</span>
+                    <Tag className="w-4 h-4 text-neutral-700" />
+                    <span className="text-[11px] text-neutral-500 font-medium">Categories</span>
                   </div>
-                  <p className="text-sm font-bold text-white">
+                  <p className="text-sm font-bold text-neutral-900">
                     {Object.entries(summary.byCategory).map(([k, v]) => `${k}: ${v}`).join(', ')}
                   </p>
                 </div>
@@ -377,9 +377,9 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
               <div className="bg-zinc-800/30 border border-zinc-700/40 rounded-2xl overflow-hidden">
                 <div className="px-4 py-3 border-b border-zinc-700/40 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-violet-400" />
-                    <span className="text-xs font-bold text-zinc-300">Data Preview</span>
-                    <span className="text-[11px] text-zinc-600">
+                    <Eye className="w-4 h-4 text-neutral-700" />
+                    <span className="text-xs font-bold text-neutral-700">Data Preview</span>
+                    <span className="text-[11px] text-neutral-600">
                       Showing {previewPage * PREVIEW_PER_PAGE + 1}–{Math.min((previewPage + 1) * PREVIEW_PER_PAGE, parsedStudents.length)} of {parsedStudents.length}
                     </span>
                   </div>
@@ -388,17 +388,17 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                       <button
                         onClick={() => setPreviewPage(p => Math.max(0, p - 1))}
                         disabled={previewPage === 0}
-                        className="p-1.5 rounded-lg hover:bg-zinc-700 text-zinc-500 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
+                        className="p-1.5 rounded-lg hover:bg-zinc-700 text-neutral-500 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
                       >
                         <ChevronLeft className="w-3.5 h-3.5" />
                       </button>
-                      <span className="text-[11px] text-zinc-500 px-2">
+                      <span className="text-[11px] text-neutral-500 px-2">
                         Page {previewPage + 1} / {previewTotalPages}
                       </span>
                       <button
                         onClick={() => setPreviewPage(p => Math.min(previewTotalPages - 1, p + 1))}
                         disabled={previewPage >= previewTotalPages - 1}
-                        className="p-1.5 rounded-lg hover:bg-zinc-700 text-zinc-500 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
+                        className="p-1.5 rounded-lg hover:bg-zinc-700 text-neutral-500 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
                       >
                         <ChevronRight className="w-3.5 h-3.5" />
                       </button>
@@ -409,15 +409,15 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
                     <thead>
-                      <tr className="bg-zinc-800/60">
-                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">#</th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Reg. No</th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Name</th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Father's Name</th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Stream</th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Category</th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Fee</th>
-                        <th className="px-3 py-2.5 text-center text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Action</th>
+                      <tr className="bg-neutral-100">
+                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-neutral-500 uppercase tracking-wider">#</th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-neutral-500 uppercase tracking-wider">Reg. No</th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-neutral-500 uppercase tracking-wider">Name</th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-neutral-500 uppercase tracking-wider">Father's Name</th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-neutral-500 uppercase tracking-wider">Stream</th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-neutral-500 uppercase tracking-wider">Category</th>
+                        <th className="px-3 py-2.5 text-right text-[10px] font-bold text-neutral-500 uppercase tracking-wider">Fee</th>
+                        <th className="px-3 py-2.5 text-center text-[10px] font-bold text-neutral-500 uppercase tracking-wider">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -427,18 +427,18 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                         return (
                           <tr
                             key={student.id}
-                            className={`border-t border-zinc-800/40 ${isDuplicate ? 'bg-amber-500/5' : 'hover:bg-zinc-800/20'}`}
+                            className={`border-t border-neutral-200 ${isDuplicate ? 'bg-amber-500/5' : 'hover:bg-zinc-800/20'}`}
                           >
-                            <td className="px-3 py-2 text-zinc-600 font-mono">{globalIdx + 1}</td>
-                            <td className="px-3 py-2 text-violet-400 font-mono font-semibold">{student.registrationNo}</td>
-                            <td className="px-3 py-2 text-white font-semibold">{student.name}</td>
-                            <td className="px-3 py-2 text-zinc-400">{student.fatherName}</td>
+                            <td className="px-3 py-2 text-neutral-600 font-mono">{globalIdx + 1}</td>
+                            <td className="px-3 py-2 text-neutral-700 font-mono font-semibold">{student.registrationNo}</td>
+                            <td className="px-3 py-2 text-neutral-900 font-semibold">{student.name}</td>
+                            <td className="px-3 py-2 text-neutral-500">{student.fatherName}</td>
                             <td className="px-3 py-2">
                               <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
                                 student.stream === 'Non-Medical' ? 'bg-blue-500/10 text-blue-400' :
-                                student.stream === 'Medical' ? 'bg-emerald-500/10 text-emerald-400' :
-                                student.stream === 'Commerce' ? 'bg-amber-500/10 text-amber-400' :
-                                'bg-zinc-700/30 text-zinc-400'
+                                student.stream === 'Medical' ? 'bg-neutral-100 text-neutral-700' :
+                                student.stream === 'Commerce' ? 'bg-amber-500/10 text-neutral-700' :
+                                'bg-zinc-700/30 text-neutral-500'
                               }`}>
                                 {student.stream}
                               </span>
@@ -448,18 +448,18 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                                 student.category === 'SC' ? 'bg-purple-500/10 text-purple-400' :
                                 student.category === 'ST' ? 'bg-pink-500/10 text-pink-400' :
                                 student.category === 'OBC' ? 'bg-orange-500/10 text-orange-400' :
-                                'bg-zinc-700/30 text-zinc-400'
+                                'bg-zinc-700/30 text-neutral-500'
                               }`}>
                                 {student.category}
                               </span>
                             </td>
-                            <td className="px-3 py-2 text-right text-emerald-400 font-mono font-semibold">
+                            <td className="px-3 py-2 text-right text-neutral-700 font-mono font-semibold">
                               ₹{student.totalFees.toLocaleString('en-IN')}
                             </td>
                             <td className="px-3 py-2 text-center">
                               <button
                                 onClick={() => handleRemoveStudent(globalIdx)}
-                                className="p-1 rounded-lg hover:bg-red-500/10 text-zinc-600 hover:text-red-400 transition-colors cursor-pointer"
+                                className="p-1 rounded-lg hover:bg-red-500/10 text-neutral-600 hover:text-red-400 transition-colors cursor-pointer"
                                 title="Remove this record"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -474,11 +474,11 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
               </div>
 
               {parsedStudents.some(s => s.notes?.includes('[DUPLICATE]')) && (
-                <div className="flex items-start gap-2 text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 text-xs">
+                <div className="flex items-start gap-2 text-neutral-700 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 text-xs">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold">Duplicate records detected</p>
-                    <p className="text-amber-400/70 mt-0.5">
+                    <p className="text-neutral-700/70 mt-0.5">
                       Some students already exist in the database (highlighted in yellow). They will be imported with new IDs.
                     </p>
                   </div>
@@ -490,23 +490,23 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
           {/* IMPORTING STATE */}
           {step === 'importing' && (
             <div className="flex flex-col items-center justify-center py-16 space-y-4">
-              <Loader2 className="w-10 h-10 text-violet-400 animate-spin" />
-              <p className="text-sm text-zinc-400 font-medium">Parsing file and extracting student records...</p>
-              <p className="text-xs text-zinc-600">This may take a moment for large files</p>
+              <Loader2 className="w-10 h-10 text-neutral-700 animate-spin" />
+              <p className="text-sm text-neutral-500 font-medium">Parsing file and extracting student records...</p>
+              <p className="text-xs text-neutral-600">This may take a moment for large files</p>
             </div>
           )}
         </div>
 
         {/* Footer Actions */}
         {step !== 'importing' && (
-          <div className="px-6 py-4 border-t border-zinc-800/60 flex items-center justify-between">
+          <div className="px-6 py-4 border-t border-neutral-200 flex items-center justify-between">
             <button
               onClick={() => {
                 if (step === 'configure') setStep('upload');
                 else if (step === 'preview') setStep('configure');
                 else onClose();
               }}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-neutral-500 hover:text-neutral-900 hover:bg-zinc-800 transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
               {step === 'upload' ? 'Cancel' : 'Back'}
@@ -517,7 +517,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                 <button
                   onClick={handleParse}
                   disabled={!file}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-violet-600/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-neutral-900 text-xs font-bold shadow-lg shadow-violet-600/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FileText className="w-4 h-4" />
                   Parse & Preview
@@ -529,7 +529,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                 <button
                   onClick={handleConfirmImport}
                   disabled={parsedStudents.length === 0}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-neutral-900 text-xs font-bold shadow-lg shadow-emerald-600/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   Import {parsedStudents.length} Student{parsedStudents.length !== 1 ? 's' : ''}

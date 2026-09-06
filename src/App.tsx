@@ -336,7 +336,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans antialiased selection:bg-violet-500/30 selection:text-white">
+    <div className="min-h-screen bg-neutral-50 text-neutral-900 flex flex-col font-sans antialiased selection:bg-neutral-300 selection:text-neutral-900">
       {/* Top Header Navbar */}
       <NavbarHeader
         selectedCourse={selectedCourse}
@@ -358,7 +358,7 @@ export function App() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-2xl shadow-emerald-600/20 flex items-center gap-3 font-semibold text-xs"
+            className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-neutral-900 px-5 py-3 rounded-2xl shadow-2xl shadow-neutral-900/10 flex items-center gap-3 font-semibold text-xs"
           >
             <CheckCircle2 className="w-5 h-5" />
             <span>{toastMessage}</span>
@@ -386,27 +386,27 @@ export function App() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-zinc-900/50 border border-zinc-800/50 rounded-3xl p-6 shadow-xl relative overflow-hidden backdrop-blur-sm"
+            className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white border border-neutral-200 rounded-3xl p-6 shadow-lg relative overflow-hidden backdrop-blur-sm"
           >
             {/* Subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.02] via-transparent to-blue-500/[0.02] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-neutral-200/[0.3] via-transparent to-neutral-200/[0.2] pointer-events-none" />
 
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[11px] font-bold text-violet-400 uppercase tracking-widest bg-violet-500/10 px-2.5 py-0.5 rounded-full border border-violet-500/20">
+                <span className="text-[11px] font-bold text-neutral-700 uppercase tracking-widest bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200">
                   {isReadOnlyMode ? 'Read-Only Overview Portal' : 'Institutional Fee Portal'}
                 </span>
-                <span className="text-zinc-700">•</span>
-                <span className={`text-xs font-semibold ${isReadOnlyMode ? 'text-amber-400' : 'text-emerald-400'}`}>
+                <span className="text-neutral-700">•</span>
+                <span className={`text-xs font-semibold ${isReadOnlyMode ? 'text-neutral-700' : 'text-neutral-700'}`}>
                   {isReadOnlyMode ? 'Viewing Live Data (Editing Locked)' : `${selectedCourse} Program Selected`}
                 </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-extrabold text-neutral-900 tracking-tight">
                 {isReadOnlyMode
                   ? 'All Programs Overview Portal'
                   : `${selectedCourse} Program Fee Management`}
               </h1>
-              <p className="text-xs text-zinc-500 mt-1 max-w-xl">
+              <p className="text-xs text-neutral-500 mt-1 max-w-xl">
                 {isReadOnlyMode
                   ? 'Viewing live statistical fee records & analytics for JBT & B.Ed programs in Read-Only mode. Access specific program portals to manage student records.'
                   : 'Track student fee collections, issue instant digital receipts, manage JBT & B.Ed program dues, and broadcast fee reminders.'}
@@ -419,14 +419,14 @@ export function App() {
                 <>
                   <button
                     onClick={() => setShowImportModal(true)}
-                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-bold shadow-lg shadow-amber-600/20 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:shadow-amber-600/30 hover:-translate-y-0.5"
+                    className="px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold shadow-lg shadow-neutral-900/10 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
                   >
                     <Upload className="w-4 h-4" /> Import Data
                   </button>
 
                   <button
                     onClick={() => setShowAddStudent(true)}
-                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-violet-600/20 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:shadow-violet-600/30 hover:-translate-y-0.5"
+                    className="px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold shadow-lg shadow-neutral-900/10 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
                   >
                     <UserPlus className="w-4 h-4" /> New Admission
                   </button>
@@ -436,7 +436,7 @@ export function App() {
                       const pending = dashboardStudents.find((s) => s.remainingFees > 0) || students[0];
                       setPaymentStudent(pending);
                     }}
-                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/20 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:shadow-emerald-600/30 hover:-translate-y-0.5"
+                    className="px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold shadow-lg shadow-neutral-900/10 flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
                   >
                     <DollarSign className="w-4 h-4" /> Collect Fee
                   </button>
@@ -445,16 +445,16 @@ export function App() {
 
               <button
                 onClick={() => exportStudentsToCSV(dashboardStudents)}
-                className="px-3.5 py-2.5 rounded-xl bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-300 text-xs font-semibold border border-zinc-700/50 transition-all duration-200 flex items-center gap-1.5 hover:border-zinc-600"
+                className="px-3.5 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-semibold border border-neutral-200 transition-all duration-200 flex items-center gap-1.5 hover:border-neutral-300"
               >
-                <Download className="w-3.5 h-3.5 text-violet-400" /> Export CSV
+                <Download className="w-3.5 h-3.5 text-neutral-700" /> Export CSV
               </button>
 
               {!isReadOnlyMode && (
                 <button
                   onClick={handleResetData}
                   title="Reset to default demo data"
-                  className="p-2.5 rounded-xl bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-500 hover:text-white border border-zinc-700/50 transition-all duration-200 cursor-pointer"
+                  className="p-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 border border-neutral-200 transition-all duration-200 cursor-pointer"
                 >
                   <RefreshCw className="w-4 h-4" />
                 </button>
@@ -505,15 +505,15 @@ export function App() {
 
           {/* TAB 5: RECEIPT GENERATOR */}
           {currentTab === 'receipts' && (
-            <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-3xl p-6 shadow-xl space-y-6 backdrop-blur-sm">
+            <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-lg space-y-6 backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold border border-emerald-500/20">
+                  <div className="w-11 h-11 rounded-2xl bg-neutral-100 text-neutral-700 flex items-center justify-center font-bold border border-neutral-200">
                     <Receipt className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">Official Fee Receipt Generator</h3>
-                    <p className="text-xs text-zinc-500">Generate, view, and print official fee payment receipts for JBT & B.Ed students</p>
+                    <h3 className="text-xl font-bold text-neutral-900">Official Fee Receipt Generator</h3>
+                    <p className="text-xs text-neutral-500">Generate, view, and print official fee payment receipts for JBT & B.Ed students</p>
                   </div>
                 </div>
               </div>
@@ -529,15 +529,15 @@ export function App() {
                     remark: 'Tuition Fee Installment',
                   };
                   return (
-                    <div key={st.id} className="bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800/50 flex items-center justify-between hover:border-zinc-700/60 transition-all duration-200 card-premium">
+                    <div key={st.id} className="bg-neutral-50/60 p-4 rounded-2xl border border-neutral-200 flex items-center justify-between hover:border-neutral-300/60 transition-all duration-200 card-premium">
                       <div>
-                        <p className="font-bold text-white text-sm">{st.name}</p>
-                        <p className="text-zinc-500 font-mono text-[11px]">{st.registrationNo} ({st.course})</p>
-                        <p className="text-emerald-400 font-bold mt-1">Paid So Far: {formatCurrencyINR(st.paidTillNow)}</p>
+                        <p className="font-bold text-neutral-900 text-sm">{st.name}</p>
+                        <p className="text-neutral-500 font-mono text-[11px]">{st.registrationNo} ({st.course})</p>
+                        <p className="text-neutral-700 font-bold mt-1">Paid So Far: {formatCurrencyINR(st.paidTillNow)}</p>
                       </div>
                       <button
                         onClick={() => setPrintableReceiptData({ student: st, payment: lastPayment })}
-                        className="px-3.5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold flex items-center gap-1.5 cursor-pointer shadow-md shadow-violet-600/20 transition-all duration-200"
+                        className="px-3.5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-neutral-900 font-semibold flex items-center gap-1.5 cursor-pointer shadow-md shadow-neutral-900/10 transition-all duration-200"
                       >
                         <Printer className="w-3.5 h-3.5" /> View Receipt
                       </button>

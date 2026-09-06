@@ -173,56 +173,56 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 12 }}
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/60 rounded-3xl max-w-xl w-full p-6 shadow-2xl shadow-black/40 overflow-hidden text-zinc-100 relative">
+        className="bg-white backdrop-blur-xl border border-neutral-200 rounded-3xl max-w-xl w-full p-6 shadow-2xl shadow-neutral-900/10 overflow-hidden text-neutral-900 relative">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-800/50 pb-4 mb-6">
+        <div className="flex items-center justify-between border-b border-neutral-200 pb-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-violet-500/20 text-violet-400 flex items-center justify-center font-bold">
+            <div className="w-11 h-11 rounded-2xl bg-violet-500/20 text-neutral-700 flex items-center justify-center font-bold">
               <DollarSign className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">Record Fee Payment</h2>
-              <p className="text-xs text-zinc-500">Collect Semester Fee & Issue Official Digital Receipt</p>
+              <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Record Fee Payment</h2>
+              <p className="text-xs text-neutral-500">Collect Semester Fee & Issue Official Digital Receipt</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-800/60 transition-colors"
+            className="p-2 rounded-xl text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Student Summary Pill */}
-        <div className="bg-zinc-950/70 rounded-2xl p-4 border border-zinc-800/40 mb-5 space-y-2">
+        <div className="bg-neutral-50/70 rounded-2xl p-4 border border-neutral-200 mb-5 space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-zinc-500">Student:</span>
-            <span className="font-bold text-white text-sm">{student.name} ({student.course})</span>
+            <span className="text-neutral-500">Student:</span>
+            <span className="font-bold text-neutral-900 text-sm">{student.name} ({student.course})</span>
           </div>
           <div className="flex items-center justify-between text-xs">
-            <span className="text-zinc-500">Father's Name / Reg No:</span>
-            <span className="font-mono text-violet-400 font-semibold">{student.fatherName} | {student.registrationNo}</span>
+            <span className="text-neutral-500">Father's Name / Reg No:</span>
+            <span className="font-mono text-neutral-700 font-semibold">{student.fatherName} | {student.registrationNo}</span>
           </div>
-          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-zinc-800/40 text-center">
-            <div className="bg-zinc-900/50 p-2 rounded-xl border border-zinc-800/50">
-              <span className="text-[10px] text-zinc-500 block">Total Degree Fee</span>
-              <span className="text-xs font-bold text-white">{student.totalFees > 0 ? formatCurrencyINR(student.totalFees) : 'NIL (TBD)'}</span>
+          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-neutral-200 text-center">
+            <div className="bg-white p-2 rounded-xl border border-neutral-200">
+              <span className="text-[10px] text-neutral-500 block">Total Degree Fee</span>
+              <span className="text-xs font-bold text-neutral-900">{student.totalFees > 0 ? formatCurrencyINR(student.totalFees) : 'NIL (TBD)'}</span>
             </div>
-            <div className="bg-zinc-900/50 p-2 rounded-xl border border-zinc-800/50">
-              <span className="text-[10px] text-zinc-500 block">Total Paid So Far</span>
-              <span className="text-xs font-bold text-emerald-400">{formatCurrencyINR(student.paidTillNow)}</span>
+            <div className="bg-white p-2 rounded-xl border border-neutral-200">
+              <span className="text-[10px] text-neutral-500 block">Total Paid So Far</span>
+              <span className="text-xs font-bold text-neutral-700">{formatCurrencyINR(student.paidTillNow)}</span>
             </div>
-            <div className="bg-zinc-900/50 p-2 rounded-xl border border-zinc-800/50">
-              <span className="text-[10px] text-zinc-500 block">Overall Balance</span>
-              <span className="text-xs font-bold text-amber-400">{student.totalFees > 0 ? formatCurrencyINR(student.remainingFees) : 'TBD'}</span>
+            <div className="bg-white p-2 rounded-xl border border-neutral-200">
+              <span className="text-[10px] text-neutral-500 block">Overall Balance</span>
+              <span className="text-xs font-bold text-neutral-700">{student.totalFees > 0 ? formatCurrencyINR(student.remainingFees) : 'TBD'}</span>
             </div>
           </div>
         </div>
 
         {/* Target Semester Window Selector */}
         <div className="mb-5">
-          <label className="block text-zinc-300 font-semibold text-xs mb-1.5 flex items-center gap-1.5">
-            <Layers className="w-4 h-4 text-violet-400" /> Select Target Semester Payment Window:
+          <label className="block text-neutral-700 font-semibold text-xs mb-1.5 flex items-center gap-1.5">
+            <Layers className="w-4 h-4 text-neutral-700" /> Select Target Semester Payment Window:
           </label>
           <div className="grid grid-cols-4 gap-2">
             {(['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'] as SemesterName[]).map((sem) => {
@@ -238,24 +238,24 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   onClick={() => handleSemesterChange(sem)}
                   className={`p-2.5 rounded-xl border text-left transition-all relative ${
                     isSelected
-                      ? 'bg-violet-600/20 border-violet-500/30 text-white ring-2 ring-violet-500/40'
-                      : 'bg-zinc-950/60 border-zinc-800/50 text-zinc-500 hover:border-zinc-700/50'
+                      ? 'bg-violet-600/20 border-violet-500/30 text-neutral-900 ring-2 ring-violet-500/40'
+                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-xs">{sem}</span>
                     <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${
                       isPaid
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        ? 'bg-emerald-500/20 text-neutral-700 border border-emerald-500/30'
                         : isPartly
-                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                        : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                        ? 'bg-amber-500/20 text-neutral-700 border border-amber-500/30'
+                        : 'bg-rose-500/20 text-neutral-700 border border-rose-500/30'
                     }`}>
                       {slot?.status || 'Unpaid'}
                     </span>
                   </div>
-                  <div className="text-[10px] text-zinc-500 mt-1">
-                    Due: <span className="text-white font-mono font-medium">{slot && slot.totalFee > 0 ? formatCurrencyINR(slot.remainingAmount) : 'TBD'}</span>
+                  <div className="text-[10px] text-neutral-500 mt-1">
+                    Due: <span className="text-neutral-900 font-mono font-medium">{slot && slot.totalFee > 0 ? formatCurrencyINR(slot.remainingAmount) : 'TBD'}</span>
                   </div>
                 </button>
               );
@@ -265,26 +265,26 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
         {/* EMI History for Selected Semester */}
         {emiCount > 0 && (
-          <div className="mb-5 bg-zinc-950/50 p-3 rounded-xl border border-zinc-800/50 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-bold text-zinc-300">
-              <Receipt className="w-4 h-4 text-amber-400" />
+          <div className="mb-5 bg-neutral-50/50 p-3 rounded-xl border border-neutral-200 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-neutral-700">
+              <Receipt className="w-4 h-4 text-neutral-700" />
               Previous EMI Installments for {selectedSemester} ({emiCount} paid):
             </div>
             <div className="space-y-1.5">
               {semesterEmiHistory.map((inst, idx) => (
-                <div key={inst.id || idx} className="flex items-center justify-between bg-zinc-900/50 p-2 rounded-lg border border-zinc-800/50 text-[11px]">
+                <div key={inst.id || idx} className="flex items-center justify-between bg-white p-2 rounded-lg border border-neutral-200 text-[11px]">
                   <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 rounded bg-violet-500/20 text-violet-300 font-bold text-[10px]">EMI #{inst.installmentNo || idx + 1}</span>
-                    <span className="text-zinc-500 font-mono">{inst.date}</span>
-                    <span className="text-zinc-600">{inst.mode}</span>
+                    <span className="px-1.5 py-0.5 rounded bg-violet-500/20 text-neutral-700 font-bold text-[10px]">EMI #{inst.installmentNo || idx + 1}</span>
+                    <span className="text-neutral-500 font-mono">{inst.date}</span>
+                    <span className="text-neutral-600">{inst.mode}</span>
                   </div>
-                  <span className="font-bold text-emerald-400">{formatCurrencyINR(inst.amount)}</span>
+                  <span className="font-bold text-neutral-700">{formatCurrencyINR(inst.amount)}</span>
                 </div>
               ))}
             </div>
-            <div className="flex items-center justify-between pt-1.5 border-t border-zinc-800/50 text-[11px]">
-              <span className="text-zinc-500">Total Paid via EMIs so far:</span>
-              <span className="font-bold text-emerald-400">{formatCurrencyINR(emiTotalPaid)} of {formatCurrencyINR(currentSemSlot.totalFee)}</span>
+            <div className="flex items-center justify-between pt-1.5 border-t border-neutral-200 text-[11px]">
+              <span className="text-neutral-500">Total Paid via EMIs so far:</span>
+              <span className="font-bold text-neutral-700">{formatCurrencyINR(emiTotalPaid)} of {formatCurrencyINR(currentSemSlot.totalFee)}</span>
             </div>
           </div>
         )}
@@ -292,17 +292,17 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         {/* Payment Form */}
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {/* Quick Option: Full Sem vs Custom Installment */}
-          <div className="bg-zinc-950/50 p-3 rounded-xl border border-zinc-800/50 flex items-center justify-between gap-2">
+          <div className="bg-neutral-50/50 p-3 rounded-xl border border-neutral-200 flex items-center justify-between gap-2">
             <div>
-              <div className="font-semibold text-white">{selectedSemester} Fee: {currentSemSlot.totalFee > 0 ? formatCurrencyINR(currentSemSlot.totalFee) : 'NIL / TBD'}</div>
-              <div className="text-[11px] text-zinc-500">Current Semester Remaining: <span className="text-amber-400 font-bold">{currentSemSlot.totalFee > 0 ? formatCurrencyINR(currentSemSlot.remainingAmount) : 'TBD'}</span></div>
+              <div className="font-semibold text-neutral-900">{selectedSemester} Fee: {currentSemSlot.totalFee > 0 ? formatCurrencyINR(currentSemSlot.totalFee) : 'NIL / TBD'}</div>
+              <div className="text-[11px] text-neutral-500">Current Semester Remaining: <span className="text-neutral-700 font-bold">{currentSemSlot.totalFee > 0 ? formatCurrencyINR(currentSemSlot.remainingAmount) : 'TBD'}</span></div>
             </div>
             {currentSemSlot.remainingAmount > 0 && (
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => setAmount(currentSemSlot.remainingAmount)}
-                  className="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 text-xs font-bold"
+                  className="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-neutral-700 border border-emerald-500/40 text-xs font-bold"
                 >
                   1-Click Full Sem Payment ({formatCurrencyINR(currentSemSlot.remainingAmount)})
                 </button>
@@ -312,7 +312,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Payment Mode Selector */}
           <div>
-            <label className="block text-zinc-300 font-medium mb-1.5">Payment Method</label>
+            <label className="block text-neutral-700 font-medium mb-1.5">Payment Method</label>
             <div className="grid grid-cols-5 gap-2">
               {(['UPI', 'Cash', 'NEFT', 'Cheque', 'Demand Draft'] as PaymentMode[]).map((mode) => (
                 <button
@@ -321,8 +321,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   onClick={() => handleModeChange(mode)}
                   className={`py-2 px-2 rounded-xl font-semibold border transition-all text-center ${
                     paymentMode === mode
-                      ? 'bg-violet-600 border-violet-500/30 text-white shadow-lg shadow-violet-600/20'
-                      : 'bg-zinc-950/60 border-zinc-800/50 text-zinc-500 hover:border-zinc-700/50 hover:text-white'
+                      ? 'bg-violet-600 border-violet-500/30 text-neutral-900 shadow-lg shadow-violet-600/20'
+                      : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50 hover:text-neutral-900'
                   }`}
                 >
                   {mode}
@@ -334,7 +334,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {/* Amount & Discount Inputs */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">Amount to Collect (₹)</label>
+              <label className="block text-neutral-700 font-medium mb-1">Amount to Collect (₹)</label>
               <div className="relative">
                 <input
                   type="number"
@@ -343,12 +343,12 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
                   required
-                  className="w-full bg-zinc-950/60 border border-zinc-800/50 rounded-xl px-3 py-2 text-white font-bold text-sm focus:outline-none focus:border-violet-500/50"
+                  className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold text-sm focus:outline-none focus:border-violet-500/50"
                 />
                 <button
                   type="button"
                   onClick={() => setAmount(currentSemSlot.remainingAmount)}
-                  className="absolute right-2 top-1.5 px-2 py-0.5 rounded bg-violet-500/20 text-violet-400 hover:bg-violet-500/30 text-[10px] font-bold"
+                  className="absolute right-2 top-1.5 px-2 py-0.5 rounded bg-violet-500/20 text-neutral-700 hover:bg-violet-500/30 text-[10px] font-bold"
                 >
                   Full Sem
                 </button>
@@ -356,14 +356,14 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">Scholarship / Concession (₹)</label>
+              <label className="block text-neutral-700 font-medium mb-1">Scholarship / Concession (₹)</label>
               <input
                 type="number"
                 min={0}
                 value={discount}
                 onChange={(e) => setDiscount(Number(e.target.value))}
                 placeholder="0"
-                className="w-full bg-zinc-950/60 border border-zinc-800/50 rounded-xl px-3 py-2 text-white font-bold text-sm focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold text-sm focus:outline-none focus:border-violet-500/50"
               />
             </div>
           </div>
@@ -371,25 +371,25 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {/* Reference & Remarks */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">Transaction Ref / Cheque No.</label>
+              <label className="block text-neutral-700 font-medium mb-1">Transaction Ref / Cheque No.</label>
               <input
                 type="text"
                 value={transactionRef}
                 onChange={(e) => setTransactionRef(e.target.value)}
                 required
-                className="w-full bg-zinc-950/60 border border-zinc-800/50 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-mono focus:outline-none focus:border-violet-500/50"
               />
             </div>
 
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">Remark / Purpose</label>
+              <label className="block text-neutral-700 font-medium mb-1">Remark / Purpose</label>
               <input
                 type="text"
                 value={remark}
                 onChange={(e) => setRemark(e.target.value)}
                 required
                 placeholder="e.g. Sem 1 Installment Fee"
-                className="w-full bg-zinc-950/60 border border-zinc-800/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-violet-500/50"
+                className="w-full bg-neutral-50/60 border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 focus:outline-none focus:border-violet-500/50"
               />
             </div>
           </div>
@@ -398,13 +398,13 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {paymentMode === 'UPI' && (
             <div className="bg-violet-950/30 border border-violet-800/40 rounded-xl p-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <QrCode className="w-5 h-5 text-violet-400" />
-                <span className="text-zinc-300 font-medium">Generate Dynamic Payment QR ({selectedSemester})</span>
+                <QrCode className="w-5 h-5 text-neutral-700" />
+                <span className="text-neutral-700 font-medium">Generate Dynamic Payment QR ({selectedSemester})</span>
               </div>
               <button
                 type="button"
                 onClick={() => setShowQrModal(true)}
-                className="px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs flex items-center gap-1 cursor-pointer"
+                className="px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-neutral-900 font-semibold text-xs flex items-center gap-1 cursor-pointer"
               >
                 <QrCode className="w-3.5 h-3.5" /> Show QR
               </button>
@@ -414,43 +414,43 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {/* Next EMI Number Preview */}
           <div className="bg-violet-950/20 p-2.5 rounded-xl border border-violet-800/30 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-violet-400" />
-              <span className="text-zinc-300">This will be recorded as <strong className="text-violet-300">EMI #{emiCount + 1}</strong> for {selectedSemester}</span>
+              <Clock className="w-4 h-4 text-neutral-700" />
+              <span className="text-neutral-700">This will be recorded as <strong className="text-neutral-700">EMI #{emiCount + 1}</strong> for {selectedSemester}</span>
             </div>
-            <span className="text-zinc-500">
-              After payment: <strong className={calculatedSemRemainingAfterPayment === 0 ? 'text-emerald-400' : 'text-amber-400'}>{formatCurrencyINR(calculatedSemRemainingAfterPayment)} pending</strong>
+            <span className="text-neutral-500">
+              After payment: <strong className={calculatedSemRemainingAfterPayment === 0 ? 'text-neutral-700' : 'text-neutral-700'}>{formatCurrencyINR(calculatedSemRemainingAfterPayment)} pending</strong>
             </span>
           </div>
 
           {/* Post-Payment Calculated Preview */}
-          <div className="bg-zinc-950/60 p-3 rounded-xl border border-zinc-800/50 flex items-center justify-between text-xs">
+          <div className="bg-neutral-50/60 p-3 rounded-xl border border-neutral-200 flex items-center justify-between text-xs">
             <div>
-              <span className="text-zinc-500 block font-medium">{selectedSemester} Balance After Payment:</span>
-              <span className={`font-bold text-sm ${calculatedSemRemainingAfterPayment === 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
+              <span className="text-neutral-500 block font-medium">{selectedSemester} Balance After Payment:</span>
+              <span className={`font-bold text-sm ${calculatedSemRemainingAfterPayment === 0 ? 'text-neutral-700' : 'text-neutral-700'}`}>
                 {formatCurrencyINR(calculatedSemRemainingAfterPayment)}
               </span>
             </div>
             <div className="text-right">
-              <span className="text-zinc-500 block font-medium">Overall 2-Yr Balance:</span>
-              <span className={`font-bold text-sm ${calculatedTotalRemainingAfterPayment === 0 ? 'text-emerald-400' : 'text-zinc-200'}`}>
+              <span className="text-neutral-500 block font-medium">Overall 2-Yr Balance:</span>
+              <span className={`font-bold text-sm ${calculatedTotalRemainingAfterPayment === 0 ? 'text-neutral-700' : 'text-neutral-800'}`}>
                 {formatCurrencyINR(calculatedTotalRemainingAfterPayment)}
               </span>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-800/50">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-300 font-semibold cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-zinc-700/60 text-neutral-700 font-semibold cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-neutral-900 font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-2 cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4" />
               {isSubmitting ? 'Processing...' : 'Confirm & Print Receipt'}
@@ -461,17 +461,17 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         {/* Dynamic UPI QR Modal overlay */}
         {showQrModal && (
           <div className="fixed inset-0 z-60 bg-black/80 flex items-center justify-center p-4">
-            <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 relative">
+            <div className="bg-white border border-neutral-200 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 relative">
               <button
                 onClick={() => setShowQrModal(false)}
-                className="absolute right-4 top-4 p-1.5 rounded-full bg-zinc-800/60 text-zinc-500 hover:text-white"
+                className="absolute right-4 top-4 p-1.5 rounded-full bg-neutral-100 text-neutral-500 hover:text-neutral-900"
               >
                 <X className="w-4 h-4" />
               </button>
-              <h3 className="text-lg font-bold text-white">Scan & Pay via UPI</h3>
-              <p className="text-xs text-zinc-500">GPay, PhonePe, Paytm, BHIM</p>
+              <h3 className="text-lg font-bold text-neutral-900">Scan & Pay via UPI</h3>
+              <p className="text-xs text-neutral-500">GPay, PhonePe, Paytm, BHIM</p>
 
-              <div className="bg-white p-4 rounded-2xl inline-block border-4 border-violet-500/30 shadow-xl">
+              <div className="bg-white p-4 rounded-2xl inline-block border-4 border-violet-500/30 shadow-lg">
                 {/* SVG QR Code Simulation */}
                 <svg className="w-48 h-48 mx-auto" viewBox="0 0 100 100">
                   <rect width="100" height="100" fill="white" />
@@ -500,13 +500,13 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               </div>
 
               <div className="space-y-1 text-xs">
-                <p className="font-bold text-emerald-400 text-sm">{formatCurrencyINR(amount)}</p>
-                <p className="text-zinc-500 font-mono text-[11px]">{student.name} ({student.registrationNo})</p>
+                <p className="font-bold text-neutral-700 text-sm">{formatCurrencyINR(amount)}</p>
+                <p className="text-neutral-500 font-mono text-[11px]">{student.name} ({student.registrationNo})</p>
               </div>
 
               <button
                 onClick={() => setShowQrModal(false)}
-                className="w-full py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl text-xs font-semibold"
+                className="w-full py-2 bg-violet-600 hover:bg-violet-500 text-neutral-900 rounded-xl text-xs font-semibold"
               >
                 Close QR Code
               </button>

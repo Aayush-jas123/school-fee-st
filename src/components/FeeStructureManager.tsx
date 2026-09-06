@@ -51,16 +51,16 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
   };
 
   return (
-    <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-3xl p-6 shadow-xl space-y-6">
+    <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-lg space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800/50 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-violet-500/20 text-violet-400 flex items-center justify-center font-bold">
+          <div className="w-11 h-11 rounded-2xl bg-violet-500/20 text-neutral-700 flex items-center justify-center font-bold">
             <Settings2 className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white tracking-tight">Institutional Fee Structure Configurator</h2>
-            <p className="text-xs text-zinc-500">Configure prescribed fee rules, late penalties & scholarship discounts for JBT and B.Ed</p>
+            <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Institutional Fee Structure Configurator</h2>
+            <p className="text-xs text-neutral-500">Configure prescribed fee rules, late penalties & scholarship discounts for JBT and B.Ed</p>
           </div>
         </div>
 
@@ -72,13 +72,13 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           <div className="flex gap-2">
             <button
               onClick={handleApplyToAll}
-              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/30 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-neutral-900 font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/30 cursor-pointer"
             >
               <Users className="w-4 h-4" /> Apply to All Students
             </button>
             <button
               onClick={handleSave}
-              className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-violet-600/20 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-neutral-900 font-bold text-xs flex items-center gap-2 shadow-lg shadow-violet-600/20 cursor-pointer"
             >
               <Save className="w-4 h-4" /> Save Fee Rules
             </button>
@@ -88,14 +88,14 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
 
       {appliedSuccess && (
         <div className="bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <CheckCircle2 className="w-4 h-4 text-neutral-700" />
           <span>Fee structure applied to all students successfully! All balances have been recalculated.</span>
         </div>
       )}
 
       {savedSuccess && (
         <div className="bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 p-3 rounded-2xl text-xs flex items-center gap-2 animate-fadeIn">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <CheckCircle2 className="w-4 h-4 text-neutral-700" />
           <span>Fee structure rules updated successfully across the institution!</span>
         </div>
       )}
@@ -106,14 +106,14 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           onClick={() => setActiveCourse('JBT')}
           className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
             activeCourse === 'JBT'
-              ? 'bg-violet-600/20 border-violet-500/30 text-white shadow-lg ring-1 ring-violet-500/40'
-              : 'bg-zinc-950/60 border-zinc-800/50 text-zinc-500 hover:border-zinc-700/50'
+              ? 'bg-violet-600/20 border-violet-500/30 text-neutral-900 shadow-lg ring-1 ring-violet-500/40'
+              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50'
           }`}
         >
-          <GraduationCap className="w-6 h-6 text-emerald-400" />
+          <GraduationCap className="w-6 h-6 text-neutral-700" />
           <div>
-            <h4 className="font-bold text-sm text-white">JBT Program</h4>
-            <p className="text-[11px] text-zinc-500">2 Years Diploma</p>
+            <h4 className="font-bold text-sm text-neutral-900">JBT Program</h4>
+            <p className="text-[11px] text-neutral-500">2 Years Diploma</p>
           </div>
         </button>
 
@@ -121,40 +121,40 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           onClick={() => setActiveCourse('B.Ed')}
           className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
             activeCourse === 'B.Ed'
-              ? 'bg-violet-600/20 border-violet-500/30 text-white shadow-lg ring-1 ring-violet-500/40'
-              : 'bg-zinc-950/60 border-zinc-800/50 text-zinc-500 hover:border-zinc-700/50'
+              ? 'bg-violet-600/20 border-violet-500/30 text-neutral-900 shadow-lg ring-1 ring-violet-500/40'
+              : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-zinc-700/50'
           }`}
         >
-          <BookOpen className="w-6 h-6 text-violet-400" />
+          <BookOpen className="w-6 h-6 text-neutral-700" />
           <div>
-            <h4 className="font-bold text-sm text-white">B.Ed Program</h4>
-            <p className="text-[11px] text-zinc-500">2 Years Degree</p>
+            <h4 className="font-bold text-sm text-neutral-900">B.Ed Program</h4>
+            <p className="text-[11px] text-neutral-500">2 Years Degree</p>
           </div>
         </button>
       </div>
 
       {/* Total Fee Editor */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-xs">
-        <div className="lg:col-span-2 bg-zinc-950/60 p-5 rounded-2xl border border-zinc-800/50 space-y-4">
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-violet-400" /> Annual Fee — {currentRule.course} Program
+        <div className="lg:col-span-2 bg-neutral-50/60 p-5 rounded-2xl border border-neutral-200 space-y-4">
+          <h3 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-neutral-700" /> Annual Fee — {currentRule.course} Program
           </h3>
 
           <div>
-            <label className="block text-zinc-500 mb-1">Total Annual Fee (₹)</label>
+            <label className="block text-neutral-500 mb-1">Total Annual Fee (₹)</label>
             <input
               type="number"
               value={currentRule.tuitionFee}
               disabled={isReadOnly}
               onChange={(e) => handleFeeChange('tuitionFee', Number(e.target.value))}
-              className="w-full bg-zinc-900/50 border border-zinc-800/50 rounded-xl px-4 py-3 text-white text-lg font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-neutral-900 text-lg font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               placeholder="Enter total annual fee"
             />
           </div>
 
-          <div className="pt-3 border-t border-zinc-800/50 flex items-center justify-between">
-            <span className="font-bold text-zinc-300">This fee will be applied to all {currentRule.course} students</span>
-            <strong className="text-emerald-400 text-base font-extrabold">
+          <div className="pt-3 border-t border-neutral-200 flex items-center justify-between">
+            <span className="font-bold text-neutral-700">This fee will be applied to all {currentRule.course} students</span>
+            <strong className="text-neutral-700 text-base font-extrabold">
               {formatCurrencyINR(currentRule.tuitionFee)}
             </strong>
           </div>
@@ -162,57 +162,57 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
 
         {/* Scholarship & Penalty Rules */}
         <div className="space-y-4">
-          <div className="bg-zinc-950/60 p-5 rounded-2xl border border-zinc-800/50 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Award className="w-4 h-4 text-amber-400" /> Category Scholarship Concessions
+          <div className="bg-neutral-50/60 p-5 rounded-2xl border border-neutral-200 space-y-4">
+            <h3 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
+              <Award className="w-4 h-4 text-neutral-700" /> Category Scholarship Concessions
             </h3>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-zinc-500 mb-1">SC Category Discount (₹)</label>
+                <label className="block text-neutral-500 mb-1">SC Category Discount (₹)</label>
                 <input
                   type="number"
                   value={currentRule.scholarshipDiscounts.SC}
                   disabled={isReadOnly}
                   onChange={(e) => handleScholarshipChange('SC', Number(e.target.value))}
-                  className="w-full bg-zinc-900/50 border border-zinc-800/50 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
 
               <div>
-                <label className="block text-zinc-500 mb-1">ST Category Discount (₹)</label>
+                <label className="block text-neutral-500 mb-1">ST Category Discount (₹)</label>
                 <input
                   type="number"
                   value={currentRule.scholarshipDiscounts.ST}
                   disabled={isReadOnly}
                   onChange={(e) => handleScholarshipChange('ST', Number(e.target.value))}
-                  className="w-full bg-zinc-900/50 border border-zinc-800/50 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
 
               <div>
-                <label className="block text-zinc-500 mb-1">OBC Category Discount (₹)</label>
+                <label className="block text-neutral-500 mb-1">OBC Category Discount (₹)</label>
                 <input
                   type="number"
                   value={currentRule.scholarshipDiscounts.OBC}
                   disabled={isReadOnly}
                   onChange={(e) => handleScholarshipChange('OBC', Number(e.target.value))}
-                  className="w-full bg-zinc-900/50 border border-zinc-800/50 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-zinc-950/60 p-5 rounded-2xl border border-zinc-800/50 space-y-3">
-            <h3 className="text-sm font-bold text-white">Daily Late Penalty Rule</h3>
+          <div className="bg-neutral-50/60 p-5 rounded-2xl border border-neutral-200 space-y-3">
+            <h3 className="text-sm font-bold text-neutral-900">Daily Late Penalty Rule</h3>
             <div>
-              <label className="block text-zinc-500 mb-1">Fine Amount per Day Overdue (₹)</label>
+              <label className="block text-neutral-500 mb-1">Fine Amount per Day Overdue (₹)</label>
               <input
                 type="number"
                 value={currentRule.lateFeePerDay}
                 disabled={isReadOnly}
                 onChange={(e) => handleFeeChange('lateFeePerDay', Number(e.target.value))}
-                className="w-full bg-zinc-900/50 border border-zinc-800/50 rounded-xl px-3 py-2 text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 font-bold disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
           </div>

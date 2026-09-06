@@ -37,32 +37,32 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   ];
 
   return (
-    <aside className="w-64 bg-zinc-950/80 backdrop-blur-xl border-r border-zinc-800/40 shrink-0 hidden md:flex flex-col justify-between p-4 sticky top-16 h-[calc(100vh-4rem)]">
+    <aside className="w-64 bg-white border-r border-neutral-200/80 shrink-0 hidden md:flex flex-col justify-between p-4 sticky top-16 h-[calc(100vh-4rem)]">
       <div className="space-y-6">
         {/* Course Switcher Card */}
         <div
           onClick={onOpenCourseSelect}
-          className="p-3.5 rounded-2xl bg-zinc-900/50 border border-zinc-800/50 hover:border-violet-500/30 cursor-pointer group transition-all duration-300 shadow-sm hover:shadow-violet-500/5"
+          className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200 hover:border-neutral-300 cursor-pointer group transition-all duration-300 shadow-sm"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-violet-500/10 text-violet-400 border border-violet-500/20 flex items-center justify-center font-bold text-xs transition-all group-hover:bg-violet-500/15">
+              <div className="w-8 h-8 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-bold text-xs transition-all">
                 <Grid className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider">Active Course</p>
-                <p className="text-xs font-bold text-white group-hover:text-violet-200 transition-colors">
+                <p className="text-[10px] text-neutral-400 font-medium uppercase tracking-wider">Active Course</p>
+                <p className="text-xs font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
                   {selectedCourse === 'ALL' ? 'All Programs' : `${selectedCourse} Program`}
                 </p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-violet-400 group-hover:translate-x-0.5 transition-all duration-300" />
+            <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:text-neutral-600 group-hover:translate-x-0.5 transition-all duration-300" />
           </div>
         </div>
 
         {/* Navigation Section */}
         <div>
-          <p className="px-3 text-[10px] font-bold text-zinc-600 uppercase tracking-wider mb-2">
+          <p className="px-3 text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-2">
             Administration Menu
           </p>
           <nav className="space-y-0.5">
@@ -75,11 +75,11 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                   onClick={() => onTabChange(item.id)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? 'bg-violet-600/90 text-white shadow-lg shadow-violet-600/20'
-                      : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/50'
+                      ? 'bg-neutral-900 text-white shadow-sm'
+                      : 'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-zinc-500'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-neutral-400'}`} />
                   <span>{item.label}</span>
                 </button>
               );
@@ -89,7 +89,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
         {/* Quick Program Links */}
         <div>
-          <p className="px-3 text-[10px] font-bold text-zinc-600 uppercase tracking-wider mb-2">
+          <p className="px-3 text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-2">
             Quick Program Switch
           </p>
           <div className="space-y-0.5">
@@ -97,10 +97,10 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
               <button
                 key={c}
                 onClick={onOpenCourseSelect}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/40 transition-all duration-200 cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all duration-200 cursor-pointer"
               >
                 <span>{c} Course Portal</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500/50" />
+                <span className="w-2 h-2 rounded-full bg-neutral-900" />
               </button>
             ))}
           </div>
@@ -108,22 +108,22 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
       </div>
 
       {/* Footer Info Box */}
-      <div className="pt-4 border-t border-zinc-800/40 space-y-2">
-        <div className="p-3 rounded-xl bg-zinc-900/40 border border-zinc-800/30 text-[11px] text-zinc-500 space-y-1">
-          <div className="flex items-center gap-1.5 font-semibold text-zinc-400">
-            <ShieldAlert className="w-3.5 h-3.5 text-violet-400" />
+      <div className="pt-4 border-t border-neutral-200 space-y-2">
+        <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-[11px] text-neutral-500 space-y-1">
+          <div className="flex items-center gap-1.5 font-semibold text-neutral-600">
+            <ShieldAlert className="w-3.5 h-3.5 text-neutral-500" />
             Audit Logging Active
           </div>
-          <p className="text-[10px] text-zinc-600 leading-tight">
+          <p className="text-[10px] text-neutral-400 leading-tight">
             All staff changes are logged in compliance with college accounts guidelines.
           </p>
         </div>
 
         <button
           onClick={() => alert('Shanti College Fee Portal v2.4')}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/40 transition-all duration-200"
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all duration-200"
         >
-          <HelpCircle className="w-4 h-4 text-zinc-500" />
+          <HelpCircle className="w-4 h-4 text-neutral-400" />
           <span>System Version & Help</span>
         </button>
       </div>

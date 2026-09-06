@@ -33,24 +33,24 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
   const semRemaining = Math.max(0, semTotal - semPaidAfterThis);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-fadeIn">
-      <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-3xl max-w-3xl w-full p-6 shadow-2xl overflow-y-auto max-h-[95vh] text-zinc-100 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-50/70 backdrop-blur-md animate-fadeIn">
+      <div className="bg-white border border-neutral-200 rounded-3xl max-w-3xl w-full p-6 shadow-2xl overflow-y-auto max-h-[95vh] text-neutral-900 relative">
         {/* Modal Top Bar */}
-        <div className="flex items-center justify-between border-b border-zinc-800/50 pb-4 mb-6 print:hidden">
+        <div className="flex items-center justify-between border-b border-neutral-200 pb-4 mb-6 print:hidden">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-            <h2 className="text-lg font-bold text-white">Official Institutional Fee Receipt</h2>
+            <CheckCircle2 className="w-5 h-5 text-neutral-700" />
+            <h2 className="text-lg font-bold text-neutral-900">Official Institutional Fee Receipt</h2>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-violet-600/20"
+              className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-neutral-900 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-violet-600/20"
             >
               <Printer className="w-4 h-4" /> Print Official Receipt
             </button>
             <button
               onClick={onClose}
-              className="p-2 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-800/60 transition-colors"
+              className="p-2 rounded-xl text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -68,14 +68,14 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
               <p className="text-xs font-semibold text-zinc-700 uppercase tracking-wider">
                 Recognized by Govt & Affiliated for JBT & B.Ed Programs
               </p>
-              <p className="text-[11px] text-zinc-600">Institutional Campus, Education Hub, Haryana • Contact: +91 172 2589012</p>
+              <p className="text-[11px] text-neutral-600">Institutional Campus, Education Hub, Haryana • Contact: +91 172 2589012</p>
             </div>
             <div className="text-right">
-              <span className="px-3 py-1 bg-indigo-900 text-white text-xs font-extrabold rounded-lg uppercase tracking-wider block mb-1">
+              <span className="px-3 py-1 bg-indigo-900 text-neutral-900 text-xs font-extrabold rounded-lg uppercase tracking-wider block mb-1">
                 FEE RECEIPT
               </span>
               <p className="text-xs font-bold font-mono text-slate-700">No: {payment.id}</p>
-              <p className="text-[11px] text-zinc-600">Date: {payment.date}</p>
+              <p className="text-[11px] text-neutral-600">Date: {payment.date}</p>
               {payment.installmentNo && (
                 <p className="text-[11px] text-indigo-700 font-bold">Installment #{payment.installmentNo}</p>
               )}
@@ -85,14 +85,14 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
           {/* Student Info Table */}
           <div className="grid grid-cols-2 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
             <div>
-              <p><span className="text-zinc-600">Student Name:</span> <strong>{student.name}</strong></p>
-              <p><span className="text-zinc-600">Father's Name:</span> <strong>{student.fatherName}</strong></p>
-              <p><span className="text-zinc-600">Registration No:</span> <strong className="font-mono">{student.registrationNo}</strong></p>
+              <p><span className="text-neutral-600">Student Name:</span> <strong>{student.name}</strong></p>
+              <p><span className="text-neutral-600">Father's Name:</span> <strong>{student.fatherName}</strong></p>
+              <p><span className="text-neutral-600">Registration No:</span> <strong className="font-mono">{student.registrationNo}</strong></p>
             </div>
             <div>
-              <p><span className="text-zinc-600">Course Program:</span> <strong className="text-indigo-900 font-extrabold">{student.course} (2-Year)</strong></p>
-              <p><span className="text-zinc-600">Roll No / Session:</span> <strong>{student.rollNo || 'Pending'} ({student.session})</strong></p>
-              <p><span className="text-zinc-600">Category:</span> <strong>{student.category}</strong></p>
+              <p><span className="text-neutral-600">Course Program:</span> <strong className="text-indigo-900 font-extrabold">{student.course} (2-Year)</strong></p>
+              <p><span className="text-neutral-600">Roll No / Session:</span> <strong>{student.rollNo || 'Pending'} ({student.session})</strong></p>
+              <p><span className="text-neutral-600">Category:</span> <strong>{student.category}</strong></p>
             </div>
           </div>
 
@@ -265,8 +265,8 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
                 <p className="font-bold text-slate-800 flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Digital Verified Receipt
                 </p>
-                <p className="text-[10px] text-zinc-600">Issued by: {payment.staffName || 'Accounts Officer'}</p>
-                <p className="text-[10px] text-zinc-600">Computer Generated • No Physical Stamp Needed</p>
+                <p className="text-[10px] text-neutral-600">Issued by: {payment.staffName || 'Accounts Officer'}</p>
+                <p className="text-[10px] text-neutral-600">Computer Generated • No Physical Stamp Needed</p>
                 <p className="text-[10px] text-indigo-600 font-semibold">This receipt confirms payment of {formatCurrencyINR(payment.amount)} towards {targetSem}.</p>
               </div>
             </div>
@@ -274,7 +274,7 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
             <div className="text-center">
               <div className="h-10 border-b border-slate-400 w-36 mb-1"></div>
               <p className="font-bold text-slate-900">Authorized Cashier / Accountant</p>
-              <p className="text-zinc-600 text-[10px]">Shanti College of Education</p>
+              <p className="text-neutral-600 text-[10px]">Shanti College of Education</p>
             </div>
           </div>
         </div>

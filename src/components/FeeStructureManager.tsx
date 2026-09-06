@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import type { CourseFeeRule, CourseType, SeatType, SeatTypeFees } from '../types/feeSystem';
-import { getSeatTypesForCourse } from '../types/feeSystem';
+import type { CourseFeeRule, CourseType, SeatType, SeatTypeFees, PeriodName } from '../types/feeSystem';
+import { getSeatTypesForCourse, getPeriodsForCourse, getPeriodYear } from '../types/feeSystem';
 import { Settings2, Save, GraduationCap, BookOpen, CheckCircle2, Award, DollarSign, Users, Armchair } from 'lucide-react';
 import { formatCurrencyINR } from '../utils/exportUtils';
 
@@ -25,6 +25,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
 
   // Ensure currentRule always has seatTypeFees populated
   const seatTypesForCourse = getSeatTypesForCourse(activeCourse);
+  const periodsForCourse = getPeriodsForCourse(activeCourse);
   const currentSeatTypeFees: SeatTypeFees[] = seatTypesForCourse.map((st) => {
     const existing = currentRule?.seatTypeFees?.find((sf) => sf.seatType === st);
     return existing || { seatType: st, additionalFee: 0 };
@@ -44,7 +45,18 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
     );
   };
 
-  const handleFeeChange = (field: keyof Omit<CourseFeeRule, 'course' | 'session' | 'scholarshipDiscounts'>, val: number) => {
+  const handlePeriodFeeChange = (period: PeriodName, fee: number) => {
+    if (isReadOnly || !currentRule) return;
+    setLocalRules((prev) =>
+      prev.map((r) => {
+        if (r.course !== activeCourse || r.session !== activeSession) return r;
+        const existingPeriodFees = r.periodFees || {};
+        return { ...r, periodFees: { ...existingPeriodFees, [period]: fee } };
+      })
+    );
+  };
+
+  const handleFeeChange = (field: keyof Omit<CourseFeeRule, 'course' | 'session' | 'scholarshipDiscounts' | 'periodFees'>, val: number) => {
     if (isReadOnly) return;
     setLocalRules((prev) =>
       prev.map((r) => (r.course === activeCourse && r.session === activeSession ? { ...r, [field]: val } : r))
@@ -288,6 +300,74 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Per-Period Fee Configuration */}
+      <div className="bg-white border border-neutral-200 rounded-2xl p-5 space-y-5">
+        <div className="flex items-center gap-3 border-b border-neutral-200 pb-3">
+          <div className="w-9 h-9 rounded-xl bg-neutral-100 text-neutral-700 flex items-center justify-center">
+            <DollarSign className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-neutral-900">
+              {activeCourse === 'JBT' ? 'Session-wise' : 'Semester-wise'} Fee Breakdown — {activeCourse} Program
+            </h3>
+            <p className="text-[11px] text-neutral-500">
+              Set individual fee for each {activeCourse === 'JBT' ? 'session' : 'semester'} (total program fee: {formatCurrencyINR(currentRule.tuitionFee)})
+            </p>
+          </div>
+        </div>
+
+        <div className={`grid gap-4 ${periodsForCourse.length === 2 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'}`}>
+          {periodsForCourse.map((period) => {
+            const defaultPerPeriod = periodsForCourse.length > 0 ? Math.round(currentRule.tuitionFee / periodsForCourse.length) : 0;
+            const currentPeriodFee = currentRule.periodFees?.[period] ?? defaultPerPeriod;
+            return (
+              <div key={period} className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-neutral-900">{period}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-700 border border-neutral-300">
+                    {getPeriodYear(period)}
+                  </span>
+                </div>
+                <div>
+                  <label className="block text-neutral-500 text-[10px] mb-1">
+                    Fee for {period} (₹)
+                  </label>
+                  <input
+                    type="number"
+                    value={currentPeriodFee}
+                    disabled={isReadOnly}
+                    onChange={(e) => handlePeriodFeeChange(period, Number(e.target.value))}
+                    className="w-full bg-white border border-neutral-200 rounded-xl px-3 py-2 text-neutral-900 text-sm font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                    min={0}
+                    placeholder={`${defaultPerPeriod}`}
+                  />
+                </div>
+                <div className="pt-2 border-t border-neutral-200/60 flex items-center justify-between">
+                  <span className="text-[10px] text-neutral-500 font-medium">Default (equal split)</span>
+                  <span className="text-xs font-bold text-neutral-700">{formatCurrencyINR(defaultPerPeriod)}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center justify-between pt-2 border-t border-neutral-200 text-xs">
+          <span className="text-neutral-500">
+            Sum of {activeCourse === 'JBT' ? 'session' : 'semester'} fees:
+          </span>
+          <span className="font-bold text-neutral-900 text-sm">
+            {formatCurrencyINR(periodsForCourse.reduce((sum, p) => sum + (currentRule.periodFees?.[p] ?? Math.round(currentRule.tuitionFee / periodsForCourse.length)), 0))}
+            {periodsForCourse.reduce((sum, p) => sum + (currentRule.periodFees?.[p] ?? Math.round(currentRule.tuitionFee / periodsForCourse.length)), 0) !== currentRule.tuitionFee && (
+              <span className="text-neutral-500 font-normal ml-2">(Program total: {formatCurrencyINR(currentRule.tuitionFee)})</span>
+            )}
+          </span>
+        </div>
+
+        <p className="text-[10px] text-neutral-500">
+          Leave any {activeCourse === 'JBT' ? 'session' : 'semester'} at its default value to split the total fee equally. Custom values override the equal split for that specific period.
+        </p>
       </div>
 
       {/* Seat Type Premium Fee Configuration */}

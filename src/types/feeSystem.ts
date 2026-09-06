@@ -59,15 +59,17 @@ export function getPeriodYear(period: PeriodName): '1st Year' | '2nd Year' {
 }
 
 // Build course-aware period fee slots (B.Ed → 4 semesters, JBT → 2 sessions)
-export function buildPeriodFeeSlots(course: CourseType, totalFee: number, paidTillNow: number): SemesterFeeSlot[] {
+// periodFeeOverrides allows custom per-period fees from fee rules
+export function buildPeriodFeeSlots(course: CourseType, totalFee: number, paidTillNow: number, periodFeeOverrides?: Partial<Record<PeriodName, number>>): SemesterFeeSlot[] {
   const periods = getPeriodsForCourse(course);
   const numPeriods = periods.length;
-  const perPeriodFee = totalFee > 0 ? Math.round(totalFee / numPeriods) : 0;
+  const defaultPerPeriod = totalFee > 0 ? Math.round(totalFee / numPeriods) : 0;
   const dueDates = course === 'B.Ed'
     ? ['2026-10-15', '2027-03-15', '2027-10-15', '2028-03-15']
     : ['2026-10-15', '2027-10-15'];
 
   return periods.map((period, idx) => {
+    const perPeriodFee = periodFeeOverrides?.[period] ?? defaultPerPeriod;
     const paidForThis = Math.max(0, Math.min(paidTillNow - perPeriodFee * idx, perPeriodFee));
     const remaining = Math.max(0, perPeriodFee - paidForThis);
     let status: FeeStatusType = 'Unpaid';
@@ -181,5 +183,9 @@ export interface CourseFeeRule {
     OBC: number;
     General: number;
   };
+  // Per-period fee overrides: e.g. { "Session 1": 35000, "Session 2": 30000 } for JBT
+  // or { "Sem 1": 20000, "Sem 2": 18000, "Sem 3": 20000, "Sem 4": 20000 } for B.Ed
+  // When set, these override the equal-split of tuitionFee for each period
+  periodFees?: Partial<Record<PeriodName, number>>;
 }
 

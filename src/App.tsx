@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { CourseType, FeeStatusType, Student, CourseStat, PaymentRecord, CourseFeeRule, AuditLogEntry } from './types/feeSystem';
+import { buildPeriodFeeSlots } from './types/feeSystem';
 import { COURSE_DEFINITIONS } from './data/mockStudents';
 import { LoginPage } from './views/LoginPage';
 import { CourseSelectionPage } from './views/CourseSelectionPage';
@@ -272,6 +273,7 @@ export function App() {
         scholarshipApplied: student.category !== 'General' ? `${student.category} Category` : undefined,
         remainingFees: Math.max(0, effectiveFee - student.paidTillNow),
         feeStatus,
+        semesterFees: buildPeriodFeeSlots(student.course, effectiveFee, student.paidTillNow, rule.periodFees),
       };
     });
 

@@ -5,23 +5,27 @@ import { formatCurrencyINR } from '../utils/exportUtils';
 
 interface FeeStructureManagerProps {
   rules: CourseFeeRule[];
+  sessions: string[];
   onSaveRules: (updatedRules: CourseFeeRule[]) => void;
   onApplyToAllStudents?: (rules: CourseFeeRule[]) => void;
   isReadOnly?: boolean;
 }
 
-export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules, onSaveRules, onApplyToAllStudents, isReadOnly = false }) => {
+export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules, sessions, onSaveRules, onApplyToAllStudents, isReadOnly = false }) => {
   const [localRules, setLocalRules] = useState<CourseFeeRule[]>(rules);
   const [activeCourse, setActiveCourse] = useState<CourseType>('JBT');
+  const [activeSession, setActiveSession] = useState<string>(sessions[0] || '2026-2027');
   const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
   const [appliedSuccess, setAppliedSuccess] = useState<boolean>(false);
 
-  const currentRule = localRules.find((r) => r.course === activeCourse) || localRules[0];
+  const currentRule = localRules.find((r) => r.course === activeCourse && r.session === activeSession)
+    || localRules.find((r) => r.course === activeCourse)
+    || localRules[0];
 
-  const handleFeeChange = (field: keyof Omit<CourseFeeRule, 'course' | 'scholarshipDiscounts'>, val: number) => {
+  const handleFeeChange = (field: keyof Omit<CourseFeeRule, 'course' | 'session' | 'scholarshipDiscounts'>, val: number) => {
     if (isReadOnly) return;
     setLocalRules((prev) =>
-      prev.map((r) => (r.course === activeCourse ? { ...r, [field]: val } : r))
+      prev.map((r) => (r.course === activeCourse && r.session === activeSession ? { ...r, [field]: val } : r))
     );
   };
 
@@ -29,11 +33,24 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
     if (isReadOnly) return;
     setLocalRules((prev) =>
       prev.map((r) =>
-        r.course === activeCourse
+        r.course === activeCourse && r.session === activeSession
           ? { ...r, scholarshipDiscounts: { ...r.scholarshipDiscounts, [cat]: val } }
           : r
       )
     );
+  };
+
+  const handleAddSessionRule = () => {
+    if (isReadOnly) return;
+    const existingRule = localRules.find((r) => r.course === activeCourse && r.session === activeSession);
+    if (existingRule) return; // already exists
+    // Clone from same course's first rule as base, or use defaults
+    const baseRule = localRules.find((r) => r.course === activeCourse) || localRules[0];
+    const newRule: CourseFeeRule = {
+      ...baseRule,
+      session: activeSession,
+    };
+    setLocalRules((prev) => [...prev, newRule]);
   };
 
   const handleSave = () => {
@@ -74,7 +91,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
               onClick={handleApplyToAll}
               className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-neutral-900 font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/30 cursor-pointer"
             >
-              <Users className="w-4 h-4" /> Apply to All Students
+              <Users className="w-4 h-4" /> Apply to Students ({activeSession})
             </button>
             <button
               onClick={handleSave}
@@ -133,11 +150,43 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
         </button>
       </div>
 
+      {/* Session Selector */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <span className="text-xs font-bold text-neutral-500 uppercase">Session:</span>
+        {sessions.map((sess) => {
+          const hasRule = localRules.some((r) => r.course === activeCourse && r.session === sess);
+          return (
+            <button
+              key={sess}
+              onClick={() => setActiveSession(sess)}
+              className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                activeSession === sess
+                  ? 'bg-neutral-900 text-white border-neutral-900 shadow-md'
+                  : 'bg-neutral-50/60 border-neutral-200 text-neutral-500 hover:border-neutral-300'
+              }`}
+            >
+              {sess}
+              {!hasRule && activeSession === sess && (
+                <span className="ml-1.5 text-[10px] opacity-70">(no rule yet)</span>
+              )}
+            </button>
+          );
+        })}
+        {activeSession && !localRules.some((r) => r.course === activeCourse && r.session === activeSession) && (
+          <button
+            onClick={handleAddSessionRule}
+            className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer transition-colors"
+          >
+            + Create Rule for this Session
+          </button>
+        )}
+      </div>
+
       {/* Total Fee Editor */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-xs">
         <div className="lg:col-span-2 bg-neutral-50/60 p-5 rounded-2xl border border-neutral-200 space-y-4">
           <h3 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-neutral-700" /> Annual Fee — {currentRule.course} Program
+            <DollarSign className="w-4 h-4 text-neutral-700" /> Annual Fee — {currentRule.course} Program ({activeSession})
           </h3>
 
           <div>
@@ -153,7 +202,7 @@ export const FeeStructureManager: React.FC<FeeStructureManagerProps> = ({ rules,
           </div>
 
           <div className="pt-3 border-t border-neutral-200 flex items-center justify-between">
-            <span className="font-bold text-neutral-700">This fee will be applied to all {currentRule.course} students</span>
+            <span className="font-bold text-neutral-700">This fee will be applied to all {currentRule.course} students in session {activeSession}</span>
             <strong className="text-neutral-700 text-base font-extrabold">
               {formatCurrencyINR(currentRule.tuitionFee)}
             </strong>

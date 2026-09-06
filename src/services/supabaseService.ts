@@ -211,6 +211,7 @@ export async function fetchFeeRulesFromDB(): Promise<CourseFeeRule[]> {
       if (!error && data && data.length > 0) {
         return data.map((row: any) => ({
           course: row.course,
+          session: row.session || '2026-2027',
           tuitionFee: Number(row.tuition_fee),
           admissionFee: Number(row.admission_fee),
           examFee: Number(row.exam_fee),
@@ -235,6 +236,7 @@ export async function saveFeeRulesToDB(rules: CourseFeeRule[]): Promise<void> {
     try {
       const rows = rules.map((r) => ({
         course: r.course,
+        session: r.session,
         tuition_fee: r.tuitionFee,
         admission_fee: r.admissionFee,
         exam_fee: r.examFee,

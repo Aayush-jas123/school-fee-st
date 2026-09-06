@@ -94,6 +94,7 @@ export interface AuditLogEntry {
 
 export interface CourseFeeRule {
   course: CourseType;
+  session: string;
   tuitionFee: number;
   admissionFee: number;
   examFee: number;

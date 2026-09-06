@@ -21,7 +21,7 @@ import { PrintableReceipt } from './components/PrintableReceipt';
 import { StudentReceiptModal } from './components/StudentReceiptModal';
 import { ImportDataModal } from './components/ImportDataModal';
 import { ReceiptCenterPanel } from './components/ReceiptCenterPanel';
-import { Receipt, Printer, UserPlus, DollarSign, Download, RefreshCw, CheckCircle2, Upload } from 'lucide-react';
+import { UserPlus, DollarSign, Download, RefreshCw, CheckCircle2, Upload } from 'lucide-react';
 
 import {
   getStoredStudents,
@@ -234,7 +234,7 @@ export function App() {
   // Apply fee rules to all students
   const handleApplyFeeRulesToAllStudents = async (rules: CourseFeeRule[]) => {
     const updatedStudents = students.map((student) => {
-      const rule = rules.find((r) => r.course === student.course);
+      const rule = rules.find((r) => r.course === student.course && r.session === student.session);
       if (!rule) return student;
 
       const totalAnnualFee = rule.tuitionFee;
@@ -521,7 +521,7 @@ export function App() {
 
           {/* TAB 6: FEE STRUCTURES */}
           {currentTab === 'structures' && (
-            <FeeStructureManager rules={feeRules} onSaveRules={handleSaveFeeRules} onApplyToAllStudents={handleApplyFeeRulesToAllStudents} isReadOnly={isReadOnlyMode} />
+            <FeeStructureManager rules={feeRules} sessions={availableSessions} onSaveRules={handleSaveFeeRules} onApplyToAllStudents={handleApplyFeeRulesToAllStudents} isReadOnly={isReadOnlyMode} />
           )}
         </main>
       </div>

@@ -8,6 +8,7 @@ const FEE_RULES_STORAGE_KEY = 'school_fee_system_rules_v2';
 export const DEFAULT_FEE_RULES: CourseFeeRule[] = [
   {
     course: 'JBT',
+    session: '2026-2027',
     tuitionFee: 45000,
     admissionFee: 5000,
     examFee: 4000,
@@ -24,6 +25,7 @@ export const DEFAULT_FEE_RULES: CourseFeeRule[] = [
   },
   {
     course: 'B.Ed',
+    session: '2026-2027',
     tuitionFee: 55000,
     admissionFee: 6000,
     examFee: 5000,

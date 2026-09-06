@@ -54,7 +54,8 @@ CREATE TABLE IF NOT EXISTS public.audit_logs (
 
 -- 3. Create 'fee_rules' Table
 CREATE TABLE IF NOT EXISTS public.fee_rules (
-    course TEXT PRIMARY KEY CHECK (course IN ('JBT', 'B.Ed')),
+    course TEXT NOT NULL CHECK (course IN ('JBT', 'B.Ed')),
+    session TEXT NOT NULL DEFAULT '2026-2027',
     tuition_fee NUMERIC NOT NULL DEFAULT 0,
     admission_fee NUMERIC NOT NULL DEFAULT 0,
     exam_fee NUMERIC NOT NULL DEFAULT 0,
@@ -63,7 +64,8 @@ CREATE TABLE IF NOT EXISTS public.fee_rules (
     lab_fee NUMERIC NOT NULL DEFAULT 0,
     late_fee_per_day NUMERIC NOT NULL DEFAULT 50,
     scholarship_discounts JSONB NOT NULL DEFAULT '{"SC": 10000, "ST": 10000, "OBC": 5000, "General": 0}'::jsonb,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    PRIMARY KEY (course, session)
 );
 
 -- Enable Row Level Security (RLS) & Public Access Policies for Web Application
@@ -84,11 +86,11 @@ CREATE POLICY "Allow public select on fee_rules" ON public.fee_rules FOR SELECT 
 CREATE POLICY "Allow public upsert on fee_rules" ON public.fee_rules FOR ALL USING (true);
 
 -- Insert Default Prescribed Fee Rules for JBT & B.Ed
-INSERT INTO public.fee_rules (course, tuition_fee, admission_fee, exam_fee, library_fee, development_fee, lab_fee, late_fee_per_day, scholarship_discounts)
+INSERT INTO public.fee_rules (course, session, tuition_fee, admission_fee, exam_fee, library_fee, development_fee, lab_fee, late_fee_per_day, scholarship_discounts)
 VALUES 
-    ('JBT', 45000, 5000, 4000, 3000, 5000, 3000, 50, '{"SC": 10000, "ST": 10000, "OBC": 5000, "General": 0}'::jsonb),
-    ('B.Ed', 55000, 6000, 5000, 4000, 5000, 3000, 75, '{"SC": 12000, "ST": 12000, "OBC": 6000, "General": 0}'::jsonb)
-ON CONFLICT (course) DO NOTHING;
+    ('JBT', '2026-2027', 45000, 5000, 4000, 3000, 5000, 3000, 50, '{"SC": 10000, "ST": 10000, "OBC": 5000, "General": 0}'::jsonb),
+    ('B.Ed', '2026-2027', 55000, 6000, 5000, 4000, 5000, 3000, 75, '{"SC": 12000, "ST": 12000, "OBC": 6000, "General": 0}'::jsonb)
+ON CONFLICT (course, session) DO NOTHING;
 
 -- Seed Initial Student Records (JBT & B.Ed)
 INSERT INTO public.students (

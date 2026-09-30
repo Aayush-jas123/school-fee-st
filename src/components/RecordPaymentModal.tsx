@@ -42,6 +42,16 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   const [showQrModal, setShowQrModal] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  // Compute EMI history for selected semester
+  const semesterEmiHistory = useMemo(() => {
+    if (!student) return [];
+    const targetSlot = (student.semesterFees || []).find(s => s.semester === selectedSemester);
+    if (targetSlot?.installments && targetSlot.installments.length > 0) {
+      return targetSlot.installments;
+    }
+    return student.paymentHistory.filter(p => p.targetSemester === selectedSemester).reverse();
+  }, [student, selectedSemester]);
+
   if (!student) return null;
 
   const handleSemesterChange = (sem: PeriodName) => {
@@ -51,15 +61,6 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
     setAmount(semRemaining > 0 ? semRemaining : 0);
     setRemark(`${sem} Fee Payment`);
   };
-
-  // Compute EMI history for selected semester
-  const semesterEmiHistory = useMemo(() => {
-    const targetSlot = (student.semesterFees || []).find(s => s.semester === selectedSemester);
-    if (targetSlot?.installments && targetSlot.installments.length > 0) {
-      return targetSlot.installments;
-    }
-    return student.paymentHistory.filter(p => p.targetSemester === selectedSemester).reverse();
-  }, [student, selectedSemester]);
 
   const emiCount = semesterEmiHistory.length;
   const emiTotalPaid = semesterEmiHistory.reduce((sum, e) => sum + e.amount, 0);

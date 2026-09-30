@@ -22,8 +22,13 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch event - network-first for HTML, cache-first for static assets
+// Fetch event - network-first for HTML, cache-first for same-origin static assets
 self.addEventListener('fetch', (event) => {
+  // Only handle same-origin GET requests; skip cross-origin (e.g. Supabase API) and non-GET requests
+  if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) {
+    return;
+  }
+
   // Always fetch HTML/navigation requests from network to get latest JS hashes
   if (event.request.destination === 'document') {
     event.respondWith(
@@ -52,6 +57,7 @@ self.addEventListener('fetch', (event) => {
       })
       .catch((err) => {
         console.log('[SW] Fetch failed:', err);
+        return new Response('Offline resource unavailable', { status: 503, statusText: 'Service Unavailable' });
       })
   );
 });

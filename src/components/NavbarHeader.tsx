@@ -14,6 +14,7 @@ interface NavbarHeaderProps {
   onSearchChange: (term: string) => void;
   availableSessions?: string[];
   userRole?: 'admin' | 'clerk';
+  isDbLive?: boolean;
 }
 
 export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
@@ -27,8 +28,9 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
   onSearchChange,
   availableSessions = [],
   userRole = 'admin',
+  isDbLive,
 }) => {
-  const isSupabaseActive = isSupabaseConfigured();
+  const isSupabaseActive = isDbLive !== undefined ? isDbLive : isSupabaseConfigured();
 
   return (
     <header className="bg-white/80 backdrop-blur-xl border-b border-stone-200/80 text-stone-900 sticky top-0 z-30 px-4 md:px-6 py-3 shadow-[0_1px_2px_rgba(120,100,80,0.06)]">

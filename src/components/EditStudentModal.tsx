@@ -11,21 +11,23 @@ interface EditStudentModalProps {
 }
 
 export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onClose, onSave }) => {
-  if (!student) return null;
-
-  const [formData, setFormData] = useState<Student>({ ...student });
+  const [formData, setFormData] = useState<Student>(() => (student ? { ...student } : ({} as Student)));
   const [showToast, setShowToast] = useState(false);
 
   // Available seat types for current course
-  const availableSeatTypes = useMemo(() => getSeatTypesForCourse(formData.course), [formData.course]);
+  const availableSeatTypes = useMemo(() => getSeatTypesForCourse(formData.course || 'B.Ed'), [formData.course]);
   const currentFeeRule = useMemo(
     () => DEFAULT_FEE_RULES.find((r) => r.course === formData.course) || DEFAULT_FEE_RULES[0],
     [formData.course]
   );
 
   useEffect(() => {
-    setFormData({ ...student });
+    if (student) {
+      setFormData({ ...student });
+    }
   }, [student]);
+
+  if (!student) return null;
 
   const handleChange = (field: keyof Student, value: any) => {
     setFormData((prev) => {

@@ -14,13 +14,13 @@ export const FeeReminderModal: React.FC<FeeReminderModalProps> = ({
   onClose,
   onReminderSent,
 }) => {
-  if (!student) return null;
-
   const [channel, setChannel] = useState<'WhatsApp' | 'Email' | 'SMS' | 'Printed Notice'>('WhatsApp');
   const [customLateFee, setCustomLateFee] = useState<number>(500);
   const [graceDays, setGraceDays] = useState<number>(7);
   const [showPrintDemandNotice, setShowPrintDemandNotice] = useState<boolean>(false);
   const [broadcastSent, setBroadcastSent] = useState<boolean>(false);
+
+  if (!student) return null;
 
   const totalPayableWithLateFee = student.remainingFees + customLateFee;
 

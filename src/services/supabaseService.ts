@@ -93,13 +93,31 @@ const mapStudentToRow = (student: Student) => {
   };
 };
 
+// Track whether Supabase is actively responding or unavailable (e.g. invalid host / offline)
+let isSupabaseReachable: boolean | null = null;
+
+export function getSupabaseReachable(): boolean {
+  return isSupabaseReachable === true;
+}
+
 // Async Student Operations
 export async function fetchStudentsFromDB(): Promise<Student[]> {
-  if (isSupabaseConfigured() && supabase) {
+  if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
+      // First, test connection with a lightweight check
+      const { data: existing, error: checkError } = await supabase.from('students').select('id').limit(1);
+
+      if (checkError) {
+        console.warn('[Supabase] Cloud database unavailable, using LocalStorage:', checkError.message);
+        isSupabaseReachable = false;
+        return getStoredStudents();
+      }
+
+      // Connection succeeded
+      isSupabaseReachable = true;
+
       // Only seed INITIAL_STUDENTS if the table is completely empty (first-time setup)
-      const { data: existing } = await supabase.from('students').select('id').limit(1);
-      if (!existing || existing.length === 0) {
+      if (Array.isArray(existing) && existing.length === 0) {
         const rowsToUpsert = INITIAL_STUDENTS.map(mapStudentToRow);
         await supabase.from('students').upsert(rowsToUpsert);
       }
@@ -110,7 +128,7 @@ export async function fetchStudentsFromDB(): Promise<Student[]> {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.warn('Supabase fetch error, falling back to local storage:', error.message);
+        console.warn('[Supabase] Fetch error, falling back to local storage:', error.message);
         return getStoredStudents();
       }
 
@@ -119,15 +137,16 @@ export async function fetchStudentsFromDB(): Promise<Student[]> {
         saveStoredStudents(fetchedStudents); // Sync to local storage backup
         return fetchedStudents;
       }
-    } catch (err) {
-      console.warn('Supabase connection failed, falling back to local storage:', err);
+    } catch (err: any) {
+      console.warn('[Supabase] Connection failed, falling back to local storage:', err?.message || err);
+      isSupabaseReachable = false;
     }
   }
   return getStoredStudents();
 }
 
 export async function syncAllStudentsToDB(studentsList: Student[] = INITIAL_STUDENTS): Promise<void> {
-  if (isSupabaseConfigured() && supabase) {
+  if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
       console.log(`[Supabase] Syncing ${studentsList.length} students to Supabase...`);
       const rows = studentsList.map(mapStudentToRow);
@@ -141,7 +160,7 @@ export async function syncAllStudentsToDB(studentsList: Student[] = INITIAL_STUD
       console.error('[Supabase] Failed to sync all students:', err);
     }
   } else {
-    console.log('[Supabase] Not configured, skipping sync');
+    console.log('[Supabase] Not configured or offline, skipping sync');
   }
 }
 
@@ -158,8 +177,8 @@ export async function saveStudentToDB(student: Student): Promise<void> {
   }
   saveStoredStudents(updatedList);
 
-  // Sync to Supabase if available
-  if (isSupabaseConfigured() && supabase) {
+  // Sync to Supabase if available and reachable
+  if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
       const row = mapStudentToRow(student);
       const { error } = await supabase.from('students').upsert(row);
@@ -172,7 +191,7 @@ export async function saveStudentToDB(student: Student): Promise<void> {
 
 // Async Audit Log Operations
 export async function fetchAuditLogsFromDB(): Promise<AuditLogEntry[]> {
-  if (isSupabaseConfigured() && supabase) {
+  if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
       const { data, error } = await supabase
         .from('audit_logs')
@@ -192,7 +211,7 @@ export async function fetchAuditLogsFromDB(): Promise<AuditLogEntry[]> {
 export async function addAuditLogToDB(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>): Promise<void> {
   addStoredAuditLog(entry);
 
-  if (isSupabaseConfigured() && supabase) {
+  if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
       const newLog = {
         id: `LOG-${Date.now().toString().slice(-4)}`,
@@ -211,7 +230,7 @@ export async function addAuditLogToDB(entry: Omit<AuditLogEntry, 'id' | 'timesta
 
 // Async Fee Rules Operations
 export async function fetchFeeRulesFromDB(): Promise<CourseFeeRule[]> {
-  if (isSupabaseConfigured() && supabase) {
+  if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
       const { data, error } = await supabase.from('fee_rules').select('*');
       if (!error && data && data.length > 0) {
@@ -239,7 +258,7 @@ export async function fetchFeeRulesFromDB(): Promise<CourseFeeRule[]> {
 export async function saveFeeRulesToDB(rules: CourseFeeRule[]): Promise<void> {
   saveStoredFeeRules(rules);
 
-  if (isSupabaseConfigured() && supabase) {
+  if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
       const rows = rules.map((r) => ({
         course: r.course,

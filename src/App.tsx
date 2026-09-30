@@ -40,6 +40,7 @@ import {
   addAuditLogToDB,
   fetchFeeRulesFromDB,
   saveFeeRulesToDB,
+  getSupabaseReachable,
 } from './services/supabaseService';
 import { exportStudentsToCSV, formatCurrencyINR } from './utils/exportUtils';
 
@@ -87,6 +88,7 @@ export function App() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [receiptSearch, setReceiptSearch] = useState('');
   const [receiptFilter, setReceiptFilter] = useState<'ALL' | 'Paid' | 'Partly Paid' | 'Unpaid'>('ALL');
+  const [isDbConnected, setIsDbConnected] = useState<boolean>(false);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -104,11 +106,13 @@ export function App() {
           fetchFeeRulesFromDB(),
         ]);
         console.log(`[App] Loaded ${fetchedStudents.length} students from database`);
+        setIsDbConnected(getSupabaseReachable());
         setStudents(fetchedStudents);
         setAuditLogs(fetchedLogs);
         setFeeRules(fetchedRules);
       } catch (err) {
         console.error('Error initializing database data:', err);
+        setIsDbConnected(false);
       }
     }
     loadCloudData();
@@ -378,6 +382,7 @@ export function App() {
         onSearchChange={setSearchTerm}
         availableSessions={availableSessions}
         userRole={userRole}
+        isDbLive={isDbConnected}
       />
 
       {/* Toast Notification Popup */}
@@ -614,15 +619,17 @@ export function App() {
       )}
 
       {/* View Student Details Modal */}
-      <StudentDetailModal
-        student={viewingStudent}
-        onClose={() => setViewingStudent(null)}
-        onEdit={(s) => setEditingStudent(s)}
-        onViewReceipt={(s, p) => setPrintableReceiptData({ student: s, payment: p })}
-        onCollectPayment={(s) => { setViewingStudent(null); setPaymentStudent(s); }}
-        onOpenReceiptCenter={(s) => { setViewingStudent(null); setReceiptStudent(s); }}
-        isReadOnly={blockEditing}
-      />
+      {viewingStudent && (
+        <StudentDetailModal
+          student={viewingStudent}
+          onClose={() => setViewingStudent(null)}
+          onEdit={(s) => setEditingStudent(s)}
+          onViewReceipt={(s, p) => setPrintableReceiptData({ student: s, payment: p })}
+          onCollectPayment={(s) => { setViewingStudent(null); setPaymentStudent(s); }}
+          onOpenReceiptCenter={(s) => { setViewingStudent(null); setReceiptStudent(s); }}
+          isReadOnly={blockEditing}
+        />
+      )}
 
       {/* Edit Student Modal */}
       {editingStudent && !blockEditing && (

@@ -234,7 +234,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
 
                   {/* Right: Quick Actions */}
                   <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-                    {!isReadOnly && student.remainingFees > 0 && (
+                    {!isReadOnly && (
                       <button
                         onClick={() => onCollectFee(student)}
                         className="px-3 py-1.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
@@ -383,7 +383,7 @@ export const ReceiptCenterPanel: React.FC<ReceiptCenterPanelProps> = ({
                         {student.paymentHistory.length} transaction{student.paymentHistory.length !== 1 ? 's' : ''} recorded
                       </div>
                       <div className="flex items-center gap-2">
-                        {!isReadOnly && student.remainingFees > 0 && (
+                        {!isReadOnly && (
                           <button
                             onClick={() => onCollectFee(student)}
                             className="px-3 py-1.5 rounded-lg bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-[11px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"

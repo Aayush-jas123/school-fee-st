@@ -516,7 +516,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student,
         {/* Modal Footer Actions */}
         <div className="p-4 md:p-6 bg-stone-50/60 border-t border-stone-200 flex items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
-            {!isReadOnly && student.remainingFees > 0 && onCollectPayment && (
+            {!isReadOnly && onCollectPayment && (
               <button
                 onClick={handleCollectFee}
                 className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold shadow-md transition-colors cursor-pointer"

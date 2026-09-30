@@ -667,7 +667,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                     {/* Action Column */}
                     <td className="py-3.5 px-4 text-center whitespace-nowrap">
                       <div className="flex items-center justify-center gap-1.5">
-                        {!isReadOnly && onRecordPayment && student.remainingFees > 0 && (
+                        {!isReadOnly && onRecordPayment && (
                           <button
                             onClick={() => onRecordPayment(student)}
                             title="Collect Fee Payment"

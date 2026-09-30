@@ -2,6 +2,7 @@ import type { Student, AuditLogEntry, CourseFeeRule } from '../types/feeSystem';
 import { INITIAL_STUDENTS } from '../data/mockStudents';
 
 const STUDENTS_STORAGE_KEY = 'school_fee_system_students_v3';
+const STUDENTS_BACKUP_KEY = 'school_fee_system_students_recovery_bak';
 const AUDIT_LOG_STORAGE_KEY = 'school_fee_system_audit_v2';
 const FEE_RULES_STORAGE_KEY = 'school_fee_system_rules_v2';
 
@@ -74,14 +75,29 @@ const DEFAULT_AUDIT_LOG: AuditLogEntry[] = [
 export function getStoredStudents(): Student[] {
   try {
     const raw = localStorage.getItem(STUDENTS_STORAGE_KEY);
-    if (!raw) {
-      console.log('[Storage] No data in localStorage, initializing with INITIAL_STUDENTS');
-      localStorage.setItem(STUDENTS_STORAGE_KEY, JSON.stringify(INITIAL_STUDENTS));
-      return INITIAL_STUDENTS;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        console.log(`[Storage] Loaded ${parsed.length} students from localStorage`);
+        return parsed;
+      }
     }
-    const parsed = JSON.parse(raw);
-    console.log(`[Storage] Loaded ${parsed.length} students from localStorage`);
-    return parsed;
+
+    // Try secondary recovery backup before falling back to mock data
+    const backupRaw = localStorage.getItem(STUDENTS_BACKUP_KEY);
+    if (backupRaw) {
+      const backupParsed = JSON.parse(backupRaw);
+      if (Array.isArray(backupParsed) && backupParsed.length > 0) {
+        console.log(`[Storage] Recovered ${backupParsed.length} students from recovery backup key`);
+        localStorage.setItem(STUDENTS_STORAGE_KEY, backupRaw);
+        return backupParsed;
+      }
+    }
+
+    console.log('[Storage] No data in localStorage, initializing with INITIAL_STUDENTS');
+    localStorage.setItem(STUDENTS_STORAGE_KEY, JSON.stringify(INITIAL_STUDENTS));
+    localStorage.setItem(STUDENTS_BACKUP_KEY, JSON.stringify(INITIAL_STUDENTS));
+    return INITIAL_STUDENTS;
   } catch (err) {
     console.error('Error loading students from localStorage:', err);
     return INITIAL_STUDENTS;
@@ -90,8 +106,13 @@ export function getStoredStudents(): Student[] {
 
 export function saveStoredStudents(students: Student[]): void {
   try {
-    localStorage.setItem(STUDENTS_STORAGE_KEY, JSON.stringify(students));
-    console.log(`[Storage] Saved ${students.length} students to localStorage`);
+    if (!Array.isArray(students)) return;
+    const serialized = JSON.stringify(students);
+    localStorage.setItem(STUDENTS_STORAGE_KEY, serialized);
+    if (students.length > 0) {
+      localStorage.setItem(STUDENTS_BACKUP_KEY, serialized);
+    }
+    console.log(`[Storage] Saved ${students.length} students to localStorage & recovery backup`);
   } catch (err) {
     console.error('Error saving students to localStorage:', err);
   }
@@ -119,7 +140,8 @@ export function addAuditLog(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>): voi
       id: `LOG-${Date.now().toString().slice(-4)}`,
       timestamp: new Date().toISOString(),
     };
-    const updated = [newLog, ...current];
+    // Keep max 200 logs to prevent localStorage quota exhaustion
+    const updated = [newLog, ...current].slice(0, 200);
     localStorage.setItem(AUDIT_LOG_STORAGE_KEY, JSON.stringify(updated));
   } catch (err) {
     console.error('Error writing audit log:', err);
@@ -150,6 +172,7 @@ export function saveFeeRules(rules: CourseFeeRule[]): void {
 export function resetToDemoData(): void {
   try {
     localStorage.setItem(STUDENTS_STORAGE_KEY, JSON.stringify(INITIAL_STUDENTS));
+    localStorage.setItem(STUDENTS_BACKUP_KEY, JSON.stringify(INITIAL_STUDENTS));
     localStorage.setItem(AUDIT_LOG_STORAGE_KEY, JSON.stringify(DEFAULT_AUDIT_LOG));
     localStorage.setItem(FEE_RULES_STORAGE_KEY, JSON.stringify(DEFAULT_FEE_RULES));
   } catch (err) {

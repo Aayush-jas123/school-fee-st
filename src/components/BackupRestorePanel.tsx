@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import type { Student, CourseFeeRule, AuditLogEntry } from '../types/feeSystem';
 import { formatCurrencyINR } from '../utils/exportUtils';
-import { saveStoredStudents, saveFeeRules } from '../utils/storage';
+import { getStoredStudents, getStoredFeeRules, getStoredAuditLogs, saveStoredStudents, saveFeeRules } from '../utils/storage';
 import { syncAllStudentsToDB, saveFeeRulesToDB } from '../services/supabaseService';
 
 interface BackupRestorePanelProps {
@@ -93,13 +93,21 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
 
   // Download full backup as JSON
   const handleDownloadBackup = () => {
+    // Include all stored students to ensure complete data backup
+    const storedStudents = getStoredStudents();
+    const studentsToExport = storedStudents.length >= students.length ? storedStudents : students;
+    const storedRules = getStoredFeeRules();
+    const rulesToExport = storedRules.length >= feeRules.length ? storedRules : feeRules;
+    const storedLogs = getStoredAuditLogs();
+    const logsToExport = storedLogs.length >= auditLogs.length ? storedLogs : auditLogs;
+
     const backup: BackupData = {
       version: '3.0',
       exportedAt: new Date().toISOString(),
       exportedBy: 'Shanti College Fee System',
-      students,
-      feeRules,
-      auditLogs,
+      students: studentsToExport,
+      feeRules: rulesToExport,
+      auditLogs: logsToExport,
     };
 
     const json = JSON.stringify(backup, null, 2);

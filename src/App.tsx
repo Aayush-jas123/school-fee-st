@@ -309,19 +309,41 @@ export function App() {
   // Handle bulk import from PDF/Excel
   const handleImportStudents = async (importedStudents: Student[]) => {
     console.log(`[Import] Starting import of ${importedStudents.length} students`);
-    const existingRegNos = new Set(students.map(s => s.registrationNo));
-    const newStudents = importedStudents.filter(s => !existingRegNos.has(s.registrationNo));
-    const duplicates = importedStudents.filter(s => existingRegNos.has(s.registrationNo));
+    // Read directly from storage to prevent any stale state closures
+    const currentStored = getStoredStudents();
+    const baseList = currentStored.length >= students.length ? currentStored : students;
 
-    // Only add NEW students (not duplicates) to avoid UNIQUE constraint violation on registration_no
-    const updatedStudents = [...newStudents, ...students];
+    const existingRegNos = new Set(
+      baseList.map((s) => (s.registrationNo || '').trim().toUpperCase()).filter(Boolean)
+    );
+
+    const newStudents: Student[] = [];
+    const duplicates: Student[] = [];
+
+    for (const student of importedStudents) {
+      const regKey = (student.registrationNo || '').trim().toUpperCase();
+      if (!regKey || existingRegNos.has(regKey)) {
+        duplicates.push(student);
+      } else {
+        existingRegNos.add(regKey);
+        newStudents.push({
+          ...student,
+          registrationNo: regKey,
+          id: student.id || `IMP-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        });
+      }
+    }
+
+    const updatedStudents = [...newStudents, ...baseList];
     console.log(`[Import] Total students after import: ${updatedStudents.length} (${newStudents.length} new, ${duplicates.length} duplicates skipped)`);
+
+    // Immediately persist to local storage & backup
     setStudents(updatedStudents);
     saveStoredStudents(updatedStudents);
 
-    // Bulk sync ALL students to Supabase to ensure persistence
+    // Bulk sync ALL students to Supabase to ensure cloud persistence
     await syncAllStudentsToDB(updatedStudents);
-    console.log(`[Import] Sync complete`);
+    console.log(`[Import] Cloud sync complete`);
 
     await addAuditLogToDB({
       action: 'Bulk Student Import',

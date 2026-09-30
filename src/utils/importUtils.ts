@@ -1,7 +1,7 @@
-import type { Student, CourseType, FeeStatusType, FeeBreakdown, SemesterFeeSlot, SemesterName } from '../types/feeSystem';
+import type { Student, CourseType, FeeStatusType, FeeBreakdown, SemesterFeeSlot, SemesterName, SeatType } from '../types/feeSystem';
 import * as XLSX from 'xlsx';
 
-// ─── Category Mapping ────────────────────────────────────────────────────────
+// ─── Category & Seat Mapping ──────────────────────────────────────────────────
 
 function mapCategory(raw: string): 'General' | 'OBC' | 'SC' | 'ST' {
   const upper = (raw || '').toUpperCase();
@@ -10,6 +10,16 @@ function mapCategory(raw: string): 'General' | 'OBC' | 'SC' | 'ST' {
   if (upper.includes('OTHER BACKWARD') || upper.includes('(OBC)')) return 'OBC';
   if (upper.includes('ECONOMICALLY WEAKER') || upper.includes('(EWS)')) return 'General';
   return 'General';
+}
+
+function mapSeatType(raw?: string): SeatType | undefined {
+  if (!raw) return undefined;
+  const s = raw.trim().toLowerCase();
+  if (s.includes('subsidised') && !s.includes('non')) return 'Subsidised';
+  if (s.includes('non-subsidised') || s.includes('nonsubsidised') || s.includes('non subsidised')) return 'Non-Subsidised';
+  if (s.includes('management')) return 'Management';
+  if (s.includes('normal')) return 'Normal';
+  return undefined;
 }
 
 function mapStream(raw: string): string {
@@ -58,17 +68,33 @@ interface RawRecord {
   fatherName: string;
   stream: string;
   totalFees: number;
+  paidTillNow?: number;
   category: string;
   seatType: string;
   counsellingRound: string;
+  phone?: string;
+  whatsappNo?: string;
+  email?: string;
+  address?: string;
 }
 
 function rawRecordToStudent(raw: RawRecord, course: CourseType, session: string, idx: number): Student {
   const regNo = raw.registrationNo.replace(/\s+/g, '').toUpperCase();
   const totalFees = raw.totalFees || 7056;
-  const paidTillNow = 0;
-  const remainingFees = totalFees;
+  const paidTillNow = Number(raw.paidTillNow || 0);
+  const remainingFees = Math.max(0, totalFees - paidTillNow);
   const category = mapCategory(raw.category);
+  const phone = (raw.phone || '').trim();
+  const whatsappNo = (raw.whatsappNo || phone || '').trim();
+  const email = (raw.email || '').trim();
+  const address = (raw.address || '').trim();
+
+  let feeStatus: FeeStatusType = 'Unpaid';
+  if (paidTillNow >= totalFees && totalFees > 0) {
+    feeStatus = 'Paid';
+  } else if (paidTillNow > 0) {
+    feeStatus = 'Partly Paid';
+  }
 
   const feeBreakdown: FeeBreakdown = {
     tuitionFee: 0,
@@ -84,21 +110,22 @@ function rawRecordToStudent(raw: RawRecord, course: CourseType, session: string,
     registrationNo: regNo,
     name: raw.name.trim().toUpperCase(),
     fatherName: raw.fatherName.trim().toUpperCase(),
-    phone: '',
-    whatsappNo: '',
-    email: '',
+    phone,
+    whatsappNo,
+    email,
     course,
     stream: mapStream(raw.stream),
+    seatType: mapSeatType(raw.seatType),
     semester: 'Sem 1',
-    currentSemester: 'Sem 1',
+    currentSemester: course === 'JBT' ? 'Session 1' : 'Sem 1',
     rollNo: raw.rollNo.replace(/\s+/g, ''),
     session,
     totalFees,
     paidTillNow,
     remainingFees,
-    feeStatus: 'Unpaid' as FeeStatusType,
+    feeStatus,
     nextDueDate: '2026-10-15',
-    address: '',
+    address,
     category,
     feeBreakdown,
     semesterFees: buildSemesterFees(totalFees, paidTillNow),
@@ -301,6 +328,11 @@ export async function parseAdmissionExcel(
       const category = String(findField(row, ['Student Category', 'StudentCategory', 'Category', 'category']) || '');
       const seatType = String(findField(row, ['Seat Type', 'SeatType', 'seat_type']) || '');
       const counsellingRound = String(findField(row, ['Counselling Round', 'CounsellingRound', 'Round', 'counselling_round']) || '');
+      const phone = String(findField(row, ['Phone', 'Phone Number', 'PhoneNumber', 'Mobile', 'Mobile Number', 'MobileNo', 'Contact', 'Contact Number', 'phone']) || '');
+      const whatsappNo = String(findField(row, ['WhatsApp', 'WhatsApp Number', 'WhatsAppNo', 'whatsapp_no']) || phone);
+      const email = String(findField(row, ['Email', 'Email Address', 'EmailAddress', 'email']) || '');
+      const address = String(findField(row, ['Address', 'Permanent Address', 'address']) || '');
+      const paidTillNow = Number(findField(row, ['Paid Till Now', 'Paid', 'PaidTillNow', 'Amount Paid', 'Fee Paid', 'paid_till_now']) || 0);
 
       if (!name || name.length < 2) continue;
 
@@ -313,9 +345,14 @@ export async function parseAdmissionExcel(
           fatherName,
           stream,
           totalFees,
+          paidTillNow,
           category,
           seatType,
           counsellingRound,
+          phone,
+          whatsappNo,
+          email,
+          address,
         },
         course,
         session,

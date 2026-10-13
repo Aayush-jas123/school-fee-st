@@ -189,3 +189,24 @@ export interface CourseFeeRule {
   periodFees?: Partial<Record<PeriodName, number>>;
 }
 
+// Standard institutional academic sessions across all views
+export const DEFAULT_ACADEMIC_SESSIONS: string[] = [
+  '2026-2027',
+  '2025-2026',
+  '2024-2025',
+  '2024-2026',
+  '2023-2025',
+  '2023-2024',
+  '2027-2028',
+];
+
+// Helper to get comprehensive list of sessions from standard list + fee rules + students
+export function getAllAvailableSessions(students: Student[] = [], feeRules: CourseFeeRule[] = []): string[] {
+  const sessionSet = new Set<string>([
+    ...DEFAULT_ACADEMIC_SESSIONS,
+    ...feeRules.map((r) => r.session).filter(Boolean),
+    ...students.map((s) => s.session).filter(Boolean),
+  ]);
+  return Array.from(sessionSet).sort((a, b) => b.localeCompare(a));
+}
+

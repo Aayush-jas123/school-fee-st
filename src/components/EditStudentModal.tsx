@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import type { Student, CourseType, FeeStatusType } from '../types/feeSystem';
-import { getSeatTypesForCourse, buildPeriodFeeSlots } from '../types/feeSystem';
+import { getSeatTypesForCourse, buildPeriodFeeSlots, DEFAULT_ACADEMIC_SESSIONS } from '../types/feeSystem';
 import { X, Save, CheckCircle2, Armchair } from 'lucide-react';
 import { DEFAULT_FEE_RULES } from '../utils/storage';
 
@@ -8,9 +8,10 @@ interface EditStudentModalProps {
   student: Student | null;
   onClose: () => void;
   onSave: (updatedStudent: Student) => void;
+  availableSessions?: string[];
 }
 
-export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onClose, onSave }) => {
+export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onClose, onSave, availableSessions }) => {
   const [formData, setFormData] = useState<Student>(() => (student ? { ...student } : ({} as Student)));
   const [showToast, setShowToast] = useState(false);
 
@@ -20,6 +21,14 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
     () => DEFAULT_FEE_RULES.find((r) => r.course === formData.course) || DEFAULT_FEE_RULES[0],
     [formData.course]
   );
+
+  const sessionsList = useMemo(() => {
+    const list = availableSessions && availableSessions.length > 0 ? [...availableSessions] : [...DEFAULT_ACADEMIC_SESSIONS];
+    if (formData.session && !list.includes(formData.session)) {
+      list.unshift(formData.session);
+    }
+    return list;
+  }, [availableSessions, formData.session]);
 
   useEffect(() => {
     if (student) {
@@ -305,11 +314,11 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               <select
                 value={formData.session}
                 onChange={(e) => handleChange('session', e.target.value)}
-                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none"
+                className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none cursor-pointer"
               >
-                <option value="2026-2027">2026-2027</option>
-                <option value="2024-2026">2024-2026</option>
-                <option value="2023-2025">2023-2025</option>
+                {sessionsList.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
               </select>
             </div>
 

@@ -6,6 +6,7 @@ import {
   Calendar, Tag, Trash2, Eye,
 } from 'lucide-react';
 import type { Student, CourseType } from '../types/feeSystem';
+import { DEFAULT_ACADEMIC_SESSIONS } from '../types/feeSystem';
 import { parseAdmissionPDF, parseAdmissionExcel, computeImportSummary } from '../utils/importUtils';
 import type { ImportSummary } from '../utils/importUtils';
 
@@ -17,9 +18,7 @@ interface ImportDataModalProps {
 
 type ImportStep = 'upload' | 'configure' | 'preview' | 'importing';
 
-const SESSION_OPTIONS = [
-  '2024-2025', '2025-2026', '2026-2027', '2027-2028', '2028-2029',
-];
+const SESSION_OPTIONS = DEFAULT_ACADEMIC_SESSIONS;
 
 const COURSE_OPTIONS: { value: CourseType; label: string; icon: typeof BookOpen }[] = [
   { value: 'B.Ed', label: 'B.Ed', icon: BookOpen },

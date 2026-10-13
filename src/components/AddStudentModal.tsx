@@ -1,16 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import type { Student, CourseType, SeatType, PeriodName } from '../types/feeSystem';
-import { getSeatTypesForCourse, getPeriodsForCourse, getPeriodYear } from '../types/feeSystem';
+import { getSeatTypesForCourse, getPeriodsForCourse, getPeriodYear, DEFAULT_ACADEMIC_SESSIONS } from '../types/feeSystem';
 import { X, UserPlus, GraduationCap, BookOpen, CheckCircle2, Armchair } from 'lucide-react';
 import { DEFAULT_FEE_RULES } from '../utils/storage';
 
 interface AddStudentModalProps {
   onClose: () => void;
   onAddStudent: (newStudent: Student) => void;
+  availableSessions?: string[];
 }
 
-export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAddStudent }) => {
+export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAddStudent, availableSessions }) => {
   const [course, setCourse] = useState<CourseType>('JBT');
   const [name, setName] = useState('');
   const [fatherName, setFatherName] = useState('');
@@ -342,9 +343,9 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = ({ onClose, onAdd
                 onChange={(e) => setSession(e.target.value)}
                 className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 focus:outline-none focus:border-rose-800/50 cursor-pointer"
               >
-                <option value="2026-2027">2026-2027</option>
-                <option value="2024-2026">2024-2026</option>
-                <option value="2023-2025">2023-2025</option>
+                {(availableSessions && availableSessions.length > 0 ? availableSessions : DEFAULT_ACADEMIC_SESSIONS).map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
               </select>
             </div>
 

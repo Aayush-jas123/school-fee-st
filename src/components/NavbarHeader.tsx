@@ -1,5 +1,6 @@
 import React from 'react';
 import type { CourseType } from '../types/feeSystem';
+import { DEFAULT_ACADEMIC_SESSIONS } from '../types/feeSystem';
 import { Building2, Search, Bell, LogOut, ChevronDown, Calendar, Database, Zap, X, Eye } from 'lucide-react';
 import { isSupabaseConfigured } from '../lib/supabase';
 
@@ -31,6 +32,14 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
   isDbLive,
 }) => {
   const isSupabaseActive = isDbLive !== undefined ? isDbLive : isSupabaseConfigured();
+
+  const sessionsToDisplay = React.useMemo(() => {
+    const list = availableSessions && availableSessions.length > 0 ? availableSessions : DEFAULT_ACADEMIC_SESSIONS;
+    if (selectedSession && selectedSession !== 'ALL' && !list.includes(selectedSession)) {
+      return [selectedSession, ...list];
+    }
+    return list;
+  }, [availableSessions, selectedSession]);
 
   return (
     <header className="bg-white/80 backdrop-blur-xl border-b border-stone-200/80 text-stone-900 sticky top-0 z-30 px-4 md:px-6 py-3 shadow-[0_1px_2px_rgba(120,100,80,0.06)]">
@@ -108,7 +117,7 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
                 className="bg-transparent border-none text-stone-700 text-xs font-semibold focus:outline-none cursor-pointer pr-1"
               >
                 <option value="ALL" className="bg-white">All Sessions</option>
-                {availableSessions.map((sess) => (
+                {sessionsToDisplay.map((sess) => (
                   <option key={sess} value={sess} className="bg-white">Session {sess}</option>
                 ))}
               </select>

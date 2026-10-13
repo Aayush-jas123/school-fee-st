@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { CourseType, FeeStatusType, Student, CourseStat, PaymentRecord, CourseFeeRule, AuditLogEntry } from './types/feeSystem';
-import { buildPeriodFeeSlots } from './types/feeSystem';
+import { buildPeriodFeeSlots, getAllAvailableSessions } from './types/feeSystem';
 import { COURSE_DEFINITIONS } from './data/mockStudents';
 import { LoginPage } from './views/LoginPage';
 import { CourseSelectionPage } from './views/CourseSelectionPage';
@@ -174,11 +174,10 @@ export function App() {
     });
   }, [students, selectedCourse, selectedSession]);
 
-  // Compute available sessions from student data (sorted descending)
+  // Compute available sessions from standard institutional sessions, fee rules, and student data (sorted descending)
   const availableSessions = useMemo(() => {
-    const sessions = new Set(students.map((s) => s.session).filter(Boolean));
-    return Array.from(sessions).sort((a, b) => b.localeCompare(a));
-  }, [students]);
+    return getAllAvailableSessions(students, feeRules);
+  }, [students, feeRules]);
 
   // Handle saving edited student record
   const handleSaveStudent = async (updatedStudent: Student) => {
@@ -628,6 +627,7 @@ export function App() {
         <AddStudentModal
           onClose={() => setShowAddStudent(false)}
           onAddStudent={handleAddStudentSuccess}
+          availableSessions={availableSessions}
         />
       )}
 
@@ -659,6 +659,7 @@ export function App() {
         student={editingStudent}
         onClose={() => setEditingStudent(null)}
         onSave={handleSaveStudent}
+        availableSessions={availableSessions}
       />
       )}
 

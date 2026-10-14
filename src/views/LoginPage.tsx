@@ -13,7 +13,7 @@ const CREDENTIALS = [
 ];
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
-  const [loginId, setLoginId] = useState('');
+  const [loginId, setLoginId] = useState('admin');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -122,7 +122,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   type="text"
                   value={loginId}
                   onChange={(e) => setLoginId(e.target.value)}
-                  placeholder="e.g. staff@shanticollege.edu.in"
+                  placeholder="admin"
+                  autoComplete="username"
                   className="w-full pl-10 pr-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-rose-800/50 focus:ring-2 focus:ring-stone-100 transition-all"
                 />
               </div>
@@ -145,13 +146,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
+                  placeholder="Enter password"
+                  autoComplete="new-password"
                   className="w-full pl-10 pr-10 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-rose-800/50 focus:ring-2 focus:ring-stone-100 transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-stone-400 hover:text-stone-600 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-stone-400 hover:text-stone-600 transition-colors cursor-pointer"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -179,7 +181,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <button
                 type="button"
                 onClick={() => setForgotModalOpen(true)}
-                className="text-stone-600 hover:text-stone-900 font-medium hover:underline flex items-center gap-1 transition-colors"
+                className="text-stone-600 hover:text-stone-900 font-medium hover:underline flex items-center gap-1 transition-colors cursor-pointer"
               >
                 Forgot Password?
               </button>
@@ -204,24 +206,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               )}
             </motion.button>
           </form>
-
-          {/* Demo Credentials Hint */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.4 }}
-            className="mt-5 p-3 rounded-xl bg-stone-50 border border-stone-200 text-[11px] text-stone-500 space-y-1"
-          >
-            <p className="font-semibold text-stone-600 text-center mb-1.5">Demo Credentials</p>
-            <div className="flex justify-between items-center">
-              <span><strong className="text-stone-700">Admin:</strong> admin / admin@123</span>
-              <span className="text-stone-400">Full Access</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span><strong className="text-stone-700">Clerk:</strong> clerk / clerk@123</span>
-              <span className="text-amber-600 font-medium">View Only</span>
-            </div>
-          </motion.div>
         </div>
 
         {/* Footer info */}

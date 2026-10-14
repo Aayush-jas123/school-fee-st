@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Lock, User, ShieldCheck, Building2, ArrowRight, HelpCircle } from 'lucide-react';
+import campusBg from '../assets/shanti-campus-bg.jpg';
 
 interface LoginPageProps {
   onLoginSuccess: (staffName: string, role: 'admin' | 'clerk') => void;
@@ -43,12 +44,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Subtle Background Pattern */}
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-stone-900">
+      {/* College Campus Background with Translucent Soft-Focus Treatment */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-stone-200/50 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-stone-200/40 rounded-full blur-[100px]" />
+        <img
+          src={campusBg}
+          alt="Shanti College Campus"
+          className="w-full h-full object-cover object-center scale-105 filter blur-[2.5px] brightness-[0.88] contrast-[1.05]"
+          loading="eager"
+        />
+        {/* Soft translucent atmospheric overlay - neither too clear nor too blurry */}
+        <div className="absolute inset-0 bg-stone-900/35 backdrop-blur-[1px]" />
+        {/* Subtle vignette gradient for optimal foreground readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/20 to-stone-950/40" />
       </div>
 
       <motion.div
@@ -58,7 +66,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         className="w-full max-w-md relative z-10"
       >
         {/* Main Card */}
-        <div className="relative bg-white border border-stone-200/80 rounded-2xl p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_40px_rgba(0,0,0,0.06)]">
+        <div className="relative bg-white/95 backdrop-blur-md border border-white/60 rounded-2xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
 
           {/* Header & Branding */}
           <div className="text-center mb-8 relative">
@@ -213,7 +221,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7, duration: 0.4 }}
-          className="text-center text-xs text-stone-400 mt-6"
+          className="text-center text-xs text-stone-200/90 drop-shadow-md mt-6 font-medium"
         >
           © 2026 Shanti College of Education • Approved by NCTE & State Council
         </motion.p>

@@ -35,6 +35,7 @@ import {
 import {
   fetchStudentsFromDB,
   saveStudentToDB,
+  deleteStudentFromDB,
   syncAllStudentsToDB,
   fetchAuditLogsFromDB,
   addAuditLogToDB,
@@ -191,6 +192,34 @@ export function App() {
     });
     refreshAuditLogs();
     showToast(`Updated student profile for ${updatedStudent.name}`);
+  };
+
+  // Handle removing / deleting a student from course
+  const handleDeleteStudent = async (studentId: string, registrationNo?: string, studentName?: string, courseName?: string) => {
+    // 1. Immediately remove from local state and storage
+    const currentStored = getStoredStudents();
+    const updated = currentStored.filter(
+      (s) => s.id !== studentId && (!registrationNo || s.registrationNo !== registrationNo)
+    );
+    setStudents(updated);
+    saveStoredStudents(updated);
+
+    if (editingStudent?.id === studentId) setEditingStudent(null);
+    if (viewingStudent?.id === studentId) setViewingStudent(null);
+
+    // 2. Remove from Supabase cloud database
+    await deleteStudentFromDB(studentId, registrationNo);
+
+    // 3. Record audit log
+    await addAuditLogToDB({
+      action: 'Student Removed from Course',
+      details: `Removed ${studentName || 'Student'} (${registrationNo || studentId}) from ${courseName || 'Course'} program`,
+      staffName,
+      type: 'STUDENT_EDIT',
+    });
+    refreshAuditLogs();
+
+    showToast(`Removed ${studentName || 'Student'} from ${courseName || 'Course'} program`);
   };
 
   // Handle adding new student
@@ -683,6 +712,7 @@ export function App() {
         student={editingStudent}
         onClose={() => setEditingStudent(null)}
         onSave={handleSaveStudent}
+        onDelete={handleDeleteStudent}
         availableSessions={availableSessions}
       />
       )}

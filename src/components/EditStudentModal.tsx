@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import type { Student, CourseType, FeeStatusType } from '../types/feeSystem';
 import { getSeatTypesForCourse, buildPeriodFeeSlots, DEFAULT_ACADEMIC_SESSIONS } from '../types/feeSystem';
-import { X, Save, CheckCircle2, Armchair } from 'lucide-react';
+import { X, Save, CheckCircle2, Armchair, Trash2, AlertTriangle } from 'lucide-react';
 import { DEFAULT_FEE_RULES } from '../utils/storage';
 
 interface EditStudentModalProps {
   student: Student | null;
   onClose: () => void;
   onSave: (updatedStudent: Student) => void;
+  onDelete?: (studentId: string, registrationNo?: string, studentName?: string, courseName?: string) => void;
   availableSessions?: string[];
 }
 
-export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onClose, onSave, availableSessions }) => {
+export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onClose, onSave, onDelete, availableSessions }) => {
   const [formData, setFormData] = useState<Student>(() => (student ? { ...student } : ({} as Student)));
   const [showToast, setShowToast] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Available seat types for current course
   const availableSeatTypes = useMemo(() => getSeatTypesForCourse(formData.course || 'B.Ed'), [formData.course]);
@@ -93,8 +95,8 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
         {/* Toast Alert */}
         {showToast && (
           <div className="bg-stone-100 border-b border-stone-300 p-3 text-center text-stone-700 text-xs font-semibold flex items-center justify-center gap-2">
-            <CheckCircle2 className="w-4 h-4" />
-            Record updated in prototype state successfully!
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            Record updated successfully!
           </div>
         )}
 
@@ -350,21 +352,73 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
           </div>
 
           {/* Form Actions */}
-          <div className="pt-4 border-t border-stone-200 flex items-center justify-end gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold shadow-lg shadow-rose-800/15 transition-all cursor-pointer"
-            >
-              <Save className="w-4 h-4" />
-              Save Changes (Prototype)
-            </button>
+          <div className="pt-4 border-t border-stone-200">
+            {confirmDelete ? (
+              <div className="w-full bg-red-50 border border-red-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 animate-in fade-in zoom-in-95 duration-150">
+                <div className="flex items-center gap-2.5 text-red-800 text-xs">
+                  <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                  <div>
+                    <p className="font-bold">Remove student from {formData.course || 'course'}?</p>
+                    <p className="text-[11px] text-red-600/90 mt-0.5">
+                      This will delete <strong>{formData.name}</strong> ({formData.registrationNo}) and their fee records from the system.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDelete(false)}
+                    className="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-100 text-stone-700 font-semibold text-xs border border-stone-300 transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onDelete && student) {
+                        onDelete(student.id, student.registrationNo, student.name, student.course);
+                        onClose();
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-colors cursor-pointer shadow-sm"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Yes, Remove Student
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-3">
+                {onDelete ? (
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDelete(true)}
+                    className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold transition-colors cursor-pointer"
+                    title={`Remove ${formData.name} from ${formData.course || 'Course'}`}
+                  >
+                    <Trash2 className="w-4 h-4 text-red-600" />
+                    <span>Remove from {formData.course || 'Course'}</span>
+                  </button>
+                ) : <div />}
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold shadow-lg shadow-rose-800/15 transition-all cursor-pointer"
+                  >
+                    <Save className="w-4 h-4" />
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </form>
       </div>

@@ -319,6 +319,36 @@ export async function saveStudentToDB(student: Student): Promise<void> {
   }
 }
 
+export async function deleteStudentFromDB(studentId: string, registrationNo?: string): Promise<boolean> {
+  // 1. Immediately remove from local storage
+  const current = getStoredStudents();
+  const updated = current.filter((s) => s.id !== studentId && (!registrationNo || s.registrationNo !== registrationNo));
+  saveStoredStudents(updated);
+
+  // 2. Remove from Supabase if connected
+  if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
+    try {
+      let query = supabase.from('students').delete();
+      if (registrationNo && registrationNo.trim()) {
+        query = query.or(`id.eq.${studentId},registration_no.eq.${registrationNo.trim()}`);
+      } else {
+        query = query.eq('id', studentId);
+      }
+      const { error } = await query;
+      if (error) {
+        console.error('[Supabase] Error deleting student from database:', error.message);
+        return false;
+      }
+      console.log(`[Supabase] Successfully deleted student (${studentId} / ${registrationNo}) from cloud database`);
+      return true;
+    } catch (err) {
+      console.error('[Supabase] Failed to delete student from cloud database:', err);
+      return false;
+    }
+  }
+  return true;
+}
+
 // Async Audit Log Operations
 export async function fetchAuditLogsFromDB(): Promise<AuditLogEntry[]> {
   if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {

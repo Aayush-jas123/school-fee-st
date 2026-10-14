@@ -195,7 +195,21 @@ export function App() {
 
   // Handle adding new student
   const handleAddStudentSuccess = async (newStudent: Student) => {
-    setStudents((prev) => [newStudent, ...prev]);
+    // 1. Immediately persist to localStorage synchronously
+    const currentStored = getStoredStudents();
+    const updated = [newStudent, ...currentStored.filter(s => s.id !== newStudent.id && s.registrationNo !== newStudent.registrationNo)];
+    setStudents(updated);
+    saveStoredStudents(updated);
+
+    // 2. Adjust course and session filter so user sees the new student immediately
+    if (newStudent.course && selectedCourse !== 'ALL' && selectedCourse !== newStudent.course) {
+      setSelectedCourse(newStudent.course);
+    }
+    if (newStudent.session && selectedSession !== 'ALL' && selectedSession !== newStudent.session) {
+      setSelectedSession(newStudent.session);
+    }
+
+    // 3. Sync to Supabase cloud database
     await saveStudentToDB(newStudent);
     await addAuditLogToDB({
       action: 'New Admission Registered',
@@ -339,6 +353,16 @@ export function App() {
     // Immediately persist to local storage & backup
     setStudents(updatedStudents);
     saveStoredStudents(updatedStudents);
+
+    // Adjust view filters so user immediately sees the imported records
+    if (newStudents.length > 0) {
+      if (newStudents[0].course && selectedCourse !== 'ALL' && selectedCourse !== newStudents[0].course) {
+        setSelectedCourse(newStudents[0].course);
+      }
+      if (newStudents[0].session && selectedSession !== 'ALL' && selectedSession !== newStudents[0].session) {
+        setSelectedSession(newStudents[0].session);
+      }
+    }
 
     // Bulk sync ALL students to Supabase to ensure cloud persistence
     await syncAllStudentsToDB(updatedStudents);

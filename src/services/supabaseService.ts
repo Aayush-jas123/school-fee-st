@@ -255,10 +255,14 @@ export async function syncAllStudentsToDB(studentsList?: Student[]): Promise<boo
 
       for (let i = 0; i < rows.length; i += BATCH_SIZE) {
         const batch = rows.slice(i, i + BATCH_SIZE);
-        const { error } = await supabase.from('students').upsert(batch, { onConflict: 'registration_no' });
+        let { error } = await supabase.from('students').upsert(batch, { onConflict: 'registration_no' });
         if (error) {
-          console.error(`[Supabase] Error syncing batch ${Math.floor(i / BATCH_SIZE) + 1}:`, error.message, error.details);
-          anyError = true;
+          // Fallback to conflict on primary key 'id'
+          const retry = await supabase.from('students').upsert(batch, { onConflict: 'id' });
+          if (retry.error) {
+            console.error(`[Supabase] Error syncing batch ${Math.floor(i / BATCH_SIZE) + 1}:`, retry.error.message, retry.error.details);
+            anyError = true;
+          }
         }
       }
 
@@ -298,8 +302,17 @@ export async function saveStudentToDB(student: Student): Promise<void> {
   if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
       const row = mapStudentToRow(student);
-      const { error } = await supabase.from('students').upsert(row, { onConflict: 'registration_no' });
-      if (error) console.error('Error saving student to Supabase:', error.message, error.details);
+      let { error } = await supabase.from('students').upsert(row, { onConflict: 'registration_no' });
+      if (error) {
+        const retry = await supabase.from('students').upsert(row, { onConflict: 'id' });
+        if (retry.error) {
+          console.error('[Supabase] Error saving student to Supabase:', retry.error.message, retry.error.details);
+        } else {
+          console.log(`[Supabase] Successfully saved ${student.name} via PK fallback`);
+        }
+      } else {
+        console.log(`[Supabase] Successfully saved ${student.name} to cloud database`);
+      }
     } catch (err) {
       console.error('Failed to sync student to Supabase:', err);
     }

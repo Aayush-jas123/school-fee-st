@@ -41,6 +41,10 @@ ALTER TABLE public.students ADD COLUMN IF NOT EXISTS whatsapp_no TEXT;
 ALTER TABLE public.students ADD COLUMN IF NOT EXISTS stream TEXT;
 ALTER TABLE public.students ADD COLUMN IF NOT EXISTS current_semester TEXT DEFAULT 'Sem 1';
 ALTER TABLE public.students ADD COLUMN IF NOT EXISTS semester_fees JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS discount_amount NUMERIC DEFAULT 0;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS scholarship_applied TEXT;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS last_reminder_sent TIMESTAMP WITH TIME ZONE;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS notes TEXT;
 
 -- 2. Create 'audit_logs' Table
 CREATE TABLE IF NOT EXISTS public.audit_logs (
@@ -52,8 +56,10 @@ CREATE TABLE IF NOT EXISTS public.audit_logs (
     type TEXT NOT NULL CHECK (type IN ('PAYMENT', 'STUDENT_ADD', 'STUDENT_EDIT', 'REMINDER', 'SETTINGS'))
 );
 
--- 3. Create 'fee_rules' Table
-CREATE TABLE IF NOT EXISTS public.fee_rules (
+-- 3. Create 'fee_rules' Table (Drop legacy structure if it exists to ensure composite primary key)
+DROP TABLE IF EXISTS public.fee_rules CASCADE;
+
+CREATE TABLE public.fee_rules (
     course TEXT NOT NULL CHECK (course IN ('JBT', 'B.Ed')),
     session TEXT NOT NULL DEFAULT '2026-2027',
     tuition_fee NUMERIC NOT NULL DEFAULT 0,
@@ -63,6 +69,7 @@ CREATE TABLE IF NOT EXISTS public.fee_rules (
     development_fee NUMERIC NOT NULL DEFAULT 0,
     lab_fee NUMERIC NOT NULL DEFAULT 0,
     late_fee_per_day NUMERIC NOT NULL DEFAULT 50,
+    seat_type_fees JSONB NOT NULL DEFAULT '[]'::jsonb,
     scholarship_discounts JSONB NOT NULL DEFAULT '{"SC": 10000, "ST": 10000, "OBC": 5000, "General": 0}'::jsonb,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (course, session)

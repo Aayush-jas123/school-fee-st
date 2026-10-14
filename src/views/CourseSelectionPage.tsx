@@ -1,18 +1,20 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import type { CourseStat, CourseType } from '../types/feeSystem';
-import { GraduationCap, BookOpen, ArrowRight, Building2, UserCheck, ChevronRight, Sparkles } from 'lucide-react';
+import { GraduationCap, BookOpen, ArrowRight, Building2, UserCheck, ChevronRight, Sparkles, LogOut } from 'lucide-react';
 
 interface CourseSelectionPageProps {
   courses: CourseStat[];
   onSelectCourse: (courseCode: CourseType | 'ALL') => void;
   staffName: string;
+  onLogout?: () => void;
 }
 
 export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
   courses,
   onSelectCourse,
   staffName,
+  onLogout,
 }) => {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 p-4 md:p-8 flex flex-col justify-center items-center relative overflow-hidden">
@@ -43,6 +45,19 @@ export const CourseSelectionPage: React.FC<CourseSelectionPageProps> = ({
             <span className="text-stone-700 flex items-center gap-1">
               <UserCheck className="w-3.5 h-3.5" /> {staffName}
             </span>
+            {onLogout && (
+              <>
+                <span className="text-stone-300">•</span>
+                <button
+                  onClick={onLogout}
+                  title="Sign out"
+                  className="text-stone-400 hover:text-rose-700 transition-colors flex items-center gap-1 cursor-pointer font-semibold"
+                >
+                  <LogOut className="w-3 h-3" />
+                  <span>Logout</span>
+                </button>
+              </>
+            )}
           </motion.div>
 
           <motion.h1

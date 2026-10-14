@@ -46,16 +46,67 @@ import {
 import { exportStudentsToCSV, formatCurrencyINR } from './utils/exportUtils';
 
 export function App() {
-  // Navigation & Authentication state
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [staffName, setStaffName] = useState('Dr. Rajesh Sharma');
-  const [userRole, setUserRole] = useState<'admin' | 'clerk'>('admin');
-  const [activeView, setActiveView] = useState<'course_select' | 'dashboard'>('course_select');
+  // Navigation & Authentication state (Persisted across refreshes)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('shanti_auth_session');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed?.isLoggedIn === true;
+      }
+    } catch {}
+    return false;
+  });
+
+  const [staffName, setStaffName] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('shanti_auth_session');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.staffName) return parsed.staffName;
+      }
+    } catch {}
+    return 'Dr. Rajesh Sharma';
+  });
+
+  const [userRole, setUserRole] = useState<'admin' | 'clerk'>(() => {
+    try {
+      const saved = localStorage.getItem('shanti_auth_session');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.role) return parsed.role;
+      }
+    } catch {}
+    return 'admin';
+  });
+
+  const [activeView, setActiveView] = useState<'course_select' | 'dashboard'>(() => {
+    try {
+      const saved = localStorage.getItem('shanti_active_view');
+      if (saved === 'dashboard' || saved === 'course_select') return saved;
+    } catch {}
+    return 'course_select';
+  });
+
   const [currentTab, setCurrentTab] = useState('dashboard');
 
-  // Filter & Selection state
-  const [selectedCourse, setSelectedCourse] = useState<CourseType | 'ALL'>('ALL');
-  const [selectedSession, setSelectedSession] = useState<string>('ALL');
+  // Filter & Selection state (Persisted across refreshes)
+  const [selectedCourse, setSelectedCourse] = useState<CourseType | 'ALL'>(() => {
+    try {
+      const saved = localStorage.getItem('shanti_selected_course');
+      if (saved === 'JBT' || saved === 'B.Ed' || saved === 'ALL') return saved as CourseType | 'ALL';
+    } catch {}
+    return 'ALL';
+  });
+
+  const [selectedSession, setSelectedSession] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('shanti_selected_session');
+      if (saved) return saved;
+    } catch {}
+    return 'ALL';
+  });
+
   const [selectedStatus, setSelectedStatus] = useState<FeeStatusType | 'ALL'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -130,10 +181,29 @@ export function App() {
     setUserRole(role);
     setIsLoggedIn(true);
     setActiveView('course_select');
+    try {
+      localStorage.setItem('shanti_auth_session', JSON.stringify({
+        isLoggedIn: true,
+        staffName: name,
+        role,
+        timestamp: Date.now(),
+      }));
+      localStorage.setItem('shanti_active_view', 'course_select');
+    } catch (e) {
+      console.warn('Failed to persist auth session:', e);
+    }
   };
 
   // Logout handler
   const handleLogout = () => {
+    try {
+      localStorage.removeItem('shanti_auth_session');
+      localStorage.removeItem('shanti_active_view');
+      localStorage.removeItem('shanti_selected_course');
+      localStorage.removeItem('shanti_selected_session');
+    } catch (e) {
+      console.warn('Failed to clear auth session:', e);
+    }
     setIsLoggedIn(false);
     setActiveView('course_select');
   };
@@ -143,6 +213,26 @@ export function App() {
     setSelectedCourse(courseCode);
     setActiveView('dashboard');
     setCurrentTab('dashboard');
+    try {
+      localStorage.setItem('shanti_selected_course', courseCode);
+      localStorage.setItem('shanti_active_view', 'dashboard');
+    } catch (e) {
+      console.warn('Failed to persist active view:', e);
+    }
+  };
+
+  const handleCourseChange = (course: CourseType | 'ALL') => {
+    setSelectedCourse(course);
+    try {
+      localStorage.setItem('shanti_selected_course', course);
+    } catch {}
+  };
+
+  const handleSessionChange = (session: string) => {
+    setSelectedSession(session);
+    try {
+      localStorage.setItem('shanti_selected_session', session);
+    } catch {}
   };
 
   // Compute live course statistics for JBT & B.Ed
@@ -438,6 +528,7 @@ export function App() {
         courses={courseStats}
         onSelectCourse={handleSelectCourseFromCards}
         staffName={staffName}
+        onLogout={handleLogout}
       />
     );
   }
@@ -447,9 +538,9 @@ export function App() {
       {/* Top Header Navbar */}
       <NavbarHeader
         selectedCourse={selectedCourse}
-        onCourseChange={(course) => setSelectedCourse(course)}
+        onCourseChange={handleCourseChange}
         selectedSession={selectedSession}
-        onSessionChange={(session) => setSelectedSession(session)}
+        onSessionChange={handleSessionChange}
         staffName={staffName}
         onLogout={handleLogout}
         searchTerm={searchTerm}
@@ -486,7 +577,10 @@ export function App() {
             if (tab === 'audit') setShowAuditModal(true);
             else setCurrentTab(tab);
           }}
-          onOpenCourseSelect={() => setActiveView('course_select')}
+          onOpenCourseSelect={() => {
+            setActiveView('course_select');
+            try { localStorage.setItem('shanti_active_view', 'course_select'); } catch {}
+          }}
           selectedCourse={selectedCourse}
         />
 

@@ -1,4 +1,5 @@
-import type { Student, CourseType, FeeStatusType, FeeBreakdown, SemesterFeeSlot, SemesterName, SeatType } from '../types/feeSystem';
+import type { Student, CourseType, FeeStatusType, FeeBreakdown, SeatType } from '../types/feeSystem';
+import { buildPeriodFeeSlots } from '../types/feeSystem';
 import * as XLSX from 'xlsx';
 
 // ─── Category & Seat Mapping ──────────────────────────────────────────────────
@@ -22,8 +23,12 @@ function mapSeatType(raw?: string): SeatType | undefined {
   return undefined;
 }
 
-function mapStream(raw: string): string {
+function mapStream(raw: string, course?: CourseType): string {
   const s = (raw || '').trim();
+  if (course === 'JBT') {
+    if (s.toLowerCase().includes('d.el.ed') || s.toLowerCase().includes('deled')) return 'D.El.Ed';
+    return s || 'D.El.Ed';
+  }
   if (s.toLowerCase().includes('non')) return 'Non-Medical';
   if (s.toLowerCase() === 'medical') return 'Medical';
   if (s.toLowerCase() === 'arts') return 'Arts';
@@ -34,29 +39,6 @@ function mapStream(raw: string): string {
 function generateId(regNo: string, course: string, idx: number): string {
   const clean = regNo.replace(/\s+/g, '').toUpperCase();
   return `IMP-${course}-${clean}-${String(idx).padStart(3, '0')}`;
-}
-
-function buildSemesterFees(totalFee: number, paidAmount: number): SemesterFeeSlot[] {
-  const perSem = totalFee > 0 ? Math.round(totalFee / 4) : 0;
-  let remaining = paidAmount;
-  const sems: SemesterName[] = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
-  const years: ('1st Year' | '2nd Year')[] = ['1st Year', '1st Year', '2nd Year', '2nd Year'];
-  const dueDates = ['2026-10-15', '2027-03-15', '2027-10-15', '2028-03-15'];
-
-  return sems.map((sem, i) => {
-    const paid = Math.min(remaining, perSem);
-    remaining = Math.max(0, remaining - paid);
-    const status: FeeStatusType = paid >= perSem && perSem > 0 ? 'Paid' : paid > 0 ? 'Partly Paid' : 'Unpaid';
-    return {
-      semester: sem,
-      year: years[i],
-      totalFee: perSem,
-      paidAmount: paid,
-      remainingAmount: Math.max(0, perSem - paid),
-      status,
-      dueDate: dueDates[i],
-    };
-  });
 }
 
 // ─── Raw Record → Student ────────────────────────────────────────────────────
@@ -80,12 +62,12 @@ interface RawRecord {
 
 function rawRecordToStudent(raw: RawRecord, course: CourseType, session: string, idx: number): Student {
   const regNo = raw.registrationNo.replace(/\s+/g, '').toUpperCase();
-  const totalFees = raw.totalFees || 7056;
+  const totalFees = Number(raw.totalFees || 0);
   const paidTillNow = Number(raw.paidTillNow || 0);
   const remainingFees = Math.max(0, totalFees - paidTillNow);
   const category = mapCategory(raw.category);
   const phone = (raw.phone || '').trim();
-  const whatsappNo = (raw.whatsappNo || phone || '').trim();
+  const whatsappNo = (raw.whatsappNo || '').trim();
   const email = (raw.email || '').trim();
   const address = (raw.address || '').trim();
 
@@ -105,6 +87,8 @@ function rawRecordToStudent(raw: RawRecord, course: CourseType, session: string,
     labFee: 0,
   };
 
+  const periodLabel = course === 'JBT' ? 'Session 1' : 'Sem 1';
+
   return {
     id: generateId(regNo, course, idx),
     registrationNo: regNo,
@@ -114,10 +98,10 @@ function rawRecordToStudent(raw: RawRecord, course: CourseType, session: string,
     whatsappNo,
     email,
     course,
-    stream: mapStream(raw.stream),
+    stream: mapStream(raw.stream, course),
     seatType: mapSeatType(raw.seatType),
-    semester: 'Sem 1',
-    currentSemester: course === 'JBT' ? 'Session 1' : 'Sem 1',
+    semester: periodLabel,
+    currentSemester: periodLabel,
     rollNo: raw.rollNo.replace(/\s+/g, ''),
     session,
     totalFees,
@@ -128,7 +112,7 @@ function rawRecordToStudent(raw: RawRecord, course: CourseType, session: string,
     address,
     category,
     feeBreakdown,
-    semesterFees: buildSemesterFees(totalFees, paidTillNow),
+    semesterFees: buildPeriodFeeSlots(course, totalFees, paidTillNow),
     paymentHistory: [],
     discountAmount: 0,
     notes: raw.counsellingRound ? `Counselling: ${raw.counsellingRound.trim()}` : undefined,
@@ -144,7 +128,11 @@ interface TextItem {
   w: number;
 }
 
-export async function parseAdmissionPDF(file: File): Promise<{ students: Student[]; detectedSession: string }> {
+export async function parseAdmissionPDF(
+  file: File,
+  course: CourseType = 'B.Ed',
+  session: string = '2024-2025'
+): Promise<{ students: Student[]; detectedSession: string }> {
   const pdfjsLib = await import('pdfjs-dist');
 
   // Use CDN worker
@@ -159,7 +147,7 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
     .map((it: any) => it.str)
     .join(' ');
   const sessionMatch = firstPageText.match(/(\d{4})\s*[-–]\s*(\d{4})/);
-  const detectedSession = sessionMatch ? `${sessionMatch[1]}-${sessionMatch[2]}` : '';
+  const detectedSession = sessionMatch ? `${sessionMatch[1]}-${sessionMatch[2]}` : session;
 
   // Header items to filter out
   const HEADER_PATTERNS = [
@@ -211,91 +199,189 @@ export async function parseAdmissionPDF(file: File): Promise<{ students: Student
       }))
       .filter(it => !isHeaderItem(it.str));
 
-    // Find registration number items
+    // Find registration number items (standard B.Ed pattern like H24A123456)
     const regNoItems = items.filter(it =>
       /^[A-Z]\d{2}[A-Z]\d{5,8}$/i.test(it.str.replace(/\s+/g, ''))
     );
-    if (regNoItems.length === 0) continue;
 
-    // Sort by y descending (top to bottom)
-    regNoItems.sort((a, b) => b.y - a.y);
+    if (regNoItems.length > 0) {
+      // Sort by y descending (top to bottom)
+      regNoItems.sort((a, b) => b.y - a.y);
 
-    // Compute midpoints between consecutive reg nos for record boundaries
-    const boundaries: number[] = [];
-    for (let i = 0; i < regNoItems.length - 1; i++) {
-      boundaries.push((regNoItems[i].y + regNoItems[i + 1].y) / 2);
-    }
+      // Compute midpoints between consecutive reg nos for record boundaries
+      const boundaries: number[] = [];
+      for (let i = 0; i < regNoItems.length - 1; i++) {
+        boundaries.push((regNoItems[i].y + regNoItems[i + 1].y) / 2);
+      }
 
-    // Process each record
-    for (let i = 0; i < regNoItems.length; i++) {
-      const upperBound = i === 0 ? 9999 : boundaries[i - 1];
-      const lowerBound = i === regNoItems.length - 1 ? -9999 : boundaries[i];
+      // Process each record
+      for (let i = 0; i < regNoItems.length; i++) {
+        const upperBound = i === 0 ? 9999 : boundaries[i - 1];
+        const lowerBound = i === regNoItems.length - 1 ? -9999 : boundaries[i];
 
-      // Collect items within y-range, filter out leftover header text
-      const recordItems = items.filter(it =>
-        it.y <= upperBound && it.y > lowerBound && it.x > 100
-      );
+        // Collect items within y-range, filter out leftover header text
+        const recordItems = items.filter(it =>
+          it.y <= upperBound && it.y > lowerBound && it.x > 100
+        );
 
-      // Assign to columns by x-position
-      let sno = '', regNoStr = '';
-      const nameParts: string[] = [], fatherParts: string[] = [];
-      const streamParts: string[] = [], categoryParts: string[] = [];
-      let fee = '';
+        // Assign to columns by x-position
+        let sno = '', regNoStr = '';
+        const nameParts: string[] = [], fatherParts: string[] = [];
+        const streamParts: string[] = [], categoryParts: string[] = [];
+        let fee = '';
 
-      for (const it of recordItems) {
-        const s = it.str;
-        if (it.x < 170) {
-          if (/^\d+$/.test(s)) sno = s;
-        } else if (it.x < 260) {
-          if (/^[A-Z]\d{2}[A-Z]\d{5,8}$/i.test(s.replace(/\s+/g, ''))) {
-            regNoStr = s.replace(/\s+/g, '').toUpperCase();
+        for (const it of recordItems) {
+          const s = it.str;
+          if (it.x < 170) {
+            if (/^\d+$/.test(s)) sno = s;
+          } else if (it.x < 260) {
+            if (/^[A-Z]\d{2}[A-Z]\d{5,8}$/i.test(s.replace(/\s+/g, ''))) {
+              regNoStr = s.replace(/\s+/g, '').toUpperCase();
+            }
+          } else if (it.x < 315) {
+            nameParts.push(s);
+          } else if (it.x < 390) {
+            fatherParts.push(s);
+          } else if (it.x >= 410 && it.x < 460) {
+            streamParts.push(s);
+          } else if (it.x >= 460 && it.x < 510) {
+            if (/^\d+\.?\d*$/.test(s)) fee = s;
+          } else if (it.x >= 510 && it.x < 580) {
+            categoryParts.push(s);
           }
-        } else if (it.x < 315) {
-          nameParts.push(s);
-        } else if (it.x < 390) {
-          fatherParts.push(s);
-        } else if (it.x >= 410 && it.x < 460) {
-          streamParts.push(s);
-        } else if (it.x >= 460 && it.x < 510) {
-          if (/^\d+\.?\d*$/.test(s)) fee = s;
-        } else if (it.x >= 510 && it.x < 580) {
-          categoryParts.push(s);
+        }
+
+        const name = joinTextParts(nameParts);
+        const fatherName = joinTextParts(fatherParts);
+        const stream = cleanStream(joinTextParts(streamParts));
+        const category = joinTextParts(categoryParts);
+        const totalFees = fee ? parseFloat(fee) : course === 'B.Ed' ? 7056 : 0;
+
+        if (!name || name.length < 2 || !regNoStr) continue;
+
+        globalIdx++;
+        const student = rawRecordToStudent(
+          {
+            registrationNo: regNoStr,
+            rollNo: sno || regNoStr,
+            name,
+            fatherName,
+            stream,
+            totalFees,
+            category,
+            seatType: '',
+            counsellingRound: '',
+          },
+          course,
+          detectedSession,
+          globalIdx,
+        );
+        allStudents.push(student);
+      }
+    } else {
+      // Fallback: Group items into horizontal lines (by y position with 5px tolerance)
+      const rowGroups: { y: number; items: TextItem[] }[] = [];
+      const sortedByY = [...items].sort((a, b) => b.y - a.y);
+
+      for (const item of sortedByY) {
+        let placed = false;
+        for (const grp of rowGroups) {
+          if (Math.abs(grp.y - item.y) <= 5) {
+            grp.items.push(item);
+            placed = true;
+            break;
+          }
+        }
+        if (!placed) {
+          rowGroups.push({ y: item.y, items: [item] });
         }
       }
 
-      const name = joinTextParts(nameParts);
-      const fatherName = joinTextParts(fatherParts);
-      const stream = cleanStream(joinTextParts(streamParts));
-      const category = joinTextParts(categoryParts);
-      const totalFees = fee ? parseFloat(fee) : 7056;
+      for (const grp of rowGroups) {
+        // Sort items in line by x position (left to right)
+        grp.items.sort((a, b) => a.x - b.x);
+        const lineParts = grp.items.map(it => it.str);
 
-      if (!name || name.length < 2 || !regNoStr) continue;
+        // Check if row has at least roll number / sno and a student name
+        // e.g. [1, 809, MAHAK, CAHIN SINGH RANA, D.El.Ed]
+        let rollOrReg = '';
+        let studentName = '';
+        let fatherName = '';
+        let streamStr = '';
 
-      globalIdx++;
-      const student = rawRecordToStudent(
-        {
-          registrationNo: regNoStr,
-          rollNo: sno,
-          name,
-          fatherName,
-          stream,
-          totalFees,
-          category,
-          seatType: '',
-          counsellingRound: '',
-        },
-        'B.Ed',
-        detectedSession,
-        globalIdx,
-      );
-      allStudents.push(student);
+        for (let i = 0; i < lineParts.length; i++) {
+          const part = lineParts[i];
+          if (!rollOrReg && /^\d{2,10}$/.test(part)) {
+            rollOrReg = part;
+          } else if (rollOrReg && !studentName && /^[A-Za-z\s.]{2,40}$/.test(part) && !isHeaderItem(part)) {
+            studentName = part;
+          } else if (studentName && !fatherName && /^[A-Za-z\s.]{2,40}$/.test(part) && !isHeaderItem(part)) {
+            fatherName = part;
+          } else if (fatherName && !streamStr && /^[A-Za-z\s.-]{2,20}$/.test(part)) {
+            streamStr = part;
+          }
+        }
+
+        if (studentName && studentName.length >= 2 && rollOrReg) {
+          globalIdx++;
+          const student = rawRecordToStudent(
+            {
+              registrationNo: rollOrReg,
+              rollNo: rollOrReg,
+              name: studentName,
+              fatherName,
+              stream: streamStr || (course === 'JBT' ? 'D.El.Ed' : 'Arts'),
+              totalFees: 0,
+              category: 'General',
+              seatType: '',
+              counsellingRound: '',
+            },
+            course,
+            detectedSession,
+            globalIdx,
+          );
+          allStudents.push(student);
+        }
+      }
     }
   }
 
   return { students: allStudents, detectedSession };
 }
 
-// ─── EXCEL PARSING ───────────────────────────────────────────────────────────
+// ─── EXCEL & CSV PARSING ─────────────────────────────────────────────────────
+
+function normalizeKey(k: string): string {
+  return String(k || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function findFieldValue(row: Record<string, any>, aliases: string[], excludeKeywords: string[] = []): any {
+  const rowKeys = Object.keys(row);
+
+  // 1. Exact normalized match
+  for (const alias of aliases) {
+    const normAlias = normalizeKey(alias);
+    const matchedKey = rowKeys.find(k => normalizeKey(k) === normAlias);
+    if (matchedKey && row[matchedKey] !== undefined && row[matchedKey] !== '') {
+      return row[matchedKey];
+    }
+  }
+
+  // 2. Contains match (excluding false-positive keys like 'father' for student name)
+  for (const alias of aliases) {
+    const normAlias = normalizeKey(alias);
+    const matchedKey = rowKeys.find(k => {
+      const normK = normalizeKey(k);
+      if (excludeKeywords.some(ex => normK.includes(normalizeKey(ex)))) return false;
+      return normK.includes(normAlias);
+    });
+    if (matchedKey && row[matchedKey] !== undefined && row[matchedKey] !== '') {
+      return row[matchedKey];
+    }
+  }
+
+  return '';
+}
 
 export async function parseAdmissionExcel(
   file: File,
@@ -310,49 +396,129 @@ export async function parseAdmissionExcel(
 
   for (const sheetName of workbook.SheetNames) {
     const sheet = workbook.Sheets[sheetName];
-    const jsonData = XLSX.utils.sheet_to_json<Record<string, any>>(sheet, { defval: '' });
+    // Read raw matrix of cells to dynamically locate the real header row
+    const rawMatrix = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, defval: '' });
+    if (!rawMatrix || rawMatrix.length === 0) continue;
 
-    for (const row of jsonData) {
-      // Try to find registration number from various column name patterns
-      const regNo = findField(row, ['Registration No', 'RegistrationNo', 'Reg No', 'RegNo', 'registration_no']) as string;
+    // Scan first 15 rows to find the row with the most matching header keywords
+    let headerRowIdx = 0;
+    let maxMatches = 0;
+    const headerKeywords = ['roll', 'reg', 'name', 'father', 'stream', 'sno', 's.no', 'fee', 'admission', 'student'];
+
+    for (let i = 0; i < Math.min(15, rawMatrix.length); i++) {
+      const row = rawMatrix[i];
+      if (!Array.isArray(row)) continue;
+      const matchCount = row.filter(cell => {
+        const norm = normalizeKey(String(cell || ''));
+        return headerKeywords.some(kw => norm.includes(normalizeKey(kw)));
+      }).length;
+
+      if (matchCount > maxMatches) {
+        maxMatches = matchCount;
+        headerRowIdx = i;
+      }
+    }
+
+    const headerRow = (rawMatrix[headerRowIdx] || []).map(cell => String(cell || '').trim());
+    const dataRows = rawMatrix.slice(headerRowIdx + 1);
+
+    for (const r of dataRows) {
+      if (!Array.isArray(r) || r.every(cell => cell === '' || cell === null || cell === undefined)) {
+        continue;
+      }
+
+      // Convert row to key-value object using the trimmed headers
+      const rowObj: Record<string, any> = {};
+      headerRow.forEach((hdr, idx) => {
+        if (hdr) rowObj[hdr] = r[idx] !== undefined ? r[idx] : '';
+      });
+
+      // Extract Student Name (explicitly exclude father/mother/parent/guardian)
+      const rawName = String(
+        findFieldValue(
+          rowObj,
+          ['Student Name', 'Candidate Name', 'Name of Student', 'Student', 'Full Name', 'Name'],
+          ['father', 'mother', 'parent', 'guardian']
+        ) || ''
+      ).trim();
+
+      const cleanName = rawName.replace(/\s+/g, ' ');
+      const invalidNames = ['NULL', 'VACANT', 'N/A', 'NA', 'NONE', 'EMPTY', 'AVAILABLE', '-', '--'];
+      if (!cleanName || cleanName.length < 2 || invalidNames.includes(cleanName.toUpperCase())) {
+        continue;
+      }
+
+      // Extract Roll No & Reg No
+      const rawRollNo = findFieldValue(rowObj, ['Roll Number', 'Roll No', 'RollNo', 'Roll_No', 'Roll', 'Class Roll No', 'Exam Roll No']);
+      const rawRegNo = findFieldValue(rowObj, ['Registration No', 'Registration Number', 'RegistrationNo', 'Reg No', 'RegNo', 'Reg. No', 'Reg Number', 'Application No', 'Enrollment No', 'Enrolment No', 'Form No']);
+      const rawSno = findFieldValue(rowObj, ['S.No', 'SNo', 'Serial No', 'Sr.No', 'Sr No', 'Sl No', 'S No']);
+
+      let rollNo = String(rawRollNo !== '' ? rawRollNo : '').trim().replace(/\.0$/, '');
+      let regNo = String(rawRegNo !== '' ? rawRegNo : '').trim().replace(/\.0$/, '');
+
+      // JBT & General handling:
+      // If registration number is missing/empty, use roll number as registration number.
+      // If roll number is missing/empty, use registration number as roll number.
+      if (!regNo && rollNo) {
+        regNo = rollNo;
+      } else if (!rollNo && regNo) {
+        rollNo = regNo;
+      } else if (!regNo && !rollNo) {
+        const sno = String(rawSno || '').trim().replace(/\.0$/, '');
+        if (sno) {
+          rollNo = sno;
+          regNo = sno;
+        } else {
+          rollNo = String(globalIdx + 1);
+          regNo = String(globalIdx + 1);
+        }
+      }
+
       if (!regNo) continue;
 
-      const cleanRegNo = String(regNo).replace(/\s+/g, '').toUpperCase();
-      if (cleanRegNo.length < 5) continue;
+      // Father's Name
+      const rawFather = String(
+        findFieldValue(rowObj, ["Father's Name", 'Father Name', 'FatherName', "Father's", 'Father', 'Guardian Name', 'Parent Name']) || ''
+      ).trim();
 
-      const rollNo = String(findField(row, ['Roll Number', 'RollNumber', 'Roll No', 'RollNo', 'roll_no']) || '');
-      const name = String(findField(row, ['Name', 'Student Name', 'name']) || '').trim().toUpperCase();
-      const fatherName = String(findField(row, ["Father's Name", 'Father Name', 'FatherName', "Father's", 'father_name']) || '').trim().toUpperCase();
-      const stream = String(findField(row, ['Stream', 'stream']) || 'Arts');
-      const totalFees = Number(findField(row, ['Total Admission Fee', 'TotalAdmissionFee', 'Admission Fee', 'total_fees']) || 7056);
-      const category = String(findField(row, ['Student Category', 'StudentCategory', 'Category', 'category']) || '');
-      const seatType = String(findField(row, ['Seat Type', 'SeatType', 'seat_type']) || '');
-      const counsellingRound = String(findField(row, ['Counselling Round', 'CounsellingRound', 'Round', 'counselling_round']) || '');
-      const phone = String(findField(row, ['Phone', 'Phone Number', 'PhoneNumber', 'Mobile', 'Mobile Number', 'MobileNo', 'Contact', 'Contact Number', 'phone']) || '');
-      const whatsappNo = String(findField(row, ['WhatsApp', 'WhatsApp Number', 'WhatsAppNo', 'whatsapp_no']) || phone);
-      const email = String(findField(row, ['Email', 'Email Address', 'EmailAddress', 'email']) || '');
-      const address = String(findField(row, ['Address', 'Permanent Address', 'address']) || '');
-      const paidTillNow = Number(findField(row, ['Paid Till Now', 'Paid', 'PaidTillNow', 'Amount Paid', 'Fee Paid', 'paid_till_now']) || 0);
+      // Stream
+      const rawStream = String(findFieldValue(rowObj, ['Stream', 'Branch', 'Trade', 'Department']) || '').trim();
 
-      if (!name || name.length < 2) continue;
+      // Fees
+      const rawTotalFees = findFieldValue(rowObj, ['Total Admission Fee', 'Total Admission Fees', 'Admission Fee', 'Total Fees', 'Total Fee', 'Fee', 'Fees', 'Amount']);
+      const totalFees = rawTotalFees !== '' && !isNaN(Number(rawTotalFees)) ? Number(rawTotalFees) : 0;
+
+      const rawPaid = findFieldValue(rowObj, ['Paid Till Now', 'Amount Paid', 'Paid Fee', 'Fee Paid', 'Paid', 'PaidTillNow']);
+      const paidTillNow = rawPaid !== '' && !isNaN(Number(rawPaid)) ? Number(rawPaid) : 0;
+
+      // Seat Type & Category
+      const rawSeatType = String(findFieldValue(rowObj, ['Seat Type', 'SeatType', 'Allotted Seat', 'Seat Category', 'Seat', 'Quota']) || '').trim();
+      const rawCategory = String(findFieldValue(rowObj, ['Category', 'Student Category', 'Social Category', 'Caste', 'Allotted Category']) || '').trim();
+
+      // Contact details - leave empty if not in file as requested
+      const rawPhone = String(findFieldValue(rowObj, ['Phone', 'Phone Number', 'Mobile', 'Mobile Number', 'Mobile No', 'Contact', 'Contact No']) || '').trim().replace(/\.0$/, '');
+      const rawWhatsapp = String(findFieldValue(rowObj, ['WhatsApp', 'WhatsApp Number', 'WhatsApp No', 'WhatsAppNo']) || '').trim().replace(/\.0$/, '');
+      const rawEmail = String(findFieldValue(rowObj, ['Email', 'Email Address', 'Mail']) || '').trim();
+      const rawAddress = String(findFieldValue(rowObj, ['Address', 'Permanent Address', 'Residence']) || '').trim();
+      const counsellingRound = String(findFieldValue(rowObj, ['Counselling Round', 'CounsellingRound', 'Round']) || '').trim();
 
       globalIdx++;
       const student = rawRecordToStudent(
         {
-          registrationNo: cleanRegNo,
+          registrationNo: regNo,
           rollNo,
-          name,
-          fatherName,
-          stream,
+          name: cleanName,
+          fatherName: rawFather,
+          stream: rawStream,
           totalFees,
           paidTillNow,
-          category,
-          seatType,
+          category: rawCategory,
+          seatType: rawSeatType,
           counsellingRound,
-          phone,
-          whatsappNo,
-          email,
-          address,
+          phone: rawPhone,
+          whatsappNo: rawWhatsapp,
+          email: rawEmail,
+          address: rawAddress,
         },
         course,
         session,
@@ -363,22 +529,6 @@ export async function parseAdmissionExcel(
   }
 
   return allStudents;
-}
-
-function findField(row: Record<string, any>, possibleKeys: string[]): any {
-  for (const key of possibleKeys) {
-    // Exact match
-    if (row[key] !== undefined && row[key] !== '') return row[key];
-    // Case-insensitive match
-    const found = Object.keys(row).find(k => k.toLowerCase().replace(/[\s_]/g, '') === key.toLowerCase().replace(/[\s_]/g, ''));
-    if (found && row[found] !== undefined && row[found] !== '') return row[found];
-  }
-  // Fallback: partial match
-  for (const key of possibleKeys) {
-    const found = Object.keys(row).find(k => k.toLowerCase().includes(key.toLowerCase()));
-    if (found && row[found] !== undefined && row[found] !== '') return row[found];
-  }
-  return '';
 }
 
 // ─── IMPORT SUMMARY ──────────────────────────────────────────────────────────
@@ -399,9 +549,10 @@ export function computeImportSummary(students: Student[], session: string): Impo
   for (const s of students) {
     byStream[s.stream || 'Arts'] = (byStream[s.stream || 'Arts'] || 0) + 1;
     byCategory[s.category] = (byCategory[s.category] || 0) + 1;
-    const seat = s.notes?.includes('Management') ? 'Management Quota' : s.notes?.includes('HP') ? 'HP Quota' : 'Other';
+    const seat = s.seatType || 'Not Set';
     bySeatType[seat] = (bySeatType[seat] || 0) + 1;
   }
 
   return { totalRecords: students.length, byStream, byCategory, bySeatType, session };
 }
+

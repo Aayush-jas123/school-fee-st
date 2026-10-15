@@ -441,11 +441,11 @@ export const StudentTable: React.FC<StudentTableProps> = ({
               </tr>
             ) : (
               paginatedStudents.map((student) => {
-                const whatsapp = student.whatsappNo || student.phone;
+                const whatsapp = student.whatsappNo || student.phone || '';
                 const cleanPhone = whatsapp.replace(/[^0-9]/g, '');
-                const waLink = `https://wa.me/91${cleanPhone.slice(-10)}?text=${encodeURIComponent(
+                const waLink = cleanPhone.length >= 10 ? `https://wa.me/91${cleanPhone.slice(-10)}?text=${encodeURIComponent(
                   `Dear ${student.name}, this is an official fee update from Shanti College of Education.`
-                )}`;
+                )}` : '#';
 
                 return (
                   <tr key={student.id} className="hover:bg-stone-50 transition-colors group">
@@ -469,27 +469,33 @@ export const StudentTable: React.FC<StudentTableProps> = ({
 
                     {/* Father / Guardian */}
                     <td className="py-3.5 px-4 text-stone-700 whitespace-nowrap">
-                      {student.fatherName}
+                      {student.fatherName || '—'}
                     </td>
 
                     {/* Phone & WhatsApp Direct Chat */}
                     <td className="py-3.5 px-4 text-stone-700 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-[11px] flex items-center gap-1 text-stone-700">
-                          <Phone className="w-3 h-3 text-stone-600" />
-                          {student.phone}
-                        </span>
-                        <a
-                          href={waLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={`Chat on WhatsApp with ${student.name}`}
-                          className="px-2 py-0.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 flex items-center gap-1 text-[10px] font-bold transition-all"
-                        >
-                          <MessageSquare className="w-3 h-3" />
-                          <span>WhatsApp</span>
-                        </a>
-                      </div>
+                      {student.phone ? (
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[11px] flex items-center gap-1 text-stone-700">
+                            <Phone className="w-3 h-3 text-stone-600" />
+                            {student.phone}
+                          </span>
+                          {cleanPhone.length >= 10 && (
+                            <a
+                              href={waLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={`Chat on WhatsApp with ${student.name}`}
+                              className="px-2 py-0.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 flex items-center gap-1 text-[10px] font-bold transition-all"
+                            >
+                              <MessageSquare className="w-3 h-3" />
+                              <span>WhatsApp</span>
+                            </a>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-[11px] text-stone-400 italic">—</span>
+                      )}
                     </td>
 
                     {/* Course, Stream & Semester */}

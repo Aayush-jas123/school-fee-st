@@ -132,10 +132,10 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               <label className="block text-stone-500 font-semibold mb-1">Phone Number</label>
               <input
                 type="text"
-                value={formData.phone}
+                value={formData.phone || ''}
                 onChange={(e) => handleChange('phone', e.target.value)}
+                placeholder="e.g. 9816012345 (Optional)"
                 className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-mono focus:border-rose-800/50 focus:outline-none"
-                required
               />
             </div>
 
@@ -144,8 +144,9 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
               <label className="block text-stone-500 font-semibold mb-1">WhatsApp Number</label>
               <input
                 type="text"
-                value={formData.whatsappNo || formData.phone}
+                value={formData.whatsappNo || ''}
                 onChange={(e) => handleChange('whatsappNo', e.target.value)}
+                placeholder="e.g. 9816012345 (Optional)"
                 className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-700 font-mono focus:border-rose-800/50 focus:outline-none"
               />
             </div>
@@ -227,14 +228,27 @@ export const EditStudentModal: React.FC<EditStudentModalProps> = ({ student, onC
             <div>
               <label className="block text-stone-500 font-semibold mb-1">Academic Stream</label>
               <select
-                value={formData.stream || 'Arts'}
+                value={formData.stream || (formData.course === 'JBT' ? 'D.El.Ed' : 'Arts')}
                 onChange={(e) => handleChange('stream', e.target.value)}
                 className="w-full bg-stone-50/60 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-medium focus:border-rose-800/50 focus:outline-none cursor-pointer"
               >
-                <option value="Arts">Arts</option>
-                <option value="Non-Medical">Non-Medical</option>
-                <option value="Medical">Medical</option>
-                <option value="Commerce">Commerce</option>
+                {formData.course === 'JBT' ? (
+                  <>
+                    <option value="D.El.Ed">D.El.Ed</option>
+                    <option value="General">General</option>
+                    <option value="Arts">Arts</option>
+                    <option value="Non-Medical">Non-Medical</option>
+                    <option value="Medical">Medical</option>
+                    <option value="Commerce">Commerce</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="Arts">Arts</option>
+                    <option value="Non-Medical">Non-Medical</option>
+                    <option value="Medical">Medical</option>
+                    <option value="Commerce">Commerce</option>
+                  </>
+                )}
               </select>
             </div>
 

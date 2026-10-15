@@ -40,10 +40,29 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
 
   const PREVIEW_PER_PAGE = 15;
 
-  // Detect file type on selection
+  // Detect file type and auto-detect course/session from file name
   const handleFileSelect = useCallback((f: File) => {
     setError(null);
     const ext = f.name.split('.').pop()?.toLowerCase();
+
+    // Auto-detect course from filename (e.g. D.El.Ed, JBT, B.Ed)
+    if (/d\.?el\.?ed|jbt/i.test(f.name)) {
+      setCourse('JBT');
+    } else if (/b\.?ed/i.test(f.name)) {
+      setCourse('B.Ed');
+    }
+
+    // Auto-detect session from filename (e.g. 24-26 -> 2024-2026, 2024-2026, 2024-25, etc.)
+    const sessMatch = f.name.match(/(20\d{2}|\d{2})\s*[-_–]\s*(20\d{2}|\d{2})/);
+    if (sessMatch) {
+      const y1 = sessMatch[1].length === 2 ? `20${sessMatch[1]}` : sessMatch[1];
+      const y2 = sessMatch[2].length === 2 ? `20${sessMatch[2]}` : sessMatch[2];
+      const candidateSess = `${y1}-${y2}`;
+      if (SESSION_OPTIONS.includes(candidateSess)) {
+        setSession(candidateSess);
+      }
+    }
+
     if (ext === 'pdf') {
       setFileType('pdf');
       setFile(f);
@@ -78,7 +97,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
       let detectedSession = session;
 
       if (fileType === 'pdf') {
-        const result = await parseAdmissionPDF(file);
+        const result = await parseAdmissionPDF(file, course, session);
         students = result.students;
         if (result.detectedSession) {
           detectedSession = result.detectedSession;
@@ -121,7 +140,11 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
 
   // Remove a student from preview
   const handleRemoveStudent = (idx: number) => {
-    setParsedStudents(prev => prev.filter((_, i) => i !== idx));
+    setParsedStudents(prev => {
+      const updated = prev.filter((_, i) => i !== idx);
+      setSummary(computeImportSummary(updated, session));
+      return updated;
+    });
   };
 
   const previewTotalPages = Math.ceil(parsedStudents.length / PREVIEW_PER_PAGE);
@@ -411,9 +434,11 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                       <tr className="bg-stone-100">
                         <th className="px-3 py-2.5 text-left text-[10px] font-bold text-stone-500 uppercase tracking-wider">#</th>
                         <th className="px-3 py-2.5 text-left text-[10px] font-bold text-stone-500 uppercase tracking-wider">Reg. No</th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-stone-500 uppercase tracking-wider">Name</th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-stone-500 uppercase tracking-wider">Roll No</th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-stone-500 uppercase tracking-wider">Student Name</th>
                         <th className="px-3 py-2.5 text-left text-[10px] font-bold text-stone-500 uppercase tracking-wider">Father's Name</th>
                         <th className="px-3 py-2.5 text-left text-[10px] font-bold text-stone-500 uppercase tracking-wider">Stream</th>
+                        <th className="px-3 py-2.5 text-left text-[10px] font-bold text-stone-500 uppercase tracking-wider">Seat Type</th>
                         <th className="px-3 py-2.5 text-left text-[10px] font-bold text-stone-500 uppercase tracking-wider">Category</th>
                         <th className="px-3 py-2.5 text-right text-[10px] font-bold text-stone-500 uppercase tracking-wider">Fee</th>
                         <th className="px-3 py-2.5 text-center text-[10px] font-bold text-stone-500 uppercase tracking-wider">Action</th>
@@ -430,17 +455,28 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                           >
                             <td className="px-3 py-2 text-stone-600 font-mono">{globalIdx + 1}</td>
                             <td className="px-3 py-2 text-stone-700 font-mono font-semibold">{student.registrationNo}</td>
+                            <td className="px-3 py-2 text-stone-700 font-mono">{student.rollNo || '—'}</td>
                             <td className="px-3 py-2 text-stone-900 font-semibold">{student.name}</td>
-                            <td className="px-3 py-2 text-stone-500">{student.fatherName}</td>
+                            <td className="px-3 py-2 text-stone-500">{student.fatherName || '—'}</td>
                             <td className="px-3 py-2">
                               <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
                                 student.stream === 'Non-Medical' ? 'bg-stone-100 text-stone-700' :
                                 student.stream === 'Medical' ? 'bg-stone-100 text-stone-700' :
                                 student.stream === 'Commerce' ? 'bg-stone-100 text-stone-700' :
+                                student.stream === 'D.El.Ed' ? 'bg-stone-100 text-stone-800' :
                                 'bg-stone-50 text-stone-500'
                               }`}>
-                                {student.stream}
+                                {student.stream || 'Arts'}
                               </span>
+                            </td>
+                            <td className="px-3 py-2">
+                              {student.seatType ? (
+                                <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-stone-100 text-stone-700">
+                                  {student.seatType}
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-stone-400 italic">—</span>
+                              )}
                             </td>
                             <td className="px-3 py-2">
                               <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
@@ -453,7 +489,7 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                               </span>
                             </td>
                             <td className="px-3 py-2 text-right text-stone-700 font-mono font-semibold">
-                              ₹{student.totalFees.toLocaleString('en-IN')}
+                              {student.totalFees > 0 ? `₹${student.totalFees.toLocaleString('en-IN')}` : <span className="text-stone-400 italic font-normal text-[10px]">₹0 (Set Later)</span>}
                             </td>
                             <td className="px-3 py-2 text-center">
                               <button
@@ -469,6 +505,17 @@ export function ImportDataModal({ onClose, onImport, existingStudentIds }: Impor
                       })}
                     </tbody>
                   </table>
+                </div>
+              </div>
+
+              {/* Informative Note for missing columns */}
+              <div className="flex items-start gap-2.5 text-stone-700 bg-stone-100/80 border border-stone-200 rounded-2xl p-3.5 text-xs">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-stone-600" />
+                <div className="space-y-0.5">
+                  <p className="font-bold text-stone-800">Note on Blank / Missing Fields</p>
+                  <p className="text-stone-600 leading-relaxed">
+                    Unspecified data (such as WhatsApp numbers, seat types, or fee amounts) will remain blank. After creating the directory, you can easily complete or update each student's details manually using the <strong>Edit Student</strong> feature in the Student Directory.
+                  </p>
                 </div>
               </div>
 

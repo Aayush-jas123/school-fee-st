@@ -2,16 +2,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Lock, User, ShieldCheck, Building2, ArrowRight, HelpCircle } from 'lucide-react';
 import campusBg from '../assets/shanti-campus-bg.jpg';
+import { INSTITUTION_CONFIG, DEFAULT_CREDENTIALS } from '../config/institutionConfig';
+import { PORTAL_THEME } from '../theme/portalTheme';
 
 interface LoginPageProps {
   onLoginSuccess: (staffName: string, role: 'admin' | 'clerk') => void;
 }
-
-// Hardcoded credential store
-const CREDENTIALS = [
-  { id: 'admin', password: 'admin@123', name: 'Dr. Rajesh Sharma (Accounts Officer)', role: 'admin' as const },
-  { id: 'clerk', password: 'clerk@123', name: 'Staff Viewer (Clerk)', role: 'clerk' as const },
-];
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [loginId, setLoginId] = useState('admin');
@@ -22,6 +18,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
 
+  const { classes } = PORTAL_THEME;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
@@ -31,7 +29,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     }
     setIsLoading(true);
     setTimeout(() => {
-      const match = CREDENTIALS.find(
+      const match = DEFAULT_CREDENTIALS.find(
         (c) => c.id === loginId.trim().toLowerCase() && c.password === password
       );
       if (match) {
@@ -44,19 +42,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-stone-900">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#050505]">
       {/* College Campus Background with Translucent Soft-Focus Treatment */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img
           src={campusBg}
-          alt="Shanti College Campus"
+          alt={INSTITUTION_CONFIG.name}
           className="w-full h-full object-cover object-center scale-105 filter blur-[2.5px] brightness-[0.88] contrast-[1.05]"
           loading="eager"
         />
-        {/* Soft translucent atmospheric overlay - neither too clear nor too blurry */}
-        <div className="absolute inset-0 bg-stone-900/35 backdrop-blur-[1px]" />
+        {/* Soft translucent atmospheric overlay */}
+        <div className="absolute inset-0 bg-[#050505]/50 backdrop-blur-[1px]" />
         {/* Subtle vignette gradient for optimal foreground readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/20 to-stone-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/80 via-[#050505]/30 to-[#050505]/50" />
       </div>
 
       <motion.div
@@ -66,7 +64,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         className="w-full max-w-md relative z-10"
       >
         {/* Main Card */}
-        <div className="relative bg-[#0a0a0a] border-2 border-[#FF1493] rounded-2xl p-8 shadow-[0_0_50px_rgba(255,20,147,0.3)]">
+        <div className={classes.loginCard}>
 
           {/* Header & Branding */}
           <div className="text-center mb-8 relative">
@@ -74,7 +72,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#FF1493] mb-4 shadow-lg shadow-[#FF1493]/30"
+              className={`inline-flex items-center justify-center ${classes.iconBadge} mb-4 mx-auto`}
             >
               <Building2 className="w-6 h-6 text-[#0a0a0a]" />
             </motion.div>
@@ -85,15 +83,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               transition={{ delay: 0.3, duration: 0.4 }}
               className="text-xl font-bold tracking-tight text-[#FF1493]"
             >
-              Shanti College of Education
+              {INSTITUTION_CONFIG.name}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.4 }}
-              className="text-sm text-[#7FFF00] mt-1.5 flex items-center justify-center gap-1.5 font-medium"
+              className={`text-sm ${classes.subtitle} mt-1.5 flex items-center justify-center gap-1.5`}
             >
-              <ShieldCheck className="w-4 h-4 text-[#7FFF00]" /> Staff Fee Management Portal
+              <ShieldCheck className="w-4 h-4 text-[#7FFF00]" /> {INSTITUTION_CONFIG.portalName}
             </motion.p>
           </div>
 
@@ -119,7 +117,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35, duration: 0.4 }}
             >
-              <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#7FFF00] mb-2">
+              <label className={classes.inputLabel}>
                 Staff Login ID / Email
               </label>
               <div className="relative group">
@@ -132,7 +130,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   onChange={(e) => setLoginId(e.target.value)}
                   placeholder="admin"
                   autoComplete="username"
-                  className="login-input w-full pl-10 pr-4 py-3 bg-[#000000] border border-[#FF1493] rounded-xl text-[#7FFF00] placeholder-[#7FFF00]/40 text-sm focus:outline-none focus:border-[#7FFF00] focus:ring-2 focus:ring-[#7FFF00]/30 transition-all selection:bg-[#FF1493] selection:text-[#0a0a0a]"
+                  className={classes.input}
                 />
               </div>
             </motion.div>
@@ -143,7 +141,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.4 }}
             >
-              <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#7FFF00] mb-2">
+              <label className={classes.inputLabel}>
                 Password
               </label>
               <div className="relative group">
@@ -156,7 +154,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter password"
                   autoComplete="new-password"
-                  className="login-input w-full pl-10 pr-10 py-3 bg-[#000000] border border-[#FF1493] rounded-xl text-[#7FFF00] placeholder-[#7FFF00]/40 text-sm focus:outline-none focus:border-[#7FFF00] focus:ring-2 focus:ring-[#7FFF00]/30 transition-all selection:bg-[#FF1493] selection:text-[#0a0a0a]"
+                  className={classes.input}
                 />
                 <button
                   type="button"
@@ -181,7 +179,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border border-[#FF1493] bg-[#000000] accent-[#FF1493] cursor-pointer"
+                  className={classes.checkbox}
                 />
                 Remember me on this device
               </label>
@@ -189,7 +187,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <button
                 type="button"
                 onClick={() => setForgotModalOpen(true)}
-                className="text-[#7FFF00] hover:text-[#FF1493] font-medium hover:underline flex items-center gap-1 transition-colors cursor-pointer"
+                className={classes.link}
               >
                 Forgot Password?
               </button>
@@ -202,7 +200,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               transition={{ delay: 0.5, duration: 0.4 }}
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 px-4 rounded-xl bg-[#FF1493] text-[#0a0a0a] text-sm font-bold shadow-lg shadow-[#FF1493]/30 hover:bg-[#FF1493]/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className={classes.primaryBtn}
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-[#0a0a0a]/30 border-t-[#0a0a0a] rounded-full animate-spin" />
@@ -223,7 +221,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           transition={{ delay: 0.7, duration: 0.4 }}
           className="text-center text-xs text-stone-200/90 drop-shadow-md mt-6 font-medium"
         >
-          © 2026 Shanti College of Education • Approved by NCTE & State Council
+          {INSTITUTION_CONFIG.copyright}
         </motion.p>
       </motion.div>
 
@@ -245,16 +243,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               className="bg-[#0a0a0a] border-2 border-[#FF1493] rounded-2xl max-w-sm w-full p-6 text-[#7FFF00] shadow-[0_0_50px_rgba(255,20,147,0.4)]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="w-12 h-12 rounded-xl bg-[#FF1493] text-[#0a0a0a] flex items-center justify-center mb-4 shadow-md shadow-[#FF1493]/30">
-                <HelpCircle className="w-6 h-6" />
+              <div className={`w-12 h-12 rounded-xl ${classes.iconBadge} mb-4 shadow-md`}>
+                <HelpCircle className="w-6 h-6 text-[#0a0a0a]" />
               </div>
               <h3 className="text-lg font-bold text-[#FF1493] mb-2">Password Reset Assistance</h3>
-              <p className="text-sm text-[#7FFF00]/90 leading-relaxed mb-4">
+              <p className={`text-sm ${classes.mutedText} leading-relaxed mb-4`}>
                 For security compliance, staff passwords must be reset by the IT Administrator.
               </p>
               <div className="bg-[#000000] p-3 rounded-xl border border-[#FF1493] text-xs space-y-1.5 mb-5 text-[#7FFF00]">
-                <p><strong className="text-[#FF1493]">IT Helpdesk Email:</strong> admin@shanticollege.edu.in</p>
-                <p><strong className="text-[#FF1493]">Internal Helpline:</strong> Ext. 104 / +91 172 298104</p>
+                <p><strong className="text-[#FF1493]">IT Helpdesk Email:</strong> {INSTITUTION_CONFIG.contact.itEmail}</p>
+                <p><strong className="text-[#FF1493]">Internal Helpline:</strong> {INSTITUTION_CONFIG.contact.helpline}</p>
               </div>
               <button
                 onClick={() => setForgotModalOpen(false)}

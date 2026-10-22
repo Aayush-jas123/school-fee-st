@@ -1,4 +1,4 @@
-const CACHE_NAME = 'school-fee-system-v2';
+const CACHE_NAME = 'school-fee-system-v3';
 
 // Install event - skip waiting to activate new SW immediately
 self.addEventListener('install', (_event) => {
@@ -11,10 +11,8 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('[SW] Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
+          console.log('[SW] Deleting cache:', cacheName);
+          return caches.delete(cacheName);
         })
       );
     })
@@ -24,6 +22,9 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - network-first for HTML, cache-first for same-origin static assets
 self.addEventListener('fetch', (event) => {
+  if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1') {
+    return;
+  }
   // Only handle same-origin GET requests; skip cross-origin (e.g. Supabase API) and non-GET requests
   if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) {
     return;

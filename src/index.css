@@ -279,3 +279,15 @@
   background: rgba(159, 18, 57, 0.12);
   color: #1c1917;
 }
+
+/* === LOGIN BOX AUTOFILL PRESERVATION === */
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:hover, 
+.login-input:-webkit-autofill:focus,
+.login-input:-webkit-autofill:active {
+  -webkit-text-fill-color: #7FFF00 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #000000 inset !important;
+  box-shadow: 0 0 0px 1000px #000000 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: #7FFF00;
+}

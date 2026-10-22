@@ -6,6 +6,7 @@ import {
   getStoredStudents,
   saveStoredStudents,
   getStoredAuditLogs,
+  saveStoredAuditLogs,
   addAuditLog as addStoredAuditLog,
   getStoredFeeRules,
   saveFeeRules as saveStoredFeeRules,
@@ -49,6 +50,25 @@ const mapRowToStudent = (row: any): Student => {
 
   const parsedPaymentHistory = parseJsonField<PaymentRecord[]>(row.payment_history, []);
   const parsedSemesterFees = parseJsonField<any>(row.semester_fees, null);
+  const totalFees = Number(row.total_fees || 0);
+  const discountAmount = Number(row.discount_amount || 0);
+  const effectiveTotal = Math.max(0, totalFees - discountAmount);
+
+  // Compute total paid from actual payment history if history exists
+  const paymentHistorySum = parsedPaymentHistory.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+  const paidTillNow = Math.max(Number(row.paid_till_now || 0), paymentHistorySum);
+  const remainingFees = Math.max(0, effectiveTotal - paidTillNow);
+
+  let feeStatus: Student['feeStatus'] = row.fee_status;
+  if (!['Paid', 'Partly Paid', 'Unpaid', 'Overdue'].includes(feeStatus)) {
+    if (effectiveTotal > 0 && paidTillNow >= effectiveTotal) feeStatus = 'Paid';
+    else if (paidTillNow > 0) feeStatus = 'Partly Paid';
+    else feeStatus = 'Unpaid';
+  } else if (effectiveTotal > 0 && paidTillNow >= effectiveTotal) {
+    feeStatus = 'Paid';
+  } else if (paidTillNow > 0 && feeStatus === 'Unpaid') {
+    feeStatus = 'Partly Paid';
+  }
 
   return {
     id: row.id,
@@ -65,20 +85,21 @@ const mapRowToStudent = (row: any): Student => {
     currentSemester: row.current_semester || row.semester || (row.course === 'JBT' ? 'Session 1' : 'Sem 1'),
     rollNo: row.roll_no || '',
     session: row.session,
-    totalFees: Number(row.total_fees || 0),
-    paidTillNow: Number(row.paid_till_now || 0),
-    remainingFees: Number(row.remaining_fees || 0),
-    feeStatus: row.fee_status,
+    totalFees,
+    paidTillNow,
+    remainingFees,
+    feeStatus,
     nextDueDate: row.next_due_date || '',
     address: row.address || '',
     category: row.category || 'General',
     feeBreakdown,
-    semesterFees: parsedSemesterFees || buildPeriodFeeSlots(row.course, Number(row.total_fees || 0), Number(row.paid_till_now || 0)),
+    semesterFees: parsedSemesterFees || buildPeriodFeeSlots(row.course, effectiveTotal, paidTillNow),
     paymentHistory: parsedPaymentHistory,
-    discountAmount: Number(row.discount_amount || 0),
+    discountAmount,
     scholarshipApplied: row.scholarship_applied || undefined,
     lastReminderSent: row.last_reminder_sent || undefined,
     notes: row.notes || undefined,
+    updatedAt: row.updated_at || row.created_at || new Date().toISOString(),
   };
 };
 
@@ -113,7 +134,7 @@ const mapStudentToRow = (student: Student) => {
     scholarship_applied: student.scholarshipApplied || null,
     last_reminder_sent: student.lastReminderSent || null,
     notes: student.notes || null,
-    updated_at: new Date().toISOString(),
+    updated_at: student.updatedAt || new Date().toISOString(),
   };
 };
 
@@ -141,18 +162,7 @@ export function mergeStudentLists(localList: Student[], remoteList: Student[]): 
       // Remote has student that local does not have
       map.set(key, remote);
     } else {
-      // Both exist: merge without losing payments or local edits
-      const localPaymentsCount = local.paymentHistory?.length || 0;
-      const remotePaymentsCount = remote.paymentHistory?.length || 0;
-
-      let preferred = remote;
-      if (localPaymentsCount > remotePaymentsCount) {
-        preferred = local;
-      } else if (localPaymentsCount === remotePaymentsCount) {
-        preferred = { ...remote, ...local };
-      }
-
-      // Merge payment histories deduplicated by id or transactionRef
+      // Both exist: merge payment histories deduplicated by id or transactionRef
       const paymentMap = new Map<string, PaymentRecord>();
       for (const p of (remote.paymentHistory || [])) {
         paymentMap.set(p.id || p.transactionRef, p);
@@ -164,12 +174,46 @@ export function mergeStudentLists(localList: Student[], remoteList: Student[]): 
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       );
 
+      const historySum = mergedPayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+      const paidTillNow = Math.max(Number(remote.paidTillNow || 0), Number(local.paidTillNow || 0), historySum);
+
+      // Determine preferred base details:
+      // If local has newer timestamp and local payments >= remote payments, prefer local; otherwise prefer remote
+      const localTime = local.updatedAt ? new Date(local.updatedAt).getTime() : 0;
+      const remoteTime = remote.updatedAt ? new Date(remote.updatedAt).getTime() : 0;
+      const preferLocal = localTime > remoteTime && (local.paymentHistory?.length || 0) >= (remote.paymentHistory?.length || 0);
+
+      const base = preferLocal ? { ...remote, ...local } : { ...local, ...remote };
+
+      const totalFees = Math.max(Number(base.totalFees) || 0, Number(remote.totalFees) || 0, Number(local.totalFees) || 0);
+      const discount = base.discountAmount || 0;
+      const effectiveTotal = Math.max(0, totalFees - discount);
+      const remainingFees = Math.max(0, effectiveTotal - paidTillNow);
+
+      let feeStatus: Student['feeStatus'] = 'Unpaid';
+      if (effectiveTotal > 0 && paidTillNow >= effectiveTotal) {
+        feeStatus = 'Paid';
+      } else if (paidTillNow > 0) {
+        feeStatus = 'Partly Paid';
+      }
+
+      // Merge semesterFees slot payments
+      const semesterFees = base.semesterFees && base.semesterFees.length > 0
+        ? base.semesterFees
+        : buildPeriodFeeSlots(base.course, effectiveTotal, paidTillNow);
+
       map.set(key, {
-        ...preferred,
+        ...base,
+        totalFees,
+        paidTillNow,
+        remainingFees,
+        feeStatus,
+        semesterFees,
         paymentHistory: mergedPayments,
         seatType: local.seatType || remote.seatType,
         stream: local.stream || remote.stream || 'Arts',
-        currentSemester: local.currentSemester || remote.currentSemester || 'Sem 1',
+        currentSemester: local.currentSemester || remote.currentSemester || (base.course === 'JBT' ? 'Session 1' : 'Sem 1'),
+        updatedAt: preferLocal ? local.updatedAt : (remote.updatedAt || new Date().toISOString()),
       });
     }
   }
@@ -351,50 +395,100 @@ export async function deleteStudentFromDB(studentId: string, registrationNo?: st
 
 // Async Audit Log Operations
 export async function fetchAuditLogsFromDB(): Promise<AuditLogEntry[]> {
+  const localLogs = getStoredAuditLogs();
   if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
       const { data, error } = await supabase
         .from('audit_logs')
         .select('*')
-        .order('timestamp', { ascending: false });
+        .order('timestamp', { ascending: false })
+        .limit(200);
 
-      if (!error && data && data.length > 0) {
-        return data as AuditLogEntry[];
+      if (error) {
+        console.warn('[Supabase] Failed to fetch audit logs:', error.message);
+        return localLogs;
+      }
+
+      if (Array.isArray(data) && data.length > 0) {
+        const mappedLogs: AuditLogEntry[] = data.map((row: any) => ({
+          id: row.id,
+          timestamp: row.timestamp,
+          action: row.action,
+          details: row.details,
+          staffName: row.staff_name || row.staffName || 'Accounts Office',
+          type: (['PAYMENT', 'STUDENT_ADD', 'STUDENT_EDIT', 'REMINDER', 'SETTINGS', 'SYSTEM'].includes(row.type)
+            ? row.type
+            : 'SETTINGS') as AuditLogEntry['type'],
+        }));
+
+        // Merge with local logs so any unsynced local logs are not lost, filtering legacy dummy entries
+        const remoteIds = new Set(mappedLogs.map((l) => l.id));
+        const unsyncedLocal = localLogs.filter((l) => !remoteIds.has(l.id) && l.id !== 'LOG-1001' && l.id !== 'LOG-1002');
+        const combined = [...mappedLogs, ...unsyncedLocal]
+          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+          .slice(0, 300);
+
+        saveStoredAuditLogs(combined);
+        return combined;
       }
     } catch (err) {
       console.warn('Audit logs fetch failed from Supabase:', err);
     }
   }
-  return getStoredAuditLogs();
+  return localLogs.filter((l) => l.id !== 'LOG-1001' && l.id !== 'LOG-1002');
 }
 
-export async function addAuditLogToDB(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>): Promise<void> {
-  addStoredAuditLog(entry);
+export async function addAuditLogToDB(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>): Promise<AuditLogEntry> {
+  const uniqueSuffix = Math.random().toString(36).slice(2, 6).toUpperCase();
+  const logId = `LOG-${Date.now()}-${uniqueSuffix}`;
+  const timestamp = new Date().toISOString();
+  const staffName = entry.staffName || 'Accounts Office';
 
+  const newLog: AuditLogEntry = {
+    ...entry,
+    id: logId,
+    timestamp,
+    staffName,
+  };
+
+  // 1. Immediately store in local cache
+  addStoredAuditLog(newLog);
+
+  // 2. Persist to Supabase
   if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
-      const newLog = {
-        id: `LOG-${Date.now().toString().slice(-4)}`,
-        timestamp: new Date().toISOString(),
+      const allowedType = ['PAYMENT', 'STUDENT_ADD', 'STUDENT_EDIT', 'REMINDER', 'SETTINGS'].includes(entry.type)
+        ? entry.type
+        : 'SETTINGS';
+      const row = {
+        id: logId,
+        timestamp,
         action: entry.action,
         details: entry.details,
-        staff_name: entry.staffName,
-        type: entry.type,
+        staff_name: staffName,
+        type: allowedType,
       };
-      await supabase.from('audit_logs').insert([newLog]);
+      const { error } = await supabase.from('audit_logs').insert([row]);
+      if (error) {
+        console.warn('[Supabase] Audit log insert error:', error.message);
+      } else {
+        console.log(`[Supabase] Recorded audit log: ${entry.action} (${logId})`);
+      }
     } catch (err) {
       console.error('Error inserting audit log to Supabase:', err);
     }
   }
+  return newLog;
 }
 
 // Async Fee Rules Operations
 export async function fetchFeeRulesFromDB(): Promise<CourseFeeRule[]> {
+  const localRules = getStoredFeeRules();
   if (isSupabaseConfigured() && supabase && isSupabaseReachable !== false) {
     try {
       const { data, error } = await supabase.from('fee_rules').select('*');
-      if (!error && data && data.length > 0) {
-        return data.map((row: any) => ({
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const mapped = data.map((row: any) => ({
           course: row.course,
           session: row.session || '2026-2027',
           tuitionFee: Number(row.tuition_fee),
@@ -407,12 +501,14 @@ export async function fetchFeeRulesFromDB(): Promise<CourseFeeRule[]> {
           seatTypeFees: (typeof row.seat_type_fees === 'string' ? JSON.parse(row.seat_type_fees) : row.seat_type_fees) as SeatTypeFees[] || [],
           scholarshipDiscounts: row.scholarship_discounts,
         }));
+        saveStoredFeeRules(mapped);
+        return mapped;
       }
     } catch (err) {
       console.warn('Failed to fetch fee rules from Supabase:', err);
     }
   }
-  return getStoredFeeRules();
+  return localRules;
 }
 
 export async function saveFeeRulesToDB(rules: CourseFeeRule[]): Promise<void> {

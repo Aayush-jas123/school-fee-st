@@ -26,7 +26,8 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
 
   // Calculate balance after THIS payment for the target semester
   const semPaidAfterThis = targetSlot ? targetSlot.paidAmount : payment.amount;
-  const semTotal = targetSlot ? targetSlot.totalFee : Math.round(effectiveFee / 4);
+  const numPeriods = student.course === 'JBT' ? 2 : 4;
+  const semTotal = targetSlot ? targetSlot.totalFee : Math.round(effectiveFee / numPeriods);
   const semRemaining = Math.max(0, semTotal - semPaidAfterThis);
 
   return (
@@ -128,9 +129,11 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
             </table>
           </div>
 
-          {/* Semester-wise Fee Status Breakdown */}
+          {/* Semester-wise / Session-wise Fee Status Breakdown */}
           <div>
-            <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2 border-b border-stone-200 pb-1">Semester-wise Fee Status (All 4 Semesters)</h3>
+            <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2 border-b border-stone-200 pb-1">
+              {student.course === 'JBT' ? 'Session-wise Fee Status (Session 1 & Session 2)' : 'Semester-wise Fee Status (All 4 Semesters)'}
+            </h3>
             <table className="w-full text-xs border-collapse border border-slate-300">
               <thead>
                 <tr className="bg-slate-100 text-slate-800 font-bold">

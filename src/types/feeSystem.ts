@@ -141,6 +141,7 @@ export interface Student {
   scholarshipApplied?: string;
   lastReminderSent?: string;
   notes?: string;
+  updatedAt?: string;
 }
 
 export interface CourseStat {
@@ -163,7 +164,7 @@ export interface AuditLogEntry {
   action: string;
   details: string;
   staffName: string;
-  type: 'PAYMENT' | 'STUDENT_ADD' | 'STUDENT_EDIT' | 'REMINDER' | 'SETTINGS';
+  type: 'PAYMENT' | 'STUDENT_ADD' | 'STUDENT_EDIT' | 'REMINDER' | 'SETTINGS' | 'SYSTEM';
 }
 
 export interface CourseFeeRule {

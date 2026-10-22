@@ -1,7 +1,7 @@
 import React from 'react';
 import type { CourseType } from '../types/feeSystem';
 import { DEFAULT_ACADEMIC_SESSIONS } from '../types/feeSystem';
-import { Building2, Search, Bell, LogOut, ChevronDown, Calendar, Database, Zap, X, Eye } from 'lucide-react';
+import { Building2, Search, Bell, LogOut, ChevronDown, Calendar, Database, Zap, X, Eye, RefreshCw } from 'lucide-react';
 import { isSupabaseConfigured } from '../lib/supabase';
 
 interface NavbarHeaderProps {
@@ -16,6 +16,9 @@ interface NavbarHeaderProps {
   availableSessions?: string[];
   userRole?: 'admin' | 'clerk';
   isDbLive?: boolean;
+  onSyncCloudData?: () => void;
+  isSyncing?: boolean;
+  lastSyncTime?: string;
 }
 
 export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
@@ -30,6 +33,9 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
   availableSessions = [],
   userRole = 'admin',
   isDbLive,
+  onSyncCloudData,
+  isSyncing = false,
+  lastSyncTime,
 }) => {
   const isSupabaseActive = isDbLive !== undefined ? isDbLive : isSupabaseConfigured();
 
@@ -53,14 +59,36 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-sm font-bold text-stone-900 leading-tight">Shanti College of Education</h2>
-                {isSupabaseActive ? (
-                  <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-800 text-stone-50">
-                    <Zap className="w-3 h-3" /> Live
-                  </span>
+                {onSyncCloudData ? (
+                  <button
+                    onClick={onSyncCloudData}
+                    disabled={isSyncing}
+                    title={lastSyncTime ? `Click to sync (Last: ${lastSyncTime})` : 'Click to sync with Cloud'}
+                    className={`hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold cursor-pointer transition-all hover:scale-105 active:scale-95 ${
+                      isSupabaseActive
+                        ? 'bg-rose-800 text-stone-50 hover:bg-rose-700'
+                        : 'bg-amber-100 text-amber-800 border border-amber-300 hover:bg-amber-200'
+                    }`}
+                  >
+                    {isSyncing ? (
+                      <RefreshCw className="w-3 h-3 animate-spin" />
+                    ) : isSupabaseActive ? (
+                      <Zap className="w-3 h-3 text-amber-300" />
+                    ) : (
+                      <Database className="w-3 h-3 text-amber-700" />
+                    )}
+                    <span>{isSyncing ? 'Syncing...' : isSupabaseActive ? 'Live' : 'Local'}</span>
+                  </button>
                 ) : (
-                  <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-stone-100 text-stone-500 border border-stone-200">
-                    <Database className="w-3 h-3" /> Local
-                  </span>
+                  isSupabaseActive ? (
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-800 text-stone-50">
+                      <Zap className="w-3 h-3" /> Live
+                    </span>
+                  ) : (
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-stone-100 text-stone-500 border border-stone-200">
+                      <Database className="w-3 h-3" /> Local
+                    </span>
+                  )
                 )}
               </div>
               <p className="text-[11px] text-stone-400 font-medium">Fee Management Portal</p>
@@ -126,7 +154,19 @@ export const NavbarHeader: React.FC<NavbarHeaderProps> = ({
         </div>
 
         {/* Right: Staff User Profile & Actions */}
-        <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+        <div className="flex items-center gap-2.5 w-full md:w-auto justify-end">
+          {/* Cloud Sync Button */}
+          {onSyncCloudData && (
+            <button
+              onClick={onSyncCloudData}
+              disabled={isSyncing}
+              title={lastSyncTime ? `Sync Data (Last: ${lastSyncTime})` : 'Sync live data with cloud'}
+              className="w-9 h-9 rounded-xl bg-stone-50 border border-stone-200 text-stone-600 hover:text-rose-800 hover:border-stone-300 flex items-center justify-center transition-all cursor-pointer shadow-xs disabled:opacity-60"
+            >
+              <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin text-rose-800' : ''}`} />
+            </button>
+          )}
+
           {/* Notification bell */}
           <button
             title="Notifications"

@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import type { Student, CourseFeeRule, AuditLogEntry } from '../types/feeSystem';
 import { formatCurrencyINR } from '../utils/exportUtils';
-import { getStoredStudents, getStoredFeeRules, getStoredAuditLogs, saveStoredStudents, saveFeeRules } from '../utils/storage';
+import { getStoredStudents, getStoredFeeRules, getStoredAuditLogs, saveStoredStudents, saveFeeRules, saveStoredAuditLogs, resetToDemoData } from '../utils/storage';
 import { syncAllStudentsToDB, saveFeeRulesToDB } from '../services/supabaseService';
 
 interface BackupRestorePanelProps {
@@ -166,6 +166,9 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
       saveStoredStudents(restoredStudents);
       if (restoredRules.length > 0) {
         saveFeeRules(restoredRules);
+      }
+      if (previewData.auditLogs && previewData.auditLogs.length > 0) {
+        saveStoredAuditLogs(previewData.auditLogs);
       }
 
       // Sync to Supabase
@@ -503,6 +506,38 @@ export const BackupRestorePanel: React.FC<BackupRestorePanelProps> = ({
           </div>
         )}
       </motion.div>
+
+      {/* Danger Zone: Reset to Initial Starter Data */}
+      {!isReadOnly && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h4 className="text-sm font-bold text-stone-900 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600" /> Re-initialize Starter Template Data
+              </h4>
+              <p className="text-xs text-stone-500 mt-1 max-w-xl">
+                Re-initialize system with institutional starter template records. This can be used for training or test demonstration purposes.
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                if (window.confirm('Are you sure you want to re-initialize with the starter template records? This will reload the default demo datasets.')) {
+                  resetToDemoData();
+                  window.location.reload();
+                }
+              }}
+              className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 font-bold text-xs transition-colors cursor-pointer shrink-0"
+            >
+              Reset Starter Records
+            </button>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };

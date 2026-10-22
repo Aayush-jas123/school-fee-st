@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import type { Student, PaymentMode, PaymentRecord, SemesterName, SessionName, PeriodName, SemesterFeeSlot } from '../types/feeSystem';
-import { getPeriodsForCourse, getNextPeriod, getPeriodYear } from '../types/feeSystem';
+import { getPeriodsForCourse, getNextPeriod, getPeriodYear, buildPeriodFeeSlots } from '../types/feeSystem';
 import { X, QrCode, CheckCircle2, DollarSign, Layers, Receipt, Clock } from 'lucide-react';
 import { formatCurrencyINR } from '../utils/exportUtils';
 
@@ -23,17 +23,21 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   const defaultSem = (student?.currentSemester || coursePeriods[0]) as PeriodName;
   const [selectedSemester, setSelectedSemester] = useState<PeriodName>(defaultSem);
 
+  const numPeriods = student?.course === 'JBT' ? 2 : 4;
+  const effectiveFee = Math.max(0, (student?.totalFees || 0) - (student?.discountAmount || 0));
+  const periodStandardFee = Math.round(effectiveFee / numPeriods);
+
   const currentSemSlot = (student?.semesterFees || []).find(s => s.semester === selectedSemester) || {
     semester: selectedSemester,
     year: getPeriodYear(selectedSemester),
-    totalFee: 19500,
+    totalFee: periodStandardFee,
     paidAmount: 0,
-    remainingAmount: 19500,
+    remainingAmount: periodStandardFee,
     status: 'Unpaid' as const,
-    dueDate: '2026-10-15',
+    dueDate: new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString().split('T')[0],
   };
 
-  const defaultAmount = currentSemSlot.remainingAmount > 0 ? Math.min(19500, currentSemSlot.remainingAmount) : 0;
+  const defaultAmount = currentSemSlot.remainingAmount > 0 ? currentSemSlot.remainingAmount : 0;
   const [amount, setAmount] = useState<number>(defaultAmount);
   const [paymentMode, setPaymentMode] = useState<PaymentMode>('UPI');
   const [transactionRef, setTransactionRef] = useState<string>(`UPI/${Math.floor(1000000000 + Math.random() * 9000000000)}`);
@@ -57,7 +61,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   const handleSemesterChange = (sem: PeriodName) => {
     setSelectedSemester(sem);
     const slot = (student.semesterFees || []).find(s => s.semester === sem);
-    const semRemaining = slot ? slot.remainingAmount : 19500;
+    const semRemaining = slot ? slot.remainingAmount : periodStandardFee;
     setAmount(semRemaining > 0 ? semRemaining : 0);
     setRemark(`${sem} Fee Payment`);
   };
@@ -104,7 +108,12 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       installmentNo: installmentNo,
     };
 
-    const updatedSemesterFees = (student.semesterFees || []).map((slot) => {
+    const effectiveStudentFee = Math.max(0, student.totalFees - (student.discountAmount || 0));
+    const baseSlots = student.semesterFees && student.semesterFees.length > 0
+      ? student.semesterFees
+      : buildPeriodFeeSlots(student.course, effectiveStudentFee, student.paidTillNow);
+
+    const updatedSemesterFees = baseSlots.map((slot) => {
       if (slot.semester === selectedSemester) {
         const newPaid = slot.paidAmount + amount + discount;
         const newRem = Math.max(0, slot.totalFee - newPaid);
@@ -125,7 +134,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       return slot;
     });
 
-    const newPaidTillNow = updatedSemesterFees.reduce((sum, s) => sum + s.paidAmount, 0);
+    const newPaidTillNow = student.paidTillNow + amount;
     const totalDiscount = (student.discountAmount || 0) + discount;
     const newRemaining = Math.max(0, student.totalFees - totalDiscount - newPaidTillNow);
 
@@ -155,6 +164,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       semesterFees: updatedSemesterFees,
       paymentHistory: [newPaymentRecord, ...student.paymentHistory],
       discountAmount: (student.discountAmount || 0) + discount,
+      updatedAt: new Date().toISOString(),
     };
 
     setTimeout(() => {

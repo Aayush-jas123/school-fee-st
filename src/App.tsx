@@ -30,7 +30,6 @@ import {
   saveStoredStudents,
   getStoredAuditLogs,
   getStoredFeeRules,
-  resetToDemoData,
 } from './utils/storage';
 import {
   fetchStudentsFromDB,
@@ -141,33 +140,69 @@ export function App() {
   const [receiptSearch, setReceiptSearch] = useState('');
   const [receiptFilter, setReceiptFilter] = useState<'ALL' | 'Paid' | 'Partly Paid' | 'Unpaid'>('ALL');
   const [isDbConnected, setIsDbConnected] = useState<boolean>(false);
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const [lastSyncTime, setLastSyncTime] = useState<string>(() => {
+    try {
+      return localStorage.getItem('shanti_last_sync_time') || '';
+    } catch {
+      return '';
+    }
+  });
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
   };
 
+  // Bi-directional Cloud Synchronization
+  const handleSyncCloudData = async (showNotification = true) => {
+    if (isSyncing) return;
+    setIsSyncing(true);
+    try {
+      console.log('[App] Synchronizing live data with database...');
+      const [fetchedStudents, fetchedLogs, fetchedRules] = await Promise.all([
+        fetchStudentsFromDB(),
+        fetchAuditLogsFromDB(),
+        fetchFeeRulesFromDB(),
+      ]);
+
+      const isLive = getSupabaseReachable();
+      setIsDbConnected(isLive);
+      setStudents(fetchedStudents);
+      setAuditLogs(fetchedLogs);
+      setFeeRules(fetchedRules);
+
+      const nowTime = new Date().toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+      setLastSyncTime(nowTime);
+      try {
+        localStorage.setItem('shanti_last_sync_time', nowTime);
+      } catch {}
+
+      if (showNotification) {
+        if (isLive) {
+          showToast(`Synced ${fetchedStudents.length} students & ${fetchedLogs.length} audit entries from Cloud Database`);
+        } else {
+          showToast(`Working locally: Loaded ${fetchedStudents.length} students from storage`);
+        }
+      }
+    } catch (err) {
+      console.error('[App] Synchronization error:', err);
+      setIsDbConnected(false);
+      if (showNotification) {
+        showToast('Sync error: Using locally cached records');
+      }
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   // Asynchronous Initial Data Fetching from Supabase Cloud / Local Database
   useEffect(() => {
-    async function loadCloudData() {
-      try {
-        console.log('[App] Loading data from database...');
-        const [fetchedStudents, fetchedLogs, fetchedRules] = await Promise.all([
-          fetchStudentsFromDB(),
-          fetchAuditLogsFromDB(),
-          fetchFeeRulesFromDB(),
-        ]);
-        console.log(`[App] Loaded ${fetchedStudents.length} students from database`);
-        setIsDbConnected(getSupabaseReachable());
-        setStudents(fetchedStudents);
-        setAuditLogs(fetchedLogs);
-        setFeeRules(fetchedRules);
-      } catch (err) {
-        console.error('Error initializing database data:', err);
-        setIsDbConnected(false);
-      }
-    }
-    loadCloudData();
+    handleSyncCloudData(false);
   }, []);
 
   const refreshAuditLogs = async () => {
@@ -272,16 +307,20 @@ export function App() {
 
   // Handle saving edited student record
   const handleSaveStudent = async (updatedStudent: Student) => {
-    setStudents((prev) => prev.map((s) => (s.id === updatedStudent.id ? updatedStudent : s)));
-    await saveStudentToDB(updatedStudent);
+    const studentWithTimestamp: Student = {
+      ...updatedStudent,
+      updatedAt: new Date().toISOString(),
+    };
+    setStudents((prev) => prev.map((s) => (s.id === studentWithTimestamp.id ? studentWithTimestamp : s)));
+    await saveStudentToDB(studentWithTimestamp);
     await addAuditLogToDB({
       action: 'Student Profile Edited',
-      details: `Updated fee record for ${updatedStudent.name} (${updatedStudent.registrationNo})`,
+      details: `Updated fee record for ${studentWithTimestamp.name} (${studentWithTimestamp.registrationNo})`,
       staffName,
       type: 'STUDENT_EDIT',
     });
     refreshAuditLogs();
-    showToast(`Updated student profile for ${updatedStudent.name}`);
+    showToast(`Updated student profile for ${studentWithTimestamp.name}`);
   };
 
   // Handle removing / deleting a student from course
@@ -314,44 +353,52 @@ export function App() {
 
   // Handle adding new student
   const handleAddStudentSuccess = async (newStudent: Student) => {
+    const studentWithTimestamp: Student = {
+      ...newStudent,
+      updatedAt: new Date().toISOString(),
+    };
     // 1. Immediately persist to localStorage synchronously
     const currentStored = getStoredStudents();
-    const updated = [newStudent, ...currentStored.filter(s => s.id !== newStudent.id && s.registrationNo !== newStudent.registrationNo)];
+    const updated = [studentWithTimestamp, ...currentStored.filter(s => s.id !== studentWithTimestamp.id && s.registrationNo !== studentWithTimestamp.registrationNo)];
     setStudents(updated);
     saveStoredStudents(updated);
 
     // 2. Adjust course and session filter so user sees the new student immediately
-    if (newStudent.course && selectedCourse !== 'ALL' && selectedCourse !== newStudent.course) {
-      setSelectedCourse(newStudent.course);
+    if (studentWithTimestamp.course && selectedCourse !== 'ALL' && selectedCourse !== studentWithTimestamp.course) {
+      setSelectedCourse(studentWithTimestamp.course);
     }
-    if (newStudent.session && selectedSession !== 'ALL' && selectedSession !== newStudent.session) {
-      setSelectedSession(newStudent.session);
+    if (studentWithTimestamp.session && selectedSession !== 'ALL' && selectedSession !== studentWithTimestamp.session) {
+      setSelectedSession(studentWithTimestamp.session);
     }
 
     // 3. Sync to Supabase cloud database
-    await saveStudentToDB(newStudent);
+    await saveStudentToDB(studentWithTimestamp);
     await addAuditLogToDB({
       action: 'New Admission Registered',
-      details: `Enrolled ${newStudent.name} into ${newStudent.course} program (${newStudent.registrationNo})`,
+      details: `Enrolled ${studentWithTimestamp.name} into ${studentWithTimestamp.course} program (${studentWithTimestamp.registrationNo})`,
       staffName,
       type: 'STUDENT_ADD',
     });
     refreshAuditLogs();
-    showToast(`Successfully enrolled ${newStudent.name} in ${newStudent.course} program!`);
+    showToast(`Successfully enrolled ${studentWithTimestamp.name} in ${studentWithTimestamp.course} program!`);
   };
 
   // Handle payment record success
   const handlePaymentSuccess = async (updatedStudent: Student, paymentRecord: PaymentRecord) => {
-    setStudents((prev) => prev.map((s) => (s.id === updatedStudent.id ? updatedStudent : s)));
-    await saveStudentToDB(updatedStudent);
+    const studentWithTimestamp: Student = {
+      ...updatedStudent,
+      updatedAt: new Date().toISOString(),
+    };
+    setStudents((prev) => prev.map((s) => (s.id === studentWithTimestamp.id ? studentWithTimestamp : s)));
+    await saveStudentToDB(studentWithTimestamp);
     await addAuditLogToDB({
       action: 'Fee Payment Recorded',
-      details: `Collected ${formatCurrencyINR(paymentRecord.amount)} via ${paymentRecord.mode} for ${updatedStudent.name}`,
+      details: `Collected ${formatCurrencyINR(paymentRecord.amount)} via ${paymentRecord.mode} for ${studentWithTimestamp.name} (${paymentRecord.id})`,
       staffName,
       type: 'PAYMENT',
     });
     refreshAuditLogs();
-    setPrintableReceiptData({ student: updatedStudent, payment: paymentRecord });
+    setPrintableReceiptData({ student: studentWithTimestamp, payment: paymentRecord });
     showToast(`Payment of ${formatCurrencyINR(paymentRecord.amount)} recorded successfully!`);
   };
 
@@ -498,19 +545,6 @@ export function App() {
     showToast(`Successfully imported ${newStudents.length} new student records! (${duplicates.length} duplicates skipped)`);
   };
 
-  // Reset to default demo data
-  const handleResetData = async () => {
-    if (confirm('Reset all student fee records and sync full Excel dataset (49 B.Ed students) to database?')) {
-      resetToDemoData();
-      await syncAllStudentsToDB();
-      const freshStudents = await fetchStudentsFromDB();
-      setStudents(freshStudents);
-      setAuditLogs(getStoredAuditLogs());
-      setFeeRules(getStoredFeeRules());
-      showToast('Reset & synced 49 B.Ed student records to database.');
-    }
-  };
-
   // Compute read-only state for Overview portal mode OR clerk user
   const isReadOnlyMode = selectedCourse === 'ALL';
   const isClerkUser = userRole === 'clerk';
@@ -548,6 +582,9 @@ export function App() {
         availableSessions={availableSessions}
         userRole={userRole}
         isDbLive={isDbConnected}
+        onSyncCloudData={() => handleSyncCloudData(true)}
+        isSyncing={isSyncing}
+        lastSyncTime={lastSyncTime}
       />
 
       {/* Toast Notification Popup */}
@@ -664,17 +701,20 @@ export function App() {
                 <Download className="w-3.5 h-3.5 text-stone-600" /> Export CSV
               </motion.button>
 
-              {!blockEditing && (
-                <motion.button
-                  whileHover={{ scale: 1.05, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={handleResetData}
-                  title="Reset to default demo data"
-                  className="p-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-900 border border-stone-200 transition-all duration-200 cursor-pointer"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                </motion.button>
-              )}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => handleSyncCloudData(true)}
+                disabled={isSyncing}
+                title={lastSyncTime ? `Last synced with cloud at ${lastSyncTime}` : 'Sync live database records'}
+                className="px-3.5 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold border border-stone-200 transition-all duration-200 flex items-center gap-2 hover:border-stone-300 cursor-pointer shadow-xs disabled:opacity-60"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 text-rose-800 ${isSyncing ? 'animate-spin' : ''}`} />
+                <span>{isSyncing ? 'Syncing...' : 'Sync Cloud'}</span>
+                {isDbConnected && (
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Database Connected" />
+                )}
+              </motion.button>
             </div>
           </motion.div>
 
@@ -813,7 +853,11 @@ export function App() {
 
       {/* Audit Log Modal */}
       {showAuditModal && (
-        <AuditLogModal logs={auditLogs} onClose={() => setShowAuditModal(false)} />
+        <AuditLogModal
+          logs={auditLogs}
+          onClose={() => setShowAuditModal(false)}
+          onRefresh={refreshAuditLogs}
+        />
       )}
 
       {/* Student Receipt Generation Modal */}

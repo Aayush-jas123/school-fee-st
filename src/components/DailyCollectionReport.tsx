@@ -80,6 +80,32 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
     window.print();
   };
 
+  const handleExportCSV = () => {
+    const headers = ['Receipt No', 'Date', 'Student Name', 'Registration No', 'Course', 'Semester', 'Target Window', 'Mode', 'Transaction Ref', 'Amount (INR)', 'Remark', 'Staff'];
+    const rows = filteredTransactions.map(({ student, payment }) => [
+      payment.id,
+      payment.date,
+      `"${student.name.replace(/"/g, '""')}"`,
+      student.registrationNo,
+      student.course,
+      student.currentSemester || student.semester,
+      payment.targetSemester || '',
+      payment.mode,
+      payment.transactionRef,
+      payment.amount,
+      `"${(payment.remark || '').replace(/"/g, '""')}"`,
+      `"${(payment.staffName || staffName).replace(/"/g, '""')}"`,
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Daily_Collection_Report_${selectedDate}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Title Banner & Filter Controls */}
@@ -103,10 +129,16 @@ export const DailyCollectionReport: React.FC<DailyCollectionReportProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={handleExportCSV}
+              className="px-3.5 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs flex items-center gap-1.5 border border-stone-200 transition-colors cursor-pointer"
+            >
+              <FileSpreadsheet className="w-4 h-4 text-stone-600" /> Export CSV
+            </button>
             <button
               onClick={handlePrintDailyReport}
-              className="px-4 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-xs flex items-center gap-2 shadow-lg shadow-rose-800/15 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-xs flex items-center gap-2 shadow-lg shadow-rose-800/15 cursor-pointer transition-colors"
             >
               <Printer className="w-4 h-4" /> Print Daily Statement
             </button>

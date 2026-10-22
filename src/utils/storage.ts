@@ -52,25 +52,8 @@ export const DEFAULT_FEE_RULES: CourseFeeRule[] = [
   },
 ];
 
-// Initial default audit log entries
-const DEFAULT_AUDIT_LOG: AuditLogEntry[] = [
-  {
-    id: 'LOG-1001',
-    timestamp: new Date(Date.now() - 3600000 * 24 * 2).toISOString(),
-    action: 'System Initialized',
-    details: 'Institutional Fee Management portal active with JBT & B.Ed modules',
-    staffName: 'System Admin',
-    type: 'SETTINGS',
-  },
-  {
-    id: 'LOG-1002',
-    timestamp: new Date(Date.now() - 3600000 * 12).toISOString(),
-    action: 'Payment Recorded',
-    details: 'Collected ₹35,000 via UPI for student Aarav Sharma (JBT)',
-    staffName: 'Dr. Rajesh Sharma',
-    type: 'PAYMENT',
-  },
-];
+// Initial default audit log entries - empty by default to prevent hardcoded transactions
+export const DEFAULT_AUDIT_LOG: AuditLogEntry[] = [];
 
 export function getStoredStudents(): Student[] {
   try {
@@ -122,29 +105,50 @@ export function getStoredAuditLogs(): AuditLogEntry[] {
   try {
     const raw = localStorage.getItem(AUDIT_LOG_STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(AUDIT_LOG_STORAGE_KEY, JSON.stringify(DEFAULT_AUDIT_LOG));
-      return DEFAULT_AUDIT_LOG;
+      return [];
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      return parsed.filter((l) => l.id !== 'LOG-1001' && l.id !== 'LOG-1002');
+    }
+    return [];
   } catch (err) {
     console.error('Error loading audit logs:', err);
-    return DEFAULT_AUDIT_LOG;
+    return [];
   }
 }
 
-export function addAuditLog(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>): void {
+export function saveStoredAuditLogs(logs: AuditLogEntry[]): void {
+  try {
+    if (!Array.isArray(logs)) return;
+    localStorage.setItem(AUDIT_LOG_STORAGE_KEY, JSON.stringify(logs.slice(0, 300)));
+  } catch (err) {
+    console.error('Error saving audit logs to localStorage:', err);
+  }
+}
+
+export function addAuditLog(entry: Omit<AuditLogEntry, 'id' | 'timestamp'> & { id?: string; timestamp?: string }): AuditLogEntry {
   try {
     const current = getStoredAuditLogs();
+    const uniqueSuffix = Math.random().toString(36).slice(2, 6).toUpperCase();
     const newLog: AuditLogEntry = {
       ...entry,
-      id: `LOG-${Date.now().toString().slice(-4)}`,
-      timestamp: new Date().toISOString(),
+      id: entry.id || `LOG-${Date.now()}-${uniqueSuffix}`,
+      timestamp: entry.timestamp || new Date().toISOString(),
+      staffName: entry.staffName || 'System Admin',
     };
-    // Keep max 200 logs to prevent localStorage quota exhaustion
-    const updated = [newLog, ...current].slice(0, 200);
+    // Keep max 300 logs to prevent localStorage quota exhaustion
+    const updated = [newLog, ...current.filter((l) => l.id !== newLog.id)].slice(0, 300);
     localStorage.setItem(AUDIT_LOG_STORAGE_KEY, JSON.stringify(updated));
+    return newLog;
   } catch (err) {
     console.error('Error writing audit log:', err);
+    return {
+      ...entry,
+      id: entry.id || `LOG-${Date.now()}`,
+      timestamp: entry.timestamp || new Date().toISOString(),
+      staffName: entry.staffName || 'System Admin',
+    };
   }
 }
 

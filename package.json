@@ -19,6 +19,8 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
     "framer-motion": "^13.2.0",
+    "html2canvas-pro": "^2.5.4",
+    "jspdf": "^4.2.1",
     "lucide-react": "^1.33.0",
     "pdfjs-dist": "^6.3.289",
     "react": "^19.2.8",

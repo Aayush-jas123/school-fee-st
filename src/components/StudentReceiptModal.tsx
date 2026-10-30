@@ -14,18 +14,21 @@ import {
   AlertCircle,
   Download,
   Printer,
+  MessageSquare,
 } from 'lucide-react';
 
 interface StudentReceiptModalProps {
   student: Student;
   onClose: () => void;
   onGenerateReceipt: (student: Student, payment: PaymentRecord) => void;
+  onSendWhatsApp: (student: Student, payment: PaymentRecord) => void;
 }
 
 export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
   student,
   onClose,
   onGenerateReceipt,
+  onSendWhatsApp,
 }) => {
   const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<'payments' | 'semester' | 'statement'>('payments');
@@ -227,15 +230,27 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
                                 </p>
                               </div>
                             </div>
-                            <div className="text-right shrink-0">
-                              <span className="text-sm font-extrabold text-stone-700 block">
-                                {formatINR(rec.amount)}
-                              </span>
-                              {rec.discountApplied && rec.discountApplied > 0 && (
-                                <span className="text-[10px] text-stone-700 font-semibold">
-                                  +{formatINR(rec.discountApplied)} concession
+                            <div className="text-right shrink-0 flex items-center gap-2">
+                              <div className="text-right">
+                                <span className="text-sm font-extrabold text-stone-700 block">
+                                  {formatINR(rec.amount)}
                                 </span>
-                              )}
+                                {rec.discountApplied && rec.discountApplied > 0 && (
+                                  <span className="text-[10px] text-stone-700 font-semibold">
+                                    +{formatINR(rec.discountApplied)} concession
+                                  </span>
+                                )}
+                              </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onSendWhatsApp(student, rec);
+                                }}
+                                title={`Send this receipt to ${student.name} on WhatsApp`}
+                                className="p-2 rounded-lg bg-emerald-800 hover:bg-emerald-700 text-stone-50 cursor-pointer shadow-sm transition-colors"
+                              >
+                                <MessageSquare className="w-3.5 h-3.5" />
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -486,13 +501,22 @@ export const StudentReceiptModal: React.FC<StudentReceiptModalProps> = ({
               </div>
 
               {/* Generate Full Statement Button */}
-              <button
-                onClick={handleGenerateStatement}
-                className="w-full px-5 py-3 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-rose-800/10 transition-all"
-              >
-                <Download className="w-4 h-4" />
-                Generate Complete Fee Statement Receipt
-              </button>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <button
+                  onClick={handleGenerateStatement}
+                  className="flex-1 px-5 py-3 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-rose-800/10 transition-all"
+                >
+                  <Download className="w-4 h-4" />
+                  Generate Complete Fee Statement Receipt
+                </button>
+                <button
+                  onClick={() => onSendWhatsApp(student, generateFullStatement())}
+                  className="px-5 py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-stone-50 font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-900/10 transition-all"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  Send on WhatsApp
+                </button>
+              </div>
             </div>
           )}
         </div>

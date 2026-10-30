@@ -122,7 +122,7 @@ export function App() {
   const [showAddStudent, setShowAddStudent] = useState<boolean>(false);
   const [showAuditModal, setShowAuditModal] = useState<boolean>(false);
   const [receiptStudent, setReceiptStudent] = useState<Student | null>(null);
-  const [printableReceiptData, setPrintableReceiptData] = useState<{ student: Student; payment: PaymentRecord } | null>(null);
+  const [printableReceiptData, setPrintableReceiptData] = useState<{ student: Student; payment: PaymentRecord; autoWhatsApp?: boolean } | null>(null);
   const [showImportModal, setShowImportModal] = useState<boolean>(false);
 
   // Sidebar collapse state
@@ -400,6 +400,18 @@ export function App() {
     refreshAuditLogs();
     setPrintableReceiptData({ student: studentWithTimestamp, payment: paymentRecord });
     showToast(`Payment of ${formatCurrencyINR(paymentRecord.amount)} recorded successfully!`);
+  };
+
+  // Handle WhatsApp receipt share (PDF prepared locally + chat opened for the operator)
+  const handleReceiptShared = async (student: Student, payment: PaymentRecord) => {
+    await addAuditLogToDB({
+      action: 'Receipt Shared on WhatsApp',
+      details: `Opened WhatsApp share for receipt ${payment.id} - ${formatCurrencyINR(payment.amount)} for ${student.name} (${student.registrationNo})`,
+      staffName,
+      type: 'REMINDER',
+    });
+    refreshAuditLogs();
+    showToast(`Receipt ${payment.id} prepared for WhatsApp delivery to ${student.name}`);
   };
 
   // Handle reminder sent success
@@ -869,6 +881,10 @@ export function App() {
             setReceiptStudent(null);
             setPrintableReceiptData({ student: st, payment: pm });
           }}
+          onSendWhatsApp={(st, pm) => {
+            setReceiptStudent(null);
+            setPrintableReceiptData({ student: st, payment: pm, autoWhatsApp: true });
+          }}
         />
       )}
 
@@ -886,6 +902,8 @@ export function App() {
         <PrintableReceipt
           student={printableReceiptData.student}
           payment={printableReceiptData.payment}
+          autoWhatsApp={printableReceiptData.autoWhatsApp}
+          onShared={(pm) => handleReceiptShared(printableReceiptData.student, pm)}
           onClose={() => setPrintableReceiptData(null)}
         />
       )}

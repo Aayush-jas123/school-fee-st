@@ -1,16 +1,41 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import type { Student, PaymentRecord, SemesterFeeSlot } from '../types/feeSystem';
 import { buildPeriodFeeSlots, getPeriodYear } from '../types/feeSystem';
-import { Printer, X, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Printer, X, CheckCircle2, ShieldCheck, MessageSquare, Loader2, ExternalLink, AlertCircle } from 'lucide-react';
 import { formatCurrencyINR } from '../utils/exportUtils';
+import {
+  buildReceiptWhatsAppCaption,
+  buildWhatsAppChatUrl,
+  getStudentWhatsAppNumber,
+  normalizeWhatsAppNumber,
+  openReceiptShareWindow,
+  openWhatsAppChat,
+} from '../utils/whatsappShare';
+import { downloadPdf, receiptPdfFilename, renderReceiptToPdf } from '../utils/receiptPdf';
 
 interface PrintableReceiptProps {
   student: Student;
   payment: PaymentRecord;
   onClose: () => void;
+  autoWhatsApp?: boolean;
+  onShared?: (payment: PaymentRecord) => void;
 }
 
-export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, payment, onClose }) => {
+export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({
+  student,
+  payment,
+  onClose,
+  autoWhatsApp = false,
+  onShared,
+}) => {
+  const [shareState, setShareState] = useState<'idle' | 'preparing' | 'sent' | 'error'>('idle');
+  const [shareNotice, setShareNotice] = useState<string | null>(null);
+  const [chatUrl, setChatUrl] = useState<string | null>(null);
+  const [manualNumber, setManualNumber] = useState(student.whatsappNo || student.phone || '');
+  const receiptRef = useRef<HTMLDivElement>(null);
+
+  const savedNumber = getStudentWhatsAppNumber(student);
+
   // Get semester fee slots for breakdown
   const effectiveFee = student.totalFees - (student.discountAmount || 0);
   const semesterSlots: SemesterFeeSlot[] = student.semesterFees && student.semesterFees.length > 0
@@ -30,6 +55,49 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
   const semTotal = targetSlot ? targetSlot.totalFee : Math.round(effectiveFee / numPeriods);
   const semRemaining = Math.max(0, semTotal - semPaidAfterThis);
 
+  const handleSendWhatsApp = async (overrideNumber?: string) => {
+    const number = normalizeWhatsAppNumber(overrideNumber) ?? savedNumber;
+    if (!number) {
+      setShareState('error');
+      setShareNotice('Enter a valid WhatsApp number (10 digits or with country code) to continue.');
+      return;
+    }
+
+    setShareState('preparing');
+    setShareNotice(null);
+
+    // Claim the tab during the click gesture - after an await it is treated as a popup
+    const shareWindow = openReceiptShareWindow();
+
+    try {
+      if (!receiptRef.current) throw new Error('Receipt sheet is not mounted');
+
+      const pdf = await renderReceiptToPdf(receiptRef.current);
+      const filename = receiptPdfFilename(student, payment);
+      downloadPdf(pdf, filename);
+
+      const caption = buildReceiptWhatsAppCaption(student, payment);
+      const openedWindow = openWhatsAppChat(number, caption, shareWindow);
+
+      setChatUrl(buildWhatsAppChatUrl(number, caption));
+      setShareState('sent');
+      setShareNotice(
+        openedWindow
+          ? `PDF saved as ${filename} in Downloads. Attach it in the WhatsApp chat and press send.`
+          : `PDF saved as ${filename} in Downloads, but the browser blocked the WhatsApp tab. Use the link below to open the chat.`
+      );
+
+      if (!openedWindow) shareWindow?.close();
+      onShared?.(payment);
+    } catch {
+      shareWindow?.close();
+      setShareState('error');
+      setShareNotice('Could not prepare the PDF. Use "Print Official Receipt" and attach the printed copy instead.');
+    }
+  };
+
+  const isPreparing = shareState === 'preparing';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-50/70 backdrop-blur-md animate-fadeIn">
       <div className="bg-white border border-stone-200 rounded-3xl max-w-3xl w-full p-6 shadow-2xl overflow-y-auto max-h-[95vh] text-stone-900 relative">
@@ -40,6 +108,23 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
             <h2 className="text-lg font-bold text-stone-900">Official Institutional Fee Receipt</h2>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => void handleSendWhatsApp()}
+              disabled={isPreparing || !savedNumber}
+              title={
+                savedNumber
+                  ? `Send this receipt to ${savedNumber} on WhatsApp`
+                  : 'No valid WhatsApp number on file - add one below'
+              }
+              className={`px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                autoWhatsApp && shareState === 'idle'
+                  ? 'bg-emerald-700 hover:bg-emerald-600 text-stone-50 shadow-emerald-800/20 ring-2 ring-emerald-500/40'
+                  : 'bg-emerald-800 hover:bg-emerald-700 text-stone-50 shadow-emerald-900/15'
+              }`}
+            >
+              {isPreparing ? <Loader2 className="w-4 h-4 animate-spin" /> : <MessageSquare className="w-4 h-4" />}
+              {isPreparing ? 'Preparing PDF...' : 'Send on WhatsApp'}
+            </button>
             <button
               onClick={() => window.print()}
               className="px-4 py-2 rounded-xl bg-rose-800 hover:bg-rose-700 text-stone-50 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-rose-800/15"
@@ -55,8 +140,64 @@ export const PrintableReceipt: React.FC<PrintableReceiptProps> = ({ student, pay
           </div>
         </div>
 
+        {/* WhatsApp share feedback */}
+        {shareNotice && (
+          <div
+            className={`mb-4 rounded-2xl border p-3 text-xs flex items-start gap-2 print:hidden ${
+              shareState === 'error'
+                ? 'bg-rose-50/70 border-rose-200 text-stone-800'
+                : 'bg-emerald-50/70 border-emerald-200 text-stone-800'
+            }`}
+          >
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-stone-600" />
+            <div className="space-y-1">
+              <p className="font-semibold">{shareNotice}</p>
+              {chatUrl && (
+                <a
+                  href={chatUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-bold text-emerald-900 hover:underline"
+                >
+                  <ExternalLink className="w-3 h-3" /> Open WhatsApp chat manually
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Manual number entry when the student has no valid WhatsApp number */}
+        {!savedNumber && (
+          <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50/70 p-3 text-xs space-y-2 print:hidden">
+            <p className="font-semibold text-stone-800">
+              No valid WhatsApp number on file for {student.name}.
+            </p>
+            <p className="text-stone-600">Enter the number to download the PDF and open that chat.</p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="tel"
+                value={manualNumber}
+                onChange={(e) => setManualNumber(e.target.value)}
+                placeholder="e.g. 9876543210"
+                className="flex-1 bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-900 font-mono focus:outline-none focus:border-emerald-600/50"
+              />
+              <button
+                onClick={() => void handleSendWhatsApp(manualNumber)}
+                disabled={isPreparing}
+                className="px-4 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-stone-50 font-bold flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isPreparing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <MessageSquare className="w-3.5 h-3.5" />}
+                {isPreparing ? 'Preparing PDF...' : 'Download PDF & Open Chat'}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Printable Area - White background for official printing */}
-        <div className="bg-white text-slate-900 p-8 rounded-2xl border border-slate-200 space-y-5 shadow-md print:shadow-none print:border-none print:p-0">
+        <div
+          ref={receiptRef}
+          className="bg-white text-slate-900 p-8 rounded-2xl border border-slate-200 space-y-5 shadow-md print:shadow-none print:border-none print:p-0"
+        >
           {/* Header */}
           <div className="flex justify-between items-start border-b-2 border-stone-900 pb-4">
             <div>
